@@ -11,6 +11,14 @@ from .pitch import pitch_to_frequency, pitch_to_name
 from .waveform import write_wav
 
 TEMPO_BPM = 120.0
+SAFE_SUPERCOLLIDER_AMPLITUDE = 0.15
+
+
+def velocity_to_amplitude(velocity: int) -> float:
+    """Map MIDI velocity to the conservative Chapter 22 synth amplitude."""
+    if isinstance(velocity, bool) or not isinstance(velocity, int) or not 0 <= velocity <= 127:
+        raise ValueError("velocity must be an integer between 0 and 127")
+    return SAFE_SUPERCOLLIDER_AMPLITUDE * velocity / 127
 CHAPTER_22_EVENTS = (
     NoteEvent(60, 0, 1, 90), NoteEvent(64, 1, 1, 90),
     NoteEvent(67, 2, 1, 90), NoteEvent(72, 3, 1, 90),

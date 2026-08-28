@@ -34,8 +34,8 @@ involving randomness will use explicit seeds so results can be reproduced.
 ## Requirements and setup
 
 - Python 3.11 or newer
-- No Python runtime dependencies for Chapters 0–25; SuperCollider is optional
-  and used interactively only for Chapters 22–25 playback
+- No Python runtime dependencies for Chapters 0–25. Chapter 26 live mode uses the small
+  `python-osc` dependency; SuperCollider remains optional and interactive
 
 From the repository root, either run directly:
 
@@ -66,6 +66,8 @@ python -m composition_lab chapter-22
 python -m composition_lab chapter-23
 python -m composition_lab chapter-24
 python -m composition_lab chapter-25
+python -m composition_lab chapter-26
+python -m composition_lab chapter-26 --live
 ```
 
 or install an editable copy and use its console command:
@@ -98,6 +100,7 @@ composition-lab chapter-22
 composition-lab chapter-23
 composition-lab chapter-24
 composition-lab chapter-25
+composition-lab chapter-26
 ```
 
 The commands create ordinary WAV files in `outputs/`; open them in any audio
@@ -192,6 +195,13 @@ output directory.
   reverb returns place layers in space. Interactive playback uses
   `supercollider/chapter_25_space_and_effects.scd`.
 
+### Part VIII — Python Meets SuperCollider
+
+- [Chapter 26 — OSC: Sending Musical Events in Real Time](chapters/26_osc_real_time/README.md)
+  lets Python schedule unchanged `NoteEvent`s and transmit `/ping`, `/note`, and
+  `/panic` control messages to `supercollider/chapter_26_osc_receiver.scd`. Run
+  `python -m composition_lab chapter-26` for a CI-safe dry run or add `--live`.
+
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
 computable; Chapter 2 makes musical time computable; Chapter 3 makes music into
@@ -220,10 +230,12 @@ Chapter 24 shapes those instruments over time and frequency with envelopes,
 filters, velocity response, and articulation while the composition stays fixed.
 Chapter 25 adds stereo placement, delay, reverb, buses, and shared send/return
 routing while composition, playback configuration, and audio engine stay separate.
+Chapter 26 adds the first live Python → OSC → sclang bridge while preserving the
+Chapter 22–25 file workflow and keeping synthesis in SuperCollider.
 
 ## Planned journey
 
-Only Chapters 0 through 25 exist today. The broad route—not a claim of implemented
+Only Chapters 0 through 26 exist today. The broad route—not a claim of implemented
 features beyond those chapters—is:
 
 ```text
