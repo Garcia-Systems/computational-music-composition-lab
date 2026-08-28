@@ -81,6 +81,10 @@ from .bass import (
     connect_bass_targets, harmonic_root_pitch_classes, nearest_bass_pitch,
     root_in_register,
 )
+from .texture import (
+    MusicalLayer, arpeggiate_voicing, arrangement_timeline, attack_density,
+    attack_overlap, combine_event_layers, layer_metrics, repeated_chord_events,
+)
 
 CHAPTER_00_NOTES = (
     ("C4", 261.63, 0.40),
@@ -266,6 +270,22 @@ CHAPTER_14_FILENAMES = (
     "chapter_14_nearest_register_roots.wav", "chapter_14_static_harmony_static_bass.wav",
     "chapter_14_static_harmony_active_bass.wav", "chapter_14_phrase_bass_shape.wav",
     "chapter_14_bass_in_context.wav",
+)
+CHAPTER_15_FILENAMES = (
+    "chapter_15_register_collision.wav", "chapter_15_register_separation.wav",
+    "chapter_15_block_chords.wav", "chapter_15_block_accompaniment.wav",
+    "chapter_15_broken_accompaniment.wav", "chapter_15_sustained_chords.wav",
+    "chapter_15_repeated_chords.wav", "chapter_15_rhythmic_chords.wav",
+    "chapter_15_busy_accompaniment.wav", "chapter_15_sparse_accompaniment.wav",
+    "chapter_15_equal_velocity_layers.wav", "chapter_15_role_velocity_layers.wav",
+    "chapter_15_melody_only.wav", "chapter_15_melody_bass.wav",
+    "chapter_15_melody_bass_harmony.wav", "chapter_15_full_texture.wav",
+    "chapter_15_melody_with_accompaniment.wav",
+    "chapter_15_parallel_rhythm_texture.wav", "chapter_15_independent_rhythm_texture.wav",
+    "chapter_15_low_chord_register.wav", "chapter_15_mid_chord_register.wav",
+    "chapter_15_closed_voicing_texture.wav", "chapter_15_open_voicing_texture.wav",
+    "chapter_15_root_position_accompaniment.wav", "chapter_15_voice_led_accompaniment.wav",
+    "chapter_15_texture_arc.wav", "chapter_15_arrangement_capstone.wav",
 )
 
 
@@ -782,6 +802,93 @@ def run_chapter_14(output_directory: Path = Path("outputs")) -> tuple[Path, ...]
     return paths
 
 
+def _with_velocity(events: Sequence[NoteEvent], velocity: int) -> tuple[NoteEvent, ...]:
+    return tuple(NoteEvent(e.pitch, e.start, e.duration, velocity) for e in events)
+
+
+def chapter_15_layers() -> tuple[MusicalLayer, MusicalLayer, MusicalLayer, MusicalLayer]:
+    """Build one transparent 16-beat homophonic arrangement by role."""
+    degrees, durations = (1, 5, 6, 4), (4.0,) * 4
+    melody = events_from_degrees(
+        (1, 2, 3, 5, 7, 6, 5, 3, 6, 5, 3, 2, 4, 3, 2, 1),
+        72, MAJOR, (1.0,) * 16, velocity=95)
+    bass = bass_from_progression(60, MAJOR, degrees, durations,
+                                 GroovePattern(4, 1, (0, 2)))
+    voiced = smooth_progression_voicings(progression_chords(60, MAJOR, degrees))
+    harmony = tuple(event for start, chord in zip((0, 4, 8, 12), voiced, strict=True)
+                    for event in chord_events(chord, start, 4, 65))
+    groove = repeat_groove(groove_events(
+        GroovePattern(4, 2, tuple(range(8)), (70, 55, 60, 55, 70, 55, 60, 55)),
+        84, note_duration=.08), 4, 4)
+    return (MusicalLayer("melody", tuple(melody)), MusicalLayer("bass", bass),
+            MusicalLayer("harmony", harmony), MusicalLayer("groove", groove))
+
+
+def chapter_15_material() -> tuple[tuple[NoteEvent, ...], ...]:
+    """Create controlled Chapter 15 comparisons from shared source material."""
+    melody, bass, harmony, groove = chapter_15_layers()
+    chords = progression_chords(60, MAJOR, (1, 5, 6, 4))
+    voiced = smooth_progression_voicings(chords)
+    block = harmony.events
+    broken = tuple(event for start, chord in zip((0, 4, 8, 12), voiced, strict=True)
+                   for event in arpeggiate_voicing(chord, start, 4, (0, 1, 2, 1), 4, 65))
+    repeated = tuple(event for start, chord in zip((0, 4, 8, 12), voiced, strict=True)
+                     for event in repeated_chord_events(chord, start, 4, 1, 65))
+    rhythmic_steps = (0, 2, 5, 6)
+    rhythmic = tuple(NoteEvent(pitch, start + step / 2, .35, 65)
+                     for start, chord in zip((0, 4, 8, 12), voiced, strict=True)
+                     for step in rhythmic_steps for pitch in chord)
+    busy = tuple(event for start, chord in zip((0, 4, 8, 12), voiced, strict=True)
+                 for event in repeated_chord_events(chord, start, 4, 2, 65))
+    collision_bass = tuple(NoteEvent(e.pitch + 12, e.start, e.duration, e.velocity) for e in bass.events)
+    collision_harmony = tuple(NoteEvent(e.pitch - 12, e.start, e.duration, e.velocity) for e in block)
+    collision_melody = tuple(NoteEvent(e.pitch - 12, e.start, e.duration, e.velocity) for e in melody.events)
+    equal = tuple(_with_velocity(layer.events, 80) for layer in (melody, bass, harmony, groove))
+    parallel_melody = tuple(NoteEvent(p, i * 2, 1, 95) for i, p in enumerate((72, 74, 76, 79, 77, 76, 74, 72)))
+    parallel_bass = tuple(NoteEvent(p, i * 2, 1, 80) for i, p in enumerate((36, 36, 43, 43, 45, 45, 41, 41)))
+    parallel_chords = tuple(NoteEvent(p, start, 1, 65) for start, chord in zip(range(0, 16, 4), chords, strict=True)
+                            for beat in (0, 2) for p in chord for start in (start + beat,))
+    low = tuple(NoteEvent(e.pitch - 12, e.start, e.duration, e.velocity) for e in block)
+    closed = tuple(event for start, chord in zip((0, 4, 8, 12), chords, strict=True)
+                   for event in chord_events(chord, start, 4, 65))
+    opened_chords = tuple((chord[0], chord[2], chord[1] + 12) for chord in chords)
+    opened = tuple(event for start, chord in zip((0, 4, 8, 12), opened_chords, strict=True)
+                   for event in chord_events(chord, start, 4, 65))
+    root = closed
+    full = combine_event_layers(melody, bass, harmony, groove)
+    independent = combine_event_layers(melody, bass, MusicalLayer("harmony", broken), groove)
+    # Entrances are encoded directly on the timeline: no section/form state machine.
+    arc_harmony = tuple(e for e in block if 4 <= e.start < 8) + tuple(e for e in broken if 8 <= e.start < 12) + tuple(e for e in block if e.start >= 12)
+    arc_groove = tuple(e for e in groove.events if 8 <= e.start < 12)
+    arc = combine_event_layers(melody, bass, arc_harmony, arc_groove)
+    # A 24-beat return is only a texture demonstration: material is shifted, not labeled as form.
+    capstone = arc + tuple(NoteEvent(e.pitch, e.start + 16, e.duration, e.velocity)
+                            for e in combine_event_layers(melody, bass, MusicalLayer("harmony", broken), groove)
+                            if e.start < 8)
+    return (
+        combine_event_layers(collision_melody, collision_bass, collision_harmony, groove), full,
+        combine_event_layers(melody, harmony), combine_event_layers(melody, harmony),
+        combine_event_layers(melody, broken), combine_event_layers(melody, block),
+        combine_event_layers(melody, repeated), combine_event_layers(melody, rhythmic),
+        combine_event_layers(melody, busy), combine_event_layers(melody, block),
+        combine_event_layers(*equal), full, melody.events,
+        combine_event_layers(melody, bass), combine_event_layers(melody, bass, harmony), full,
+        full, combine_event_layers(parallel_melody, parallel_bass, parallel_chords, groove), independent,
+        combine_event_layers(melody, bass, low), combine_event_layers(melody, bass, harmony),
+        combine_event_layers(melody, bass, closed), combine_event_layers(melody, bass, opened),
+        combine_event_layers(melody, bass, root), combine_event_layers(melody, bass, harmony),
+        arc, capstone,
+    )
+
+
+def run_chapter_15(output_directory: Path = Path("outputs")) -> tuple[Path, ...]:
+    """Render deterministic layer, register, activity, and texture comparisons."""
+    paths = tuple(output_directory / name for name in CHAPTER_15_FILENAMES)
+    for path, score in zip(paths, chapter_15_material(), strict=True):
+        write_wav(path, render_events(score, 100))
+    return paths
+
+
 def _profile_text(label: str, pitches: Sequence[int]) -> str:
     profile = melodic_profile(pitches)
     lowest = pitch_to_name(profile.lowest) if profile.lowest is not None else "—"
@@ -818,7 +925,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15"),
         help="experiment to run",
     )
     parser.add_argument(
@@ -1301,7 +1408,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "This groove chapter stops before bass-line design; Chapter 14 implements it separately.\n\nCreated:\n" +
             "\n".join(str(path) for path in paths)
         )
-    else:
+    elif args.chapter == "chapter-14":
         paths = run_chapter_14(args.output_directory)
         degrees, durations = (1, 5, 6, 4), (4.0,) * 4
         romans = progression_roman_numerals(60, MAJOR, degrees)
@@ -1346,4 +1453,47 @@ def main(argv: Sequence[str] | None = None) -> int:
             "lines, figured bass, extended harmony, and style-specific articulation remain outside it.\n\n"
             "Created:\n" + "\n".join(str(path) for path in paths)
         )
+    else:
+        paths = run_chapter_15(args.output_directory)
+        melody, bass, harmony, groove = chapter_15_layers()
+        broken = arpeggiate_voicing((60, 64, 67), 0, 4, (0, 1, 2, 1), 4, 65)
+        shared, distinct = attack_overlap(melody.events, harmony.events)
+        metrics = "\n".join(
+            f"{layer.name.title():<8} events={layer_metrics(layer)['events']:<3} "
+            f"range={layer_metrics(layer)['register']} "
+            f"density={layer_metrics(layer)['attacks_per_beat']:.2f} attacks/beat "
+            f"average velocity={layer_metrics(layer)['average_velocity']:.1f}"
+            for layer in (melody, bass, harmony, groove))
+        print(
+            "Chapter 15 — Accompaniment and Texture\n\n"
+            "Once melody, harmony, groove, and bass exist, how can each layer have a clear role?\n"
+            "MUSICAL MATERIAL → LAYER → REGISTER → RHYTHMIC ACTIVITY → TEXTURE → ARRANGEMENT\n\n"
+            "Texture describes how simultaneous musical layers are distributed and how independently they behave.\n"
+            "THIN means fewer active layers; THICK means more; ACTIVE means many attacks and moving parts. "
+            "None is automatically better or louder. Roles are not instruments: one piano can perform several.\n\n"
+            "Register plan (pedagogical, not universal):\nbass: C2–C3\nharmony: C3–C5\nmelody: C4–C6\n\n"
+            "Layer inspector:\n" + metrics +
+            "\n\nBlock accompaniment: chord tones share an onset at each harmonic change.\n"
+            "Broken accompaniment: CHORD + pattern 0 1 2 1 → timed notes " +
+            " ".join(f"{pitch_to_name(e.pitch)}@{e.start:g}" for e in broken) +
+            "\nHarmonic rhythm changes chord identity; accompaniment rhythm re-attacks it. "
+            "The same four-beat C harmony can have one or eight accompaniment attacks.\n"
+            f"Busy density: 2.00; sparse density: 0.25 attacks/beat. "
+            f"Melody/harmony shared attacks: {shared} of {distinct} distinct positions.\n\n"
+            "If every layer is equally active, what is the listener supposed to focus on? "
+            "Foreground/background can be shaped here through activity, register, and velocity. "
+            "The 95/80/65/55–75 role hierarchy is a demonstration, not a mixing recipe. "
+            "Compositional velocity remains event data; the renderer independently peak-normalizes only if the sum clips.\n\n"
+            "Layer timeline:\n" + arrangement_timeline((melody, bass, harmony, groove), (0, 4, 8, 12, 16)) +
+            "\n\nThe texture arc uses event entrances and behavior changes, not a formal-section system. "
+            "How much clarity comes from register alone? Can sustained harmony support without continual attacks? "
+            "What changes when rhythms are parallel rather than complementary?\n\n"
+            "Reader experiments: remove chords; remove bass; raise chords an octave; align every attack; "
+            "halve chord attacks; switch blocks to arpeggios; change open/closed voicing; delay groove; "
+            "thin the climax; and render each role alone before combining it. Does each layer have a clear job?\n\n"
+            "This simplified model stops at triads, monophonic bass, a pitched groove proxy, deterministic patterns, "
+            "register, density, and timeline entrances. Polyphony, heterophony, contrapuntal independence, orchestration, "
+            "doubling, call and response, countermelodies, timbral layering, unison, and spatial arrangement are acknowledged, "
+            "not implemented. Chapter 16 repetition/contrast/form structures are deliberately absent.\n\nCreated:\n" +
+            "\n".join(str(path) for path in paths))
     return 0

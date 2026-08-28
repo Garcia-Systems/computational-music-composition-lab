@@ -34,7 +34,7 @@ involving randomness will use explicit seeds so results can be reproduced.
 ## Requirements and setup
 
 - Python 3.11 or newer
-- No runtime dependencies for Chapters 0–14
+- No runtime dependencies for Chapters 0–15
 
 From the repository root, either run directly:
 
@@ -54,6 +54,7 @@ python -m composition_lab chapter-11
 python -m composition_lab chapter-12
 python -m composition_lab chapter-13
 python -m composition_lab chapter-14
+python -m composition_lab chapter-15
 ```
 
 or install an editable copy and use its console command:
@@ -75,6 +76,7 @@ composition-lab chapter-11
 composition-lab chapter-12
 composition-lab chapter-13
 composition-lab chapter-14
+composition-lab chapter-15
 ```
 
 The commands create ordinary WAV files in `outputs/`; open them in any audio
@@ -128,6 +130,9 @@ output directory.
 - [Chapter 14 — Bass as Harmony, Rhythm, and Melody](chapters/14_bass_harmony_rhythm_melody/README.md)
   connects harmonic roots, chord roles, register, groove onsets, passing motion,
   pedals, inversion, and measurable monophonic contour.
+- [Chapter 15 — Accompaniment and Texture](chapters/15_accompaniment_texture/README.md)
+  distributes independent melody, harmony, bass, and groove roles through register,
+  activity, voicing, velocity, entrances, and deterministic accompaniment patterns.
 
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
@@ -142,10 +147,11 @@ harmonic progressions into interacting melodic voices; Chapter 12 gives melody
 meaning relative to the harmony beneath it; Chapter 13 makes repeated timing,
 accent, and displacement into groove; Chapter 14 makes bass connect harmony,
 groove, and melodic motion.
+Chapter 15 makes independent musical layers into texture and arrangement.
 
 ## Planned journey
 
-Only Chapters 0 through 14 exist today. The broad route—not a claim of implemented
+Only Chapters 0 through 15 exist today. The broad route—not a claim of implemented
 features beyond those chapters—is:
 
 ```text
