@@ -36,3 +36,15 @@ Chapter 0 calculated every sample in Python. Chapter 22 instead describes a
 synthesis graph and lets `scsynth` calculate samples. Both initially use sine
 waves so the controlled comparison changes the rendering architecture—not the
 composition or sound-design ambition.
+
+## Chapter 24: envelopes, filters, and articulation
+
+Run `python -m composition_lab chapter-24`, then open
+`chapter_24_envelopes_filters_articulation.scd`. It loads the separate
+`synthdefs/articulated_instruments.scd` library and provides numbered ADSR,
+cutoff, RQ, key-tracking, filter-envelope, velocity, articulation, and capstone
+comparisons. `gate_ratio` remains playback metadata: the scheduler converts its
+beat duration to seconds and sends `gate = 0`; each gate-aware `EnvGen` completes
+its own release and frees its Synth. `RLPF` uses reciprocal-Q `rq`, so smaller
+values are narrower/more resonant within the documented safe range. The Python
+command neither installs nor launches SuperCollider.

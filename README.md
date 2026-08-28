@@ -64,6 +64,7 @@ python -m composition_lab chapter-20
 python -m composition_lab chapter-21
 python -m composition_lab chapter-22
 python -m composition_lab chapter-23
+python -m composition_lab chapter-24
 ```
 
 or install an editable copy and use its console command:
@@ -94,6 +95,7 @@ composition-lab chapter-20
 composition-lab chapter-21
 composition-lab chapter-22
 composition-lab chapter-23
+composition-lab chapter-24
 ```
 
 The commands create ordinary WAV files in `outputs/`; open them in any audio
@@ -179,6 +181,10 @@ output directory.
   keeps compositions fixed while waveforms, pulse width, harmonic mixtures,
   detuning, register, and explicit layer instrument maps change their timbre.
   Interactive playback uses `supercollider/chapter_23_synthesizers_as_instruments.scd`.
+- [Chapter 24 — Envelopes, Filters, and Articulation](chapters/24_envelopes_filters_articulation/README.md)
+  uses ADSR, low-pass filtering, velocity response, and explicit gate ratios to
+  shape a fixed composition. Interactive playback uses
+  `supercollider/chapter_24_envelopes_filters_articulation.scd`.
 
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
@@ -204,10 +210,12 @@ while leaving aesthetic judgment to the listener. Chapter 22 makes Python musica
 events cross into a dedicated synthesis engine and become real-time synthesized sound.
 Chapter 23 turns a bare tone into reusable instruments with waveforms,
 oscillator mixtures, and bounded synthesis parameters while event data stays fixed.
+Chapter 24 shapes those instruments over time and frequency with envelopes,
+filters, velocity response, and articulation while the composition stays fixed.
 
 ## Planned journey
 
-Only Chapters 0 through 23 exist today. The broad route—not a claim of implemented
+Only Chapters 0 through 24 exist today. The broad route—not a claim of implemented
 features beyond those chapters—is:
 
 ```text
