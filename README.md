@@ -68,6 +68,8 @@ python -m composition_lab chapter-24
 python -m composition_lab chapter-25
 python -m composition_lab chapter-26
 python -m composition_lab chapter-26 --live
+python -m composition_lab chapter-27
+python -m composition_lab chapter-27 --live
 ```
 
 or install an editable copy and use its console command:
@@ -201,6 +203,9 @@ output directory.
   lets Python schedule unchanged `NoteEvent`s and transmit `/ping`, `/note`, and
   `/panic` control messages to `supercollider/chapter_26_osc_receiver.scd`. Run
   `python -m composition_lab chapter-26` for a CI-safe dry run or add `--live`.
+- [Chapter 27 — The Composition Engine](chapters/27_composition_engine/README.md)
+  combines the book's musical systems into one reproducible, inspectable
+  composition pipeline and sends one symbolic result to JSON, WAV, or OSC.
 
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
