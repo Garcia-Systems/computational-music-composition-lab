@@ -34,7 +34,7 @@ involving randomness will use explicit seeds so results can be reproduced.
 ## Requirements and setup
 
 - Python 3.11 or newer
-- No runtime dependencies for Chapters 0–20
+- No runtime dependencies for Chapters 0–21
 
 From the repository root, either run directly:
 
@@ -60,6 +60,7 @@ python -m composition_lab chapter-17
 python -m composition_lab chapter-18
 python -m composition_lab chapter-19
 python -m composition_lab chapter-20
+python -m composition_lab chapter-21
 ```
 
 or install an editable copy and use its console command:
@@ -87,6 +88,7 @@ composition-lab chapter-17
 composition-lab chapter-18
 composition-lab chapter-19
 composition-lab chapter-20
+composition-lab chapter-21
 ```
 
 The commands create ordinary WAV files in `outputs/`; open them in any audio
@@ -158,6 +160,9 @@ output directory.
 - [Chapter 20 — Musical Memory](chapters/20_musical_memory/README.md)
   derives inspectable first-order transition counts from short symbolic musical
   sequences, then uses seeded conditional choice for pitch and rhythm studies.
+- [Chapter 21 — Evaluation: Describing Generated Music](chapters/21_evaluation_describing_generated_music/README.md)
+  describes melody, rhythm, repetition, harmony alignment, training overlap,
+  constraints, and generator diversity while leaving aesthetic judgment to the listener.
 
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
@@ -178,11 +183,12 @@ makes passages into sections, and sections into musical form. Chapter 18 makes e
 constraints define spaces of possible compositions that the computer can search. Chapter 19
 makes those spaces explorable with seeded randomness without sacrificing reproducibility.
 Chapter 20 makes future choices depend on learned local relationships from prior
-musical sequences.
+musical sequences. Chapter 21 describes generated music with structural metrics
+while leaving aesthetic judgment to the listener.
 
 ## Planned journey
 
-Only Chapters 0 through 20 exist today. The broad route—not a claim of implemented
+Only Chapters 0 through 21 exist today. The broad route—not a claim of implemented
 features beyond those chapters—is:
 
 ```text
@@ -190,7 +196,7 @@ sound / notes → pitch → rhythm → musical events → scales and tonality
 → intervals → motifs → phrases → chords → harmony → voice leading
 → melody against harmony → groove → bass → texture → variation → form
 → constraint-based composition → controlled randomness → musical memory
-→ generative composition → musical analysis → synthesis → SuperCollider
+→ structural evaluation → synthesis → SuperCollider
 → OSC → algorithmic performance → style laboratories → complete composition
 ```
 

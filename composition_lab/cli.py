@@ -104,6 +104,7 @@ from .chapter20 import (
     TRAINING_PHRASES, TRAINING_RHYTHM, build_memory_capstone,
     melody_constraints, render_chapter_20,
 )
+from .chapter21 import run_chapter_21
 from .markov import (
     build_transition_counts, build_transition_counts_from_sequences,
     generate_markov_sequence, generate_valid_markov_candidate,
@@ -978,7 +979,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15", "chapter-16", "chapter-17", "chapter-18", "chapter-19", "chapter-20"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15", "chapter-16", "chapter-17", "chapter-18", "chapter-19", "chapter-20", "chapter-21"),
         help="experiment to run",
     )
     parser.add_argument(
@@ -1768,7 +1769,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "This chapter specifies simple probabilities directly. It does not implement stochastic-process theory, noise, cellular automata, chaos, grammars, evolutionary systems, learned models, Markov chains, machine learning, an AI composer, SuperCollider, OSC, or Chapter 20 musical memory.\n\nCreated:\n" +
             "\n".join(str(path) for path in paths)
         )
-    else:
+    elif args.chapter == "chapter-20":
         paths = render_chapter_20(args.output_directory)
         training = TRAINING_PHRASES[0]
         counts = build_transition_counts(training)
@@ -1842,4 +1843,6 @@ def main(argv: Sequence[str] | None = None) -> int:
             "attempts; compare generated material with its source. Which local motions survive, and which larger structures are lost?\n\n"
             "Created:\n" + "\n".join(str(path) for path in paths)
         )
+    else:
+        run_chapter_21(args.output_directory)
     return 0
