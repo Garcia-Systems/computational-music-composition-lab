@@ -58,6 +58,7 @@ python -m composition_lab chapter-15
 python -m composition_lab chapter-16
 python -m composition_lab chapter-17
 python -m composition_lab chapter-18
+python -m composition_lab chapter-19
 ```
 
 or install an editable copy and use its console command:
@@ -83,6 +84,7 @@ composition-lab chapter-15
 composition-lab chapter-16
 composition-lab chapter-17
 composition-lab chapter-18
+composition-lab chapter-19
 ```
 
 The commands create ordinary WAV files in `outputs/`; open them in any audio
@@ -148,6 +150,9 @@ output directory.
 - [Chapter 18 — Constraint-Based Composition](chapters/18_constraint_based_composition/README.md)
   uses inspectable objective rules to enumerate, reject, retain, describe, and
   render multiple pitch and rhythm candidates without treating rules as taste.
+- [Chapter 19 — Controlled Randomness](chapters/19_controlled_randomness/README.md)
+  uses explicit seeds, bounded and weighted choice, rejection sampling, random
+  walks, independent RNG streams, decision logs, and reproducible listening studies.
 
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
@@ -165,11 +170,12 @@ groove, and melodic motion.
 Chapter 15 makes independent musical layers into texture and arrangement. Chapter 16 makes
 repetition, contrast, and variation turn passages into developing musical material. Chapter 17
 makes passages into sections, and sections into musical form. Chapter 18 makes explicit musical
-constraints define spaces of possible compositions that the computer can search.
+constraints define spaces of possible compositions that the computer can search. Chapter 19
+makes those spaces explorable with seeded randomness without sacrificing reproducibility.
 
 ## Planned journey
 
-Only Chapters 0 through 18 exist today. The broad route—not a claim of implemented
+Only Chapters 0 through 19 exist today. The broad route—not a claim of implemented
 features beyond those chapters—is:
 
 ```text
@@ -177,7 +183,7 @@ sound / notes → pitch → rhythm → musical events → scales and tonality
 → intervals → motifs → phrases → chords → harmony → voice leading
 → melody against harmony → groove → bass → texture → variation → form
 → constraint-based composition → controlled randomness
-→ generative composition → musical analysis → synthesis → SuperCollider
+→ musical memory → generative composition → musical analysis → synthesis → SuperCollider
 → OSC → algorithmic performance → style laboratories → complete composition
 ```
 

@@ -96,6 +96,12 @@ from .chapter18 import (
 from .constraints import (
     candidate_is_valid, evaluate_candidate, find_valid_candidates,
 )
+from .chapter19 import (
+    build_seeded_composition, degrees_to_c_major, generate_valid_random_candidate,
+    random_valid_candidate, random_walk_degrees, render_chapter_19, weighted_choice,
+)
+import random
+from collections import Counter
 
 CHAPTER_00_NOTES = (
     ("C4", 261.63, 0.40),
@@ -963,7 +969,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15", "chapter-16", "chapter-17", "chapter-18"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15", "chapter-16", "chapter-17", "chapter-18", "chapter-19"),
         help="experiment to run",
     )
     parser.add_argument(
@@ -1621,7 +1627,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "These simplified models do not implement rounded binary, compound ternary, strophic, rondo, sonata, variation, developmental, "
             "hybrid, or ambiguous forms. No parser, form detector, random plan, constraint solver, candidate search, or Chapter 18 system is added.\n\n"
             "Created:\n" + "\n".join(str(path) for path in paths))
-    else:
+    elif args.chapter == "chapter-18":
         study = build_chapter_18_study()
         paths = render_chapter_18(args.output_directory)
         funnel = "\n↓\n".join(f"{name:<30} {count:>7,}" for name, count in study.pitch_funnel)
@@ -1696,6 +1702,61 @@ def main(argv: Sequence[str] | None = None) -> int:
             "change rhythm; add chord-tone rules; create an impossible set; listen to five legal candidates. "
             "What artistic criteria did you use that the program did not know about?\n\n"
             "No randomness, probability, quality score, optimization, or Chapter 19 behavior is used.\n\nCreated:\n" +
+            "\n".join(str(path) for path in paths)
+        )
+    else:
+        study = build_chapter_18_study()
+        paths = render_chapter_19(args.output_directory)
+        repeated_a = tuple(random_valid_candidate(study.pitch_search.valid, random.Random(42))
+                           for _ in range(4))
+        repeated_b = tuple(random_valid_candidate(study.pitch_search.valid, random.Random(42))
+                           for _ in range(4))
+        frequencies = Counter(random_valid_candidate(tuple((letter,) for letter in "ABCDE"),
+                                                      random.Random(1900 + draw))[0]
+                              for draw in range(100))
+        pitch_rng = random.Random(10)
+        uniform = Counter(pitch_rng.choice("CDEFGAB") for _ in range(100))
+        weighted_rng = random.Random(10)
+        weighted = Counter(weighted_choice(tuple("CDEFGAB"), (4, 1, 2, 1, 3, 1, 1),
+                                           weighted_rng) for _ in range(100))
+        rejection = generate_valid_random_candidate(
+            lambda rng: tuple(rng.choice((60, 62, 64, 65, 67)) for _ in range(4)),
+            (lambda candidate: candidate_is_valid(evaluate_candidate(candidate, pitch_constraints())),),
+            random.Random(90), 1000)
+        walk = random_walk_degrees(1, 12, (-2, -1, 1, 2), 1, 8, random.Random(91))
+        walk_pitches = degrees_to_c_major(walk)
+        capstone = build_seeded_composition(2026)
+        alternate = build_seeded_composition(2027)
+        print(
+            "Chapter 19 — Controlled Randomness\n\n"
+            "If many valid musical possibilities exist, how can randomness help us explore them while preserving reproducibility and compositional control?\n"
+            "VALID POSSIBILITY SPACE → RANDOM CHOICE → SEED → BOUNDED RANDOMNESS → WEIGHTED CHOICE → RANDOM WALK → CONSTRAINT-AWARE GENERATION\n\n"
+            "The constraint system decides what is allowed. Randomness decides which allowed possibility we explore. Randomness helps explore alternatives that satisfy a compositional system; it is not a quality judgment or a theory of creativity.\n\n"
+            "Python's random generator is pseudo-random. Given the same algorithm, initial state, and seed, it produces the same sequence of choices. Explicit random.Random instances keep state local.\n"
+            f"Seed 42: {repeated_a}\nSeed 42 again: {repeated_b}\nStructurally identical: {'PASS' if repeated_a == repeated_b else 'FAIL'}\n"
+            "Seeds 10, 20, and 30 render the same constrained experiment with only seed changed.\n\n"
+            "UNIFORM SAMPLE (100 draws; small counts need not be equal)\nCandidate  Count\n" +
+            "\n".join(f"{key:<9} {frequencies[key]}" for key in "ABCDE") +
+            "\n\nChoice Weight Uniform-count Weighted-count\n" +
+            "\n".join(f"{pitch:<6} {weight:<6} {uniform[pitch]:<13} {weighted[pitch]}"
+                      for pitch, weight in zip("CDEFGAB", (4, 1, 2, 1, 3, 1, 1), strict=True)) +
+            "\nA CONSTRAINT forbids or requires; a WEIGHT changes likelihood. C and G are more likely here, not mandatory or optimal.\n\n"
+            "Independent RNG streams isolate pitch, rhythm, bass, motif, and texture so an added rhythm draw does not move the pitch stream. Every stream is derived reproducibly from one master seed.\n\n"
+            f"REJECTION SAMPLING\nattempts: {rejection.attempts}\nrejected: {rejection.rejected}\naccepted: {int(rejection.candidate is not None)}\n"
+            "Enumeration gives complete knowledge for a small space; rejection sampling avoids enumeration but can waste proposals when solutions are rare. Both terminate explicitly.\n\n"
+            f"RANDOM WALK\nStart degree: 1\nAllowed steps: -2 -1 +1 +2\nDegrees: {' '.join(map(str, walk))}\nPitches: {' '.join(pitch_to_name(p) for p in walk_pitches)}\n"
+            "Only currently valid moves are selected at boundaries. Weighted walks alter local likelihood without guaranteeing contour.\n\n"
+            "Bounded velocity uses base 80 plus an integer offset from -5 through +5, clamped to MIDI range. This is bounded velocity variation, not realistic humanization. Bass keeps every chord-change event on the root; later events choose root/fifth with 4:1 weights. Form A A' B A stays deterministic.\n\n"
+            f"RANDOMNESS INSPECTOR\nMaster seed: {capstone.manifest.master}\nSubsystem seeds: melody={capstone.manifest.melody} rhythm={capstone.manifest.rhythm} bass={capstone.manifest.bass} motif={capstone.manifest.motif} texture={capstone.manifest.texture}\n"
+            "Fixed: key C major; form A A' B A; harmony; tempo; constraints\nRandomized: melody candidate; rhythm candidate; bass choices; motif variation; texture\nDecisions:\n" +
+            "\n".join(capstone.decisions) +
+            f"\nConstraint validation: {'PASS' if capstone.valid else 'FAIL'}\nAlternate master seed: {alternate.manifest.master}\nAlternate decisions:\n" +
+            "\n".join(alternate.decisions) +
+            "\n\nFORM, HARMONY, and CONSTRAINTS can remain deterministic while RANDOMNESS explores local choices. A probability of 25% does not guarantee exactly one mutation in four trials; use deterministic form when a count is required.\n\n"
+            "Recipe: fix context; fix invariants; name variable dimensions; define valid choices; optionally assign weights; set and print a seed; generate; validate; log; listen; change one parameter; compare.\n\n"
+            "Search strategies: EXHAUSTIVE SEARCH enumerates; RANDOM VALID SELECTION samples a known valid set; REJECTION SAMPLING rejects proposals; RANDOM WALK produces locally related sequences. None is universally preferable.\n\n"
+            "Reader experiments: try seeds 1/2/3/100/2026; remove the seed and observe lost replay; change tonic weight; weight walk steps; add step 0; narrow transpositions; try mutation probabilities .10/.50/.90; tighten constraints; hold melody seed while changing rhythm seed; listen to several seeds and ask what you heard that the generator did not understand.\n\n"
+            "This chapter specifies simple probabilities directly. It does not implement stochastic-process theory, noise, cellular automata, chaos, grammars, evolutionary systems, learned models, Markov chains, machine learning, an AI composer, SuperCollider, OSC, or Chapter 20 musical memory.\n\nCreated:\n" +
             "\n".join(str(path) for path in paths)
         )
     return 0
