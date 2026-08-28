@@ -57,6 +57,9 @@ from .progressions import (
     progression_roman_numerals, progression_starts, repeat_progression,
     root_sequence,
 )
+from .harmonic_function import (
+    abbreviated_functional_path, functional_path, harmonic_function,
+)
 
 CHAPTER_00_NOTES = (
     ("C4", 261.63, 0.40),
@@ -177,6 +180,20 @@ CHAPTER_09_FILENAMES = (
     "chapter_09_order_a.wav", "chapter_09_order_b.wav",
     "chapter_09_repeated_loop.wav", "chapter_09_harmonic_variation.wav",
     "chapter_09_melody_over_progression_preview.wav",
+)
+CHAPTER_10_FILENAMES = (
+    "chapter_10_functional_arc.wav",
+    "chapter_10_IV_predominant.wav", "chapter_10_ii_predominant.wav",
+    "chapter_10_V_dominant.wav", "chapter_10_vii_dominant.wav",
+    "chapter_10_V_to_I.wav",
+    "chapter_10_unresolved_dominant.wav", "chapter_10_resolved_dominant.wav",
+    "chapter_10_deceptive_resolution.wav",
+    "chapter_10_resolution_tonic.wav", "chapter_10_resolution_deceptive.wav",
+    "chapter_10_resolution_none.wav",
+    "chapter_10_vi_after_I.wav", "chapter_10_vi_after_V.wav",
+    "chapter_10_compact_functional_arc.wav", "chapter_10_expanded_functional_arc.wav",
+    "chapter_10_short_dominant.wav", "chapter_10_long_dominant.wav",
+    "chapter_10_functional_phrase.wav",
 )
 
 
@@ -414,6 +431,44 @@ def run_chapter_09(output_directory: Path = Path("outputs")) -> tuple[Path, ...]
     return paths
 
 
+def chapter_10_material() -> tuple[tuple[NoteEvent, ...], ...]:
+    """Build controlled function, resolution, context, and duration comparisons."""
+    def progression(degrees: Sequence[int], durations: Sequence[float] | None = None,
+                    velocity: int = 76) -> tuple[NoteEvent, ...]:
+        return progression_events(60, MAJOR, degrees, durations or (2.0,) * len(degrees), velocity)
+
+    arc = (1, 4, 5, 1)
+    tonic_resolution = (1, 4, 5, 1)
+    deceptive = (1, 4, 5, 6)
+    phrase_chords = progression(arc, (2.0,) * 4, 58)
+    # One simple Chapter-7-shaped melodic line spans the same four regions.
+    phrase_melody = events_from_degrees(
+        (1, 3, 2, 4, 4, 6, 5, 7, 1), 72, MAJOR,
+        (1, 1, 1, 1, 1, 1, 0.5, 0.5, 1), velocity=92,
+    )
+    return (
+        progression(arc),
+        progression((1, 4, 5, 1)), progression((1, 2, 5, 1)),
+        progression((1, 4, 5, 1)), progression((1, 4, 7, 1)),
+        progression((5, 1)),
+        progression((1, 4, 5)), progression(tonic_resolution),
+        progression((5, 6)),
+        progression(tonic_resolution), progression(deceptive), progression((1, 4, 5)),
+        progression((1, 6)), progression((5, 6)),
+        progression(arc), progression((1, 6, 2, 4, 5, 7, 1)),
+        progression(arc, (2, 2, 1, 2)), progression(arc, (2, 2, 4, 2)),
+        tuple(phrase_chords) + tuple(phrase_melody),
+    )
+
+
+def run_chapter_10(output_directory: Path = Path("outputs")) -> tuple[Path, ...]:
+    """Render Chapter 10's deterministic functional-harmony experiments."""
+    paths = tuple(output_directory / name for name in CHAPTER_10_FILENAMES)
+    for path, score in zip(paths, chapter_10_material(), strict=True):
+        write_wav(path, render_events(score, 120))
+    return paths
+
+
 def _profile_text(label: str, pitches: Sequence[int]) -> str:
     profile = melodic_profile(pitches)
     lowest = pitch_to_name(profile.lowest) if profile.lowest is not None else "—"
@@ -450,7 +505,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10"),
         help="experiment to run",
     )
     parser.add_argument(
@@ -689,7 +744,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "Closed and open voicings retain pitch classes while changing register and spacing.\n\n"
             "Created:\n" + "\n".join(str(path) for path in paths)
         )
-    else:
+    elif args.chapter == "chapter-09":
         paths = run_chapter_09(args.output_directory)
         degrees = (1, 4, 5, 1)
         durations = (2.0,) * 4
@@ -730,5 +785,39 @@ def main(argv: Sequence[str] | None = None) -> int:
             "\nRoot position is inspectable, but its voices may jump farther than necessary; "
             "voice-leading optimization is deliberately deferred.\n\nCreated:\n" +
             "\n".join(str(path) for path in paths)
+        )
+    else:
+        paths = run_chapter_10(args.output_directory)
+        degrees = (1, 4, 5, 1)
+        durations = (2.0,) * 4
+        romans = progression_roman_numerals(60, MAJOR, degrees)
+        chords = progression_chords(60, MAJOR, degrees)
+        rows = "\n".join(
+            f"{start:>4.1f}   {roman:<5}  {pitch_to_name(chord[0])[:-1]} {triad_quality(chord):<10}  {function}"
+            for start, roman, chord, function in zip(
+                progression_starts(durations), romans, chords, functional_path(degrees), strict=True
+            )
+        )
+        print(
+            "Chapter 10 — Harmonic Function and Tension\n\n"
+            "Why does I often feel comparatively stable while V creates stronger expectation?\n"
+            "In this introductory major-key model: TONIC suggests stability/arrival; "
+            "PREDOMINANT suggests departure/preparation; DOMINANT suggests tension/expectation.\n\n"
+            "Key: C major\nProgression: I IV V I\n\n"
+            "Start  Roman  Chord       Function\n" + rows +
+            "\n\nFunctional path:\n" + " → ".join(abbreviated_functional_path(degrees)) +
+            "\nStructural arc: home → departure → tension → return\n\n"
+            "Resolution comparison:\nV → I: dominant → tonic\n"
+            "V → vi: dominant → tonic-like deceptive destination\nV → stop: unresolved\n\n"
+            "IV and ii share a broad predominant region but have different color.\n"
+            "V and vii° share a dominant region but create expectation differently.\n"
+            "A minor after I and after V keeps its identity while its contextual meaning changes.\n"
+            "Holding V for four beats delays arrival; duration affects expectation, not function itself.\n\n"
+            "A chord does not contain one universal numeric amount of tension. Function is relational.\n"
+            "These labels describe a common tonal model, not emotion, quality, beauty, historical "
+            "style, or listener response. Modal, blues-based, chromatic, nonfunctional, pedal-based, "
+            "static, planed, quartal, rhythmically driven, and ambiguous harmony need other accounts.\n"
+            "Root-position voicings remain intentionally plain; voice leading belongs to Chapter 11.\n\n"
+            "Created:\n" + "\n".join(str(path) for path in paths)
         )
     return 0

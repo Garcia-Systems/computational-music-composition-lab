@@ -34,7 +34,7 @@ involving randomness will use explicit seeds so results can be reproduced.
 ## Requirements and setup
 
 - Python 3.11 or newer
-- No runtime dependencies for Chapters 0–9
+- No runtime dependencies for Chapters 0–10
 
 From the repository root, either run directly:
 
@@ -49,6 +49,7 @@ python -m composition_lab chapter-06
 python -m composition_lab chapter-07
 python -m composition_lab chapter-08
 python -m composition_lab chapter-09
+python -m composition_lab chapter-10
 ```
 
 or install an editable copy and use its console command:
@@ -65,6 +66,7 @@ composition-lab chapter-06
 composition-lab chapter-07
 composition-lab chapter-08
 composition-lab chapter-09
+composition-lab chapter-10
 ```
 
 The commands create ordinary WAV files in `outputs/`; open them in any audio
@@ -103,6 +105,9 @@ output directory.
 - [Chapter 9 — Chord Progressions and Harmonic Motion](chapters/09_chord_progressions_harmonic_motion/README.md)
   orders diatonic triads on a timeline, separating progression identity from
   harmonic rhythm and transposing scale-degree patterns between keys.
+- [Chapter 10 — Harmonic Function and Tension](chapters/10_harmonic_function_tension/README.md)
+  gives major-key harmonic motion broad tonic, predominant, and dominant roles,
+  then compares expectation, resolution, deceptive motion, duration, and phrase shape.
 
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
@@ -111,11 +116,12 @@ structured events; Chapter 4 organizes pitch choices through tonal systems;
 Chapter 5 makes melodic movement measurable without treating measurement as judgment;
 Chapter 6 makes small musical ideas transformable material; Chapter 7 makes
 motifs into directed musical phrases; Chapter 8 makes simultaneous pitches into
-harmonic structures; Chapter 9 makes chords into harmonic motion through time.
+harmonic structures; Chapter 9 makes chords into harmonic motion through time;
+Chapter 10 gives that motion functional direction and resolution.
 
 ## Planned journey
 
-Only Chapters 0 through 9 exist today. The broad route—not a claim of implemented
+Only Chapters 0 through 10 exist today. The broad route—not a claim of implemented
 features beyond those chapters—is:
 
 ```text
