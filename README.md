@@ -34,7 +34,7 @@ involving randomness will use explicit seeds so results can be reproduced.
 ## Requirements and setup
 
 - Python 3.11 or newer
-- No runtime dependencies for Chapters 0–13
+- No runtime dependencies for Chapters 0–14
 
 From the repository root, either run directly:
 
@@ -53,6 +53,7 @@ python -m composition_lab chapter-10
 python -m composition_lab chapter-11
 python -m composition_lab chapter-12
 python -m composition_lab chapter-13
+python -m composition_lab chapter-14
 ```
 
 or install an editable copy and use its console command:
@@ -73,6 +74,7 @@ composition-lab chapter-10
 composition-lab chapter-11
 composition-lab chapter-12
 composition-lab chapter-13
+composition-lab chapter-14
 ```
 
 The commands create ordinary WAV files in `outputs/`; open them in any audio
@@ -123,6 +125,9 @@ output directory.
 - [Chapter 13 — Groove, Pulse, and Syncopation](chapters/13_groove_pulse_syncopation/README.md)
   makes repeated timing, accent, displacement, expectation, and interacting
   rhythmic roles audible on a transparent beat-relative grid.
+- [Chapter 14 — Bass as Harmony, Rhythm, and Melody](chapters/14_bass_harmony_rhythm_melody/README.md)
+  connects harmonic roots, chord roles, register, groove onsets, passing motion,
+  pedals, inversion, and measurable monophonic contour.
 
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
@@ -135,11 +140,12 @@ harmonic structures; Chapter 9 makes chords into harmonic motion through time;
 Chapter 10 gives that motion functional direction and resolution; Chapter 11 makes
 harmonic progressions into interacting melodic voices; Chapter 12 gives melody
 meaning relative to the harmony beneath it; Chapter 13 makes repeated timing,
-accent, and displacement into groove.
+accent, and displacement into groove; Chapter 14 makes bass connect harmony,
+groove, and melodic motion.
 
 ## Planned journey
 
-Only Chapters 0 through 13 exist today. The broad route—not a claim of implemented
+Only Chapters 0 through 14 exist today. The broad route—not a claim of implemented
 features beyond those chapters—is:
 
 ```text

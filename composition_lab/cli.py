@@ -76,6 +76,11 @@ from .groove import (
     groove_events, is_offbeat_eighth, is_on_beat, pattern_grid, repeat_groove,
     subdivision_positions,
 )
+from .bass import (
+    bass_chord_role, bass_from_progression,
+    connect_bass_targets, harmonic_root_pitch_classes, nearest_bass_pitch,
+    root_in_register,
+)
 
 CHAPTER_00_NOTES = (
     ("C4", 261.63, 0.40),
@@ -245,6 +250,22 @@ CHAPTER_13_FILENAMES = (
     "chapter_13_single_layer.wav", "chapter_13_layered_groove.wav",
     "chapter_13_groove_70_bpm.wav", "chapter_13_groove_100_bpm.wav",
     "chapter_13_groove_130_bpm.wav", "chapter_13_phrase_over_groove.wav",
+)
+CHAPTER_14_FILENAMES = (
+    "chapter_14_root_bass.wav", "chapter_14_one_root_per_chord.wav",
+    "chapter_14_sustained_roots.wav", "chapter_14_repeated_roots.wav",
+    "chapter_14_root_groove.wav", "chapter_14_roots_only.wav",
+    "chapter_14_roots_and_fifths.wav", "chapter_14_direct_bass_motion.wav",
+    "chapter_14_passing_bass_motion.wav", "chapter_14_diatonic_approach.wav",
+    "chapter_14_chromatic_approach.wav", "chapter_14_tonic_pedal.wav",
+    "chapter_14_root_motion_vs_pedal.wav", "chapter_14_root_bass_vs_voiced_bass.wav",
+    "chapter_14_c_major_root_bass.wav", "chapter_14_c_major_third_bass.wav",
+    "chapter_14_c_major_fifth_bass.wav", "chapter_14_straight_bass.wav",
+    "chapter_14_syncopated_bass.wav", "chapter_14_root_only_pattern.wav",
+    "chapter_14_melodic_bass_pattern.wav", "chapter_14_fixed_register_roots.wav",
+    "chapter_14_nearest_register_roots.wav", "chapter_14_static_harmony_static_bass.wav",
+    "chapter_14_static_harmony_active_bass.wav", "chapter_14_phrase_bass_shape.wav",
+    "chapter_14_bass_in_context.wav",
 )
 
 
@@ -696,6 +717,71 @@ def run_chapter_13(output_directory: Path = Path("outputs")) -> tuple[Path, ...]
     return paths
 
 
+def chapter_14_material() -> tuple[tuple[NoteEvent, ...], ...]:
+    """Build controlled bass comparisons without an accompaniment abstraction."""
+    basic, loop = (1, 4, 5, 1), (1, 5, 6, 4)
+    durations = (4.0,) * 4
+    harmony = progression_events(60, MAJOR, basic, durations, 40)
+    loop_harmony = progression_events(60, MAJOR, loop, durations, 40)
+    sustained = bass_from_progression(60, MAJOR, basic, durations)
+    quarters = bass_from_progression(60, MAJOR, basic, durations, GroovePattern(4, 1, (0, 1, 2, 3)))
+    groove = GroovePattern(4, 2, (0, 4, 6))
+    root_groove = bass_from_progression(60, MAJOR, loop, durations, groove)
+    roots_fifths = bass_from_progression(60, MAJOR, basic, durations, GroovePattern(4, 1, (0, 1)), strategy="roots_and_fifths")
+    direct = _melody((36, 41), (0, 3), (1, 1))
+    passing_pitches = connect_bass_targets(36, 41, tuple((60 + x) % 12 for x in MAJOR))
+    passing = _melody(passing_pitches, (0, 1, 2, 3), (1,) * 4)
+    diatonic, chromatic = _melody((41, 43)), _melody((42, 43))
+    pedal = _melody((36,) * 4, (0, 4, 8, 12), (4,) * 4)
+    root_voice = _melody((36, 41, 43, 36), (0, 4, 8, 12), (4,) * 4)
+    voiced = _melody((36, 36, 35, 36), (0, 4, 8, 12), (4,) * 4)
+    upper_c = chord_events((60, 64, 67), duration=4, velocity=48)
+    inversions = tuple(tuple(upper_c) + (NoteEvent(pitch, 0, 4, 88),) for pitch in (36, 40, 43))
+    sync_pattern = GroovePattern(4, 2, (0, 2, 3, 5, 7))
+    sync = bass_from_progression(60, MAJOR, basic, durations, sync_pattern)
+    melodic = bass_from_progression(60, MAJOR, basic, durations, sync_pattern, strategy="roots_and_fifths")
+    root_pcs = harmonic_root_pitch_classes(60, MAJOR, loop)
+    fixed_pitches = tuple(root_in_register(pc, 36, 47) for pc in root_pcs)
+    nearest = [root_in_register(root_pcs[0], 28, 60, 40)]
+    for pc in root_pcs[1:]:
+        nearest.append(nearest_bass_pitch(pc, nearest[-1], 28, 60))
+    fixed = _melody(fixed_pitches, (0, 4, 8, 12), (4,) * 4)
+    nearby = _melody(tuple(nearest), (0, 4, 8, 12), (4,) * 4)
+    static_harmony = chord_events((60, 64, 67), duration=4, velocity=45)
+    static_bass = (NoteEvent(36, 0, 4, 88),)
+    active_bass = _melody((36, 43, 48, 43), (0, 1, 2, 3), (1,) * 4)
+    phrase_bass = _melody((36, 43, 43, 45, 41, 43, 48, 47, 43, 36),
+                           (0, 2, 4, 5, 6, 8, 9, 10, 12, 14),
+                           (2, 2, 1, 1, 2, 1, 1, 2, 2, 2))
+    context_bass = bass_from_progression(60, MAJOR, loop, durations, sync_pattern,
+                                         strategy="roots_and_fifths")
+    context_melody = events_from_degrees((1, 3, 5, 3, 7, 5, 6, 5, 4, 3, 2, 1), 72, MAJOR,
+                                         (1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 4), velocity=90)
+    groove_layer = repeat_groove(groove_events(GroovePattern(4, 2, (2, 6)), 60, note_duration=.1, default_velocity=45), 4, 4)
+    context = tuple(loop_harmony) + context_bass + tuple(context_melody) + groove_layer
+    return (
+        tuple(harmony) + sustained, tuple(harmony) + sustained,
+        tuple(harmony) + sustained, tuple(harmony) + quarters,
+        tuple(loop_harmony) + root_groove, tuple(harmony) + sustained,
+        tuple(harmony) + roots_fifths, direct, passing, diatonic, chromatic,
+        tuple(harmony) + pedal, tuple(harmony) + root_voice + pedal,
+        tuple(harmony) + root_voice + voiced, *inversions,
+        tuple(harmony) + sustained, tuple(harmony) + sync,
+        tuple(harmony) + sync, tuple(harmony) + melodic,
+        tuple(loop_harmony) + fixed, tuple(loop_harmony) + nearby,
+        tuple(static_harmony) + static_bass, tuple(static_harmony) + active_bass,
+        phrase_bass, context,
+    )
+
+
+def run_chapter_14(output_directory: Path = Path("outputs")) -> tuple[Path, ...]:
+    """Render Chapter 14's deterministic harmony/rhythm/melody bass studies."""
+    paths = tuple(output_directory / name for name in CHAPTER_14_FILENAMES)
+    for path, score in zip(paths, chapter_14_material(), strict=True):
+        write_wav(path, render_events(score, 100))
+    return paths
+
+
 def _profile_text(label: str, pitches: Sequence[int]) -> str:
     profile = melodic_profile(pitches)
     lowest = pitch_to_name(profile.lowest) if profile.lowest is not None else "—"
@@ -732,7 +818,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14"),
         help="experiment to run",
     )
     parser.add_argument(
@@ -1175,7 +1261,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "points, extensions, modal or nonfunctional harmony, blues and jazz tensions, or polytonality.\n\n"
             "Created:\n" + "\n".join(str(path) for path in paths)
         )
-    else:
+    elif args.chapter == "chapter-13":
         paths = run_chapter_13(args.output_directory)
         patterns = chapter_13_patterns()
         syncopated = groove_events(patterns["syncopated"])
@@ -1212,7 +1298,52 @@ def main(argv: Sequence[str] | None = None) -> int:
             "by onset or accent. Tempo files preserve beat-relative structure at 70, 100, and 130 BPM.\n\n"
             "This deliberately narrow model does not implement swing, shuffle, microtiming, polymeter, "
             "polyrhythm, clave, tuplets, asymmetric meter, rubato, or culturally specific rhythmic systems. "
-            "Chapter 14 bass-line design is not implemented.\n\nCreated:\n" +
+            "This groove chapter stops before bass-line design; Chapter 14 implements it separately.\n\nCreated:\n" +
             "\n".join(str(path) for path in paths)
+        )
+    else:
+        paths = run_chapter_14(args.output_directory)
+        degrees, durations = (1, 5, 6, 4), (4.0,) * 4
+        romans = progression_roman_numerals(60, MAJOR, degrees)
+        chords = progression_chords(60, MAJOR, degrees)
+        pattern = GroovePattern(4, 2, (0, 2, 3, 5, 7))
+        bass = bass_from_progression(60, MAJOR, degrees, durations, pattern,
+                                     strategy="roots_and_fifths")
+        rows = []
+        for event in bass:
+            index = min(int(event.start // 4), len(chords) - 1)
+            rows.append(f"{event.start:>4.1f}  {pitch_to_name(event.pitch):<5}  "
+                        f"{romans[index]:<7}  "
+                        f"{bass_chord_role(event.pitch, chords[index], chords[index][0] % 12)}")
+        profile = melodic_profile(tuple(event.pitch for event in bass))
+        intervals = interval_sequence(tuple(event.pitch for event in bass))
+        print(
+            "Chapter 14 — Bass as Harmony, Rhythm, and Melody\n\n"
+            "How can a bass line connect harmony and groove while remaining melodic?\n"
+            "HARMONIC ROOT → BASS PITCH → RHYTHMIC PLACEMENT → BASS LINE\n\n"
+            "Progression: I V vi IV\nBass strategy: roots + fifths\n"
+            "Beat  Bass   Harmony  Role\n" + "\n".join(rows) +
+            "\n\nGroove: " + pattern_grid(pattern) +
+            f"\nBass density: {events_per_beat(bass, 16):.2f} attacks per beat\n"
+            f"Intervals: {' '.join(f'{value:+d}' for value in intervals)}\n"
+            f"Bass melodic profile: range={profile.range_semitones}; "
+            f"average interval={profile.average_interval_size:.2f}; "
+            f"largest leap={max((abs(value) for value in intervals), default=0)}; "
+            f"repeated notes={profile.repeats}\n\n"
+            "The root is an obvious option, not the only option. Harmonic root is metadata; "
+            "it is not necessarily the lowest current voicing pitch. Root/fifth choices, "
+            "C–D–E–F passing motion, F/F# approaches to G, and a tonic pedal are controlled "
+            "possibilities rather than quality rankings. A C pedal is root under I but a "
+            "non-chord tone under V; that intentional relationship is not automatically an error.\n"
+            "Fixed-octave roots and nearest-register roots create different contours; minimum "
+            "motion is not always preferable. Harmonic rhythm names chord changes, while bass "
+            "rhythm names bass attacks. Locking means related positions, not mandatory unison.\n\n"
+            "Reader experiments: replace a root with a fifth; double or remove attacks; add a "
+            "passing or chromatic approach note; hold C as a pedal; change octave; force nearest "
+            "roots; syncopate one onset; finally listen to bass alone. Does its contour cohere?\n\n"
+            "This narrow triadic, regular-grid, monophonic model stops before accompaniment and "
+            "texture. Walking bass, ostinatos, riffs, drones, slap, chromatic and contrapuntal "
+            "lines, figured bass, extended harmony, and style-specific articulation remain outside it.\n\n"
+            "Created:\n" + "\n".join(str(path) for path in paths)
         )
     return 0
