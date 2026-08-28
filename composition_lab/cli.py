@@ -100,6 +100,15 @@ from .chapter19 import (
     build_seeded_composition, degrees_to_c_major, generate_valid_random_candidate,
     random_valid_candidate, random_walk_degrees, render_chapter_19, weighted_choice,
 )
+from .chapter20 import (
+    TRAINING_PHRASES, TRAINING_RHYTHM, build_memory_capstone,
+    melody_constraints, render_chapter_20,
+)
+from .markov import (
+    build_transition_counts, build_transition_counts_from_sequences,
+    generate_markov_sequence, generate_valid_markov_candidate,
+    next_states, transition_pairs, transition_probabilities,
+)
 import random
 from collections import Counter
 
@@ -969,7 +978,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15", "chapter-16", "chapter-17", "chapter-18", "chapter-19"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15", "chapter-16", "chapter-17", "chapter-18", "chapter-19", "chapter-20"),
         help="experiment to run",
     )
     parser.add_argument(
@@ -1704,7 +1713,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "No randomness, probability, quality score, optimization, or Chapter 19 behavior is used.\n\nCreated:\n" +
             "\n".join(str(path) for path in paths)
         )
-    else:
+    elif args.chapter == "chapter-19":
         study = build_chapter_18_study()
         paths = render_chapter_19(args.output_directory)
         repeated_a = tuple(random_valid_candidate(study.pitch_search.valid, random.Random(42))
@@ -1758,5 +1767,79 @@ def main(argv: Sequence[str] | None = None) -> int:
             "Reader experiments: try seeds 1/2/3/100/2026; remove the seed and observe lost replay; change tonic weight; weight walk steps; add step 0; narrow transpositions; try mutation probabilities .10/.50/.90; tighten constraints; hold melody seed while changing rhythm seed; listen to several seeds and ask what you heard that the generator did not understand.\n\n"
             "This chapter specifies simple probabilities directly. It does not implement stochastic-process theory, noise, cellular automata, chaos, grammars, evolutionary systems, learned models, Markov chains, machine learning, an AI composer, SuperCollider, OSC, or Chapter 20 musical memory.\n\nCreated:\n" +
             "\n".join(str(path) for path in paths)
+        )
+    else:
+        paths = render_chapter_20(args.output_directory)
+        training = TRAINING_PHRASES[0]
+        counts = build_transition_counts(training)
+        probabilities = transition_probabilities(counts)
+        model = build_transition_counts_from_sequences(TRAINING_PHRASES, cyclic=True)
+        generated = generate_markov_sequence(model, 1, 16, random.Random(2026))
+        independent = tuple(random.Random(2026).choices((1, 2, 3, 4, 5), k=16))
+        constrained = generate_valid_markov_candidate(
+            model, 1, 16, melody_constraints(), random.Random(2026), 500)
+        naive = build_transition_counts((1, 2, 4, 5))
+        bounded = build_transition_counts_from_sequences(((1, 2), (4, 5)))
+        all_states = {state for phrase in TRAINING_PHRASES for state in phrase}
+        dead_ends = sorted(all_states - model.keys())
+        table = "\n".join(
+            f"State {state}:\n" + "\n".join(
+                f"  → {following}   count {weight}   probability {probabilities[state][following]:.2f}"
+                for following, weight in next_states(counts, state))
+            for state in sorted(counts)
+        )
+        graph = "\n".join(
+            f"{state} -> " + ", ".join(f"{following}({weight})"
+                                        for following, weight in next_states(model, state))
+            for state in sorted(model))
+        capstone, alternate = build_memory_capstone(2026), build_memory_capstone(2027)
+        section_report = "\n".join(
+            f"Section {section.label}: start {section.start_state}; degrees "
+            f"{' '.join(map(str, section.degrees))}; attempts {section.attempts}"
+            for section in capstone.sections)
+        print(
+            "Chapter 20 — Musical Memory\n\n"
+            "How can a generative system make future musical choices depend on what has happened before?\n"
+            "SEQUENCE → STATE → HISTORY → TRANSITION → CONDITIONAL PROBABILITY → MUSICAL MEMORY\n\n"
+            "Independent choice ignores the preceding note. A first-order Markov model uses only the current state: "
+            "CURRENT SCALE DEGREE → OBSERVED SUCCESSORS → COUNT-WEIGHTED CHOICE.\n\n"
+            f"Training sequence:\n{' '.join(map(str, training))}\n"
+            f"Transition pairs:\n{transition_pairs(training)}\n\n"
+            "TRANSITION TABLE\n" + table + "\n\nText graph:\n" + graph +
+            f"\n\nSeed: 2026\nStart: 1\nGenerated: {' '.join(map(str, generated))}\n"
+            "Training is deterministic; only generation consumes the supplied local RNG. Integer nested dictionaries "
+            "remain the canonical learned representation and generation does not mutate them.\n\n"
+            f"Coverage: unique states={len(all_states)}; observed transitions={sum(sum(row.values()) for row in model.values())}; "
+            f"one-successor states={sum(len(row) == 1 for row in model.values())}; "
+            f"multiple-successor states={sum(len(row) > 1 for row in model.values())}; dead-end states={dead_ends}.\n"
+            "A state with one successor has probability 1.0. An unseen or terminal source raises a clear DeadEndError "
+            "when chosen directly; sequence generation uses the documented STOP policy and returns what exists. "
+            "RESTART is an explicit alternative. Cyclic training instead adds last → first for looping material.\n\n"
+            f"Independent frequency choice: {' '.join(map(str, independent))}\n"
+            f"Transition choice:          {' '.join(map(str, generated))}\n"
+            "Both are descriptions for listening, not rankings: overall frequencies weight independent draws, while "
+            "transition counts condition each draw on the current degree. Compare range, repeats, intervals, and steps.\n\n"
+            f"Boundary check: naive concatenation includes 2 → 4: {4 in naive.get(2, {})}; "
+            f"separate-sequence training includes it: {4 in bounded.get(2, {})}. Only 1 → 2 and 4 → 5 remain.\n"
+            f"Rhythm training states: {' '.join(map(str, TRAINING_RHYTHM))}. The rhythm study generates a fixed note count; "
+            "it does not force an exact beat span. Pitch and rhythm use separate RNG streams and know nothing about each other.\n\n"
+            f"Constrained candidate: {constrained.candidate}; attempts: {constrained.attempts}; "
+            f"validation: {'PASS' if constrained.candidate else 'FAIL'}. Filtering requires tonic ending, bounded degree range, "
+            "and maximum degree leap; the transition model itself knows neither these rules nor sounding harmony.\n\n"
+            "SAME MODEL, DIFFERENT KEY: the generated degree tuple is rendered over C major and F major without retraining; "
+            "only pitch realization changes. Seeds 10, 20, and 30 use the same model.\n\n"
+            "CAPSTONE\nTraining phrases: " + " | ".join(" ".join(map(str, phrase)) for phrase in TRAINING_PHRASES) +
+            f"\nMaster seed: {capstone.seed}\n" + section_report +
+            f"\nConstraint results: {'PASS' if capstone.valid else 'FAIL'}\nAlternate seed: {alternate.seed}\n\n"
+            "The form A A' B A, harmony, groove, register, and return are deterministic; learned local transitions drive melody. "
+            "The final A literally returns, so Markov randomness does not define the whole form.\n\n"
+            "The model learned observed first-order transition frequencies from supplied hand-authored sequences. It does not "
+            "understand phrases, motifs, intention, emotion, style, harmony, or large-scale structure. If 2 follows both 1 and 5, "
+            "the model forgets which preceded 2. Higher/variable-order models, n-grams, hidden or hierarchical states, recurrent "
+            "networks, transformers, and combined pitch/rhythm/harmony states are acknowledged but not implemented.\n\n"
+            "Reader experiments: change training with seed fixed; change only seed; repeat or remove a transition; render degrees "
+            "in C and F; use cyclic training; add a boundary-aware phrase; train rhythm separately; tighten constraints and inspect "
+            "attempts; compare generated material with its source. Which local motions survive, and which larger structures are lost?\n\n"
+            "Created:\n" + "\n".join(str(path) for path in paths)
         )
     return 0
