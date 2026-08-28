@@ -11,8 +11,8 @@ question is:
 Python is the compositional and analytical engine: it makes musical decisions
 visible as inspectable data and small transformations. Much later,
 SuperCollider will become the synthesis, sound-design, and real-time performance
-engine. It is intentionally **not required now**. Chapter 0 uses only Python's
-standard library and keeps every step from frequency to audio sample visible.
+engine. It is intentionally **not required now**. The completed chapters use
+only Python's standard library and keep every step through audio visible.
 
 ## The laboratory model
 
@@ -34,12 +34,13 @@ involving randomness will use explicit seeds so results can be reproduced.
 ## Requirements and setup
 
 - Python 3.11 or newer
-- No runtime dependencies for Chapter 0
+- No runtime dependencies for Chapters 0–1
 
 From the repository root, either run directly:
 
 ```bash
 python -m composition_lab chapter-00
+python -m composition_lab chapter-01
 ```
 
 or install an editable copy and use its console command:
@@ -47,19 +48,26 @@ or install an editable copy and use its console command:
 ```bash
 python -m pip install -e .
 composition-lab chapter-00
+composition-lab chapter-01
 ```
 
-The experiment creates `outputs/chapter_00_first_composition.wav`. Open that
-ordinary WAV file in any audio player. Generated audio is ignored by Git; only
-`outputs/.gitkeep` preserves the output directory.
+The commands create ordinary WAV files in `outputs/`; open them in any audio
+player. Generated audio is ignored by Git; only `outputs/.gitkeep` preserves the
+output directory.
 
-Continue with [Chapter 0 — The Composition Laboratory](chapters/00_composition_lab/README.md)
-to connect what you hear with the data and waveform that produced it.
+## Completed chapters
+
+- [Chapter 0 — The Composition Laboratory](chapters/00_composition_lab/README.md)
+  carries one hard-coded-frequency idea from musical choice through waveform to
+  listening, establishing the executable-textbook method.
+- [Chapter 1 — Pitch Becomes Computable](chapters/01_pitch_becomes_computable/README.md)
+  replaces stored frequencies with pitch names and integers, then makes
+  transposition and interval preservation audible.
 
 ## Planned journey
 
-Only Chapter 0 exists today. The broad route—not a claim of implemented
-features—is:
+Only Chapters 0 and 1 exist today. The broad route—not a claim of implemented
+features beyond those chapters—is:
 
 ```text
 sound / notes → pitch → rhythm → musical events → scales and tonality
