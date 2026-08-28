@@ -34,7 +34,7 @@ involving randomness will use explicit seeds so results can be reproduced.
 ## Requirements and setup
 
 - Python 3.11 or newer
-- No runtime dependencies for Chapters 0–17
+- No runtime dependencies for Chapters 0–18
 
 From the repository root, either run directly:
 
@@ -57,6 +57,7 @@ python -m composition_lab chapter-14
 python -m composition_lab chapter-15
 python -m composition_lab chapter-16
 python -m composition_lab chapter-17
+python -m composition_lab chapter-18
 ```
 
 or install an editable copy and use its console command:
@@ -81,6 +82,7 @@ composition-lab chapter-14
 composition-lab chapter-15
 composition-lab chapter-16
 composition-lab chapter-17
+composition-lab chapter-18
 ```
 
 The commands create ordinary WAV files in `outputs/`; open them in any audio
@@ -143,6 +145,9 @@ output directory.
 - [Chapter 17 — Musical Form](chapters/17_musical_form/README.md)
   makes passages into locally normalized sections and assembles transparent plans
   for binary, ternary, AABA, verse/chorus, blues, and through-composed studies.
+- [Chapter 18 — Constraint-Based Composition](chapters/18_constraint_based_composition/README.md)
+  uses inspectable objective rules to enumerate, reject, retain, describe, and
+  render multiple pitch and rhythm candidates without treating rules as taste.
 
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
@@ -159,11 +164,12 @@ accent, and displacement into groove; Chapter 14 makes bass connect harmony,
 groove, and melodic motion.
 Chapter 15 makes independent musical layers into texture and arrangement. Chapter 16 makes
 repetition, contrast, and variation turn passages into developing musical material. Chapter 17
-makes passages into sections, and sections into musical form.
+makes passages into sections, and sections into musical form. Chapter 18 makes explicit musical
+constraints define spaces of possible compositions that the computer can search.
 
 ## Planned journey
 
-Only Chapters 0 through 17 exist today. The broad route—not a claim of implemented
+Only Chapters 0 through 18 exist today. The broad route—not a claim of implemented
 features beyond those chapters—is:
 
 ```text

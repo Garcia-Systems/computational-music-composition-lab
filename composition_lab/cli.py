@@ -89,6 +89,13 @@ from .chapter16 import chapter_16_passages, chapter_16_scores
 from .chapter17 import BLUES_CHORDS, BLUES_DEGREES, chapter_17_forms
 from .forms import form_timeline, section_proportions
 from .passages import compare_events, passage_duration, variation_matrix
+from .chapter18 import (
+    build_chapter_18_study, failure_counts, pitch_constraints,
+    rejected_example, render_chapter_18, selected_candidates,
+)
+from .constraints import (
+    candidate_is_valid, evaluate_candidate, find_valid_candidates,
+)
 
 CHAPTER_00_NOTES = (
     ("C4", 261.63, 0.40),
@@ -956,7 +963,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15", "chapter-16", "chapter-17"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15", "chapter-16", "chapter-17", "chapter-18"),
         help="experiment to run",
     )
     parser.add_argument(
@@ -1561,7 +1568,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "This limited study acknowledges thematic transformation, fragmentation, saturation, sequence, augmentation/diminution, reharmonization, "
             "counterpoint, orchestration, and developmental harmony. It adds no recognizability score, randomness, named form, or form engine. "
             "Chapter 17 will organize these patterns into named forms.\n\nCreated:\n" + "\n".join(str(path) for path in paths))
-    else:
+    elif args.chapter == "chapter-17":
         paths = run_chapter_17(args.output_directory)
         forms = chapter_17_forms()
         binary, ternary, capstone = forms["binary_form"], forms["ternary_form"], forms["form_capstone"]
@@ -1614,4 +1621,81 @@ def main(argv: Sequence[str] | None = None) -> int:
             "These simplified models do not implement rounded binary, compound ternary, strophic, rondo, sonata, variation, developmental, "
             "hybrid, or ambiguous forms. No parser, form detector, random plan, constraint solver, candidate search, or Chapter 18 system is added.\n\n"
             "Created:\n" + "\n".join(str(path) for path in paths))
+    else:
+        study = build_chapter_18_study()
+        paths = render_chapter_18(args.output_directory)
+        funnel = "\n↓\n".join(f"{name:<30} {count:>7,}" for name, count in study.pitch_funnel)
+        impossible = "\n↓\n".join(f"{name:<30} {count:>7,}" for name, count in study.impossible_funnel)
+        failures = "\n".join(f"{name:<24} {count:>4}" for name, count in failure_counts(study.pitch_search))
+        rejected = rejected_example(study)
+        rejection_rows = "\n".join(
+            f"{result.name:<22} {'PASS' if result.passed else 'FAIL'}  {result.detail}"
+            for result in rejected.results
+        )
+        sensitivity = []
+        for threshold in (2, 4, 7, 12):
+            sensitivity.append((threshold, len(find_valid_candidates(
+                study.pitch_candidates, pitch_constraints(threshold)).valid)))
+        sensitivity_rows = "\n".join(f"{limit:<9} {count}" for limit, count in sensitivity)
+        manual = {"A": (60, 62, 64, 60), "B": (60, 66, 67, 60),
+                  "C": (60, 67, 62, 60), "D": (60, 62, 64, 67)}
+        manual_rows = ["Candidate Range Scale Leap Start End Valid"]
+        for label, candidate in manual.items():
+            results = evaluate_candidate(candidate, pitch_constraints())
+            # omit fixed length and no-repeat columns in this introductory table
+            shown = (results[1], results[2], results[5], results[3], results[4])
+            manual_rows.append(
+                f"{label:<9} " + " ".join(f"{'PASS' if r.passed else 'FAIL':<5}" for r in shown) +
+                f" {'YES' if candidate_is_valid(results) else 'NO'}")
+        profiles = []
+        for label, candidate in zip("ABC", selected_candidates(study.capstone_candidates), strict=True):
+            profile = melodic_profile(candidate)
+            profiles.append(
+                f"Candidate {label}\n"
+                f"pitches: {candidate}\n"
+                f"names: {' '.join(pitch_to_name(p) for p in candidate)}\n"
+                f"intervals: {_intervals(candidate)}\n"
+                f"range: {profile.range_semitones}; steps: {profile.steps}; leaps: {profile.leaps}; "
+                f"stepwise: {profile.stepwise_percentage:.1f}%; ending: {pitch_to_name(candidate[-1])}"
+            )
+        cap_funnel = "\n↓\n".join(f"{name:<30} {count:>7,}" for name, count in study.capstone_funnel)
+        print(
+            "Chapter 18 — Constraint-Based Composition\n\n"
+            "If we specify musical rules and limits, how can a computer generate candidates without pretending the rules define good music?\n"
+            "MUSICAL GOAL → CONSTRAINT → CANDIDATE → VALIDATION → SEARCH → VALID SOLUTION SET → HUMAN CHOICE\n\n"
+            "OBJECTIVE CONSTRAINT\n“All pitches must remain between C4 and C5.” This can be checked exactly.\n\n"
+            "SUBJECTIVE JUDGMENT\n“The melody should be beautiful.” This cannot honestly become a simple boolean rule.\n\n"
+            "A candidate begins as an immutable pitch tuple such as (60, 62, 64, 67); only accepted candidates later become timed NoteEvents.\n\n"
+            "Manual candidate comparison (failures are facts about this rule set):\n" +
+            "\n".join(manual_rows) + "\n\n"
+            f"Search space: 5 possible pitches ^ 4 positions = {len(study.pitch_candidates)} candidates\n"
+            "Enumeration order: lexicographic and reproducible.\n\nConstraint funnel:\n" + funnel +
+            f"\n\nValid: {len(study.pitch_search.valid)}\nRejected: {len(study.pitch_search.rejected)}\n"
+            "Passing the same constraints does not make two melodies equivalent. First/middle/last selection below is an implementation choice, not artistic judgment.\n\n"
+            "Failure reasons (overlapping counts; a candidate may fail several rules):\n" + failures +
+            f"\n\nRejected candidate: {rejected.candidate}\n" + rejection_rows +
+            "\n\nConstraint sensitivity:\nThreshold Valid candidates\n" + sensitivity_rows +
+            "\n\nUnsatisfiable constraints:\n" + impossible +
+            "\nSEARCH RESULT:\n0 valid candidates\n"
+            "Zero results does not mean the program failed; rules may be mutually incompatible or too restrictive.\n\n"
+            f"Rhythm search: generated {3 ** 4} four-attack rhythms; {len(study.rhythm_candidates)} total exactly 4 beats with at most one 2-beat note.\n"
+            "Pitch and rhythm searches remain separate; three rhythms use the same pitch sequence.\n\n"
+            "Harmony-aware filtering: integer-beat onsets are checked against the active I–IV–V–I chord. "
+            "One failing and one passing melody are rendered; this is an experimental rule, not a universal melodic law.\n\n"
+            f"Capstone search: 7 pitches ^ 6 positions = {7 ** 6:,}\n" + cap_funnel +
+            f"\nFinal valid capstone candidates: {len(study.capstone_candidates)}\n\n" +
+            "\n\n".join(profiles) +
+            "\n\nAll three satisfy the same rules. Which would you keep, alter, combine, or reject after listening?\n\n"
+            "CONSTRAINTS do not produce one correct melody; they define a set of permitted melodies.\n"
+            "COMPUTER searches systematically; HUMAN chooses rules, listens, judges, edits, and revises.\n"
+            "The rules do not assert that scale membership, small leaps, tonic endings, steps, repeats, or chord tones make good music.\n\n"
+            "Search-space growth: 5^4 = 625; 7^8 = 5,764,801; "
+            f"12^16 = {12 ** 16:,}. This chapter refuses impractical exhaustive searches rather than solving that later problem.\n\n"
+            "Recipe: define space; define objective rules; enumerate; evaluate; retain; inspect rejection; listen; revise.\n\n"
+            "Reader experiments: change range; tighten leap 7/5/2; remove tonic ending; require a repeat or motif; use natural minor; "
+            "change rhythm; add chord-tone rules; create an impossible set; listen to five legal candidates. "
+            "What artistic criteria did you use that the program did not know about?\n\n"
+            "No randomness, probability, quality score, optimization, or Chapter 19 behavior is used.\n\nCreated:\n" +
+            "\n".join(str(path) for path in paths)
+        )
     return 0
