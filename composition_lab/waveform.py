@@ -69,6 +69,18 @@ def render_notes(
     return samples
 
 
+def silence(duration: float, *, sample_rate: int = SAMPLE_RATE) -> list[float]:
+    """Return silent samples for a positive duration in seconds."""
+    if duration <= 0:
+        raise ValueError("duration must be greater than zero")
+    if sample_rate <= 0:
+        raise ValueError("sample_rate must be greater than zero")
+    sample_count = round(duration * sample_rate)
+    if sample_count < 1:
+        raise ValueError("duration is too short to create a sample")
+    return [0.0] * sample_count
+
+
 def write_wav(
     path: Path, samples: Sequence[float], *, sample_rate: int = SAMPLE_RATE
 ) -> Path:
