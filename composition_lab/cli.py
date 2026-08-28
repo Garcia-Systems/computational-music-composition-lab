@@ -109,6 +109,7 @@ from .chapter22 import run_chapter_22
 from .chapter23 import run_chapter_23
 from .chapter24 import run_chapter_24
 from .chapter25 import run_chapter_25
+from .chapter26 import run_chapter_26
 from .markov import (
     build_transition_counts, build_transition_counts_from_sequences,
     generate_markov_sequence, generate_valid_markov_candidate,
@@ -983,9 +984,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15", "chapter-16", "chapter-17", "chapter-18", "chapter-19", "chapter-20", "chapter-21", "chapter-22", "chapter-23", "chapter-24", "chapter-25"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15", "chapter-16", "chapter-17", "chapter-18", "chapter-19", "chapter-20", "chapter-21", "chapter-22", "chapter-23", "chapter-24", "chapter-25", "chapter-26"),
         help="experiment to run",
     )
+    parser.add_argument("--live", action="store_true", help="transmit Chapter 26 OSC (default is a safe dry run)")
+    parser.add_argument("--host", default="127.0.0.1", help="Chapter 26 destination (localhost only)")
+    parser.add_argument("--port", type=int, default=57121, help="Chapter 26 sclang listening port")
     parser.add_argument(
         "--output-directory",
         type=Path,
@@ -1855,6 +1859,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         run_chapter_23(args.output_directory)
     elif args.chapter == "chapter-24":
         run_chapter_24(args.output_directory)
-    else:
+    elif args.chapter == "chapter-25":
         run_chapter_25(args.output_directory)
+    else:
+        run_chapter_26(live=args.live, host=args.host, port=args.port)
     return 0

@@ -48,3 +48,14 @@ beat duration to seconds and sends `gate = 0`; each gate-aware `EnvGen` complete
 its own release and frees its Synth. `RLPF` uses reciprocal-Q `rq`, so smaller
 values are narrower/more resonant within the documented safe range. The Python
 command neither installs nor launches SuperCollider.
+
+
+## Chapter 26: localhost OSC receiver
+
+1. Open `chapter_26_osc_receiver.scd`; evaluate its boot/definition block and wait for readiness.
+2. It opens sclang UDP port `57121` on localhost, loads four gate-aware SynthDefs, installs allowlisted instrument dispatch, and registers predictable `/ping`, `/note`, and `/panic` OSCdefs.
+3. Run `python -m composition_lab chapter-26 --live`. Python does not launch SuperCollider.
+4. `/note` starts immediately; `SystemClock.sched` releases its gate after the transmitted duration. Same-onset packets create separate polyphonic Synths.
+5. Send `/panic` through `OscNoteClient.panic()`, or evaluate the documented cleanup block / `s.freeAll` if needed. Cleanup frees all three OSCdefs to prevent duplicate handlers.
+
+This is unauthenticated localhost teaching infrastructure. UDP send success is not receiver readiness, and ordinary language scheduling is not sample-accurate.
