@@ -86,6 +86,8 @@ from .texture import (
     attack_overlap, combine_event_layers, layer_metrics, repeated_chord_events,
 )
 from .chapter16 import chapter_16_passages, chapter_16_scores
+from .chapter17 import BLUES_CHORDS, BLUES_DEGREES, chapter_17_forms
+from .forms import form_timeline, section_proportions
 from .passages import compare_events, passage_duration, variation_matrix
 
 CHAPTER_00_NOTES = (
@@ -298,6 +300,7 @@ CHAPTER_16_FILENAMES = tuple(f"chapter_16_{name}.wav" for name in (
     "return_with_new_texture", "A_A_prime_study", "A_B_study", "A_B_A_study",
     "A_B_A_prime_study", "development_capstone",
 ))
+CHAPTER_17_FILENAMES = tuple(f"chapter_17_{name}.wav" for name in chapter_17_forms())
 
 
 def run_chapter_00(output_directory: Path = Path("outputs")) -> Path:
@@ -908,6 +911,15 @@ def run_chapter_16(output_directory: Path = Path("outputs")) -> tuple[Path, ...]
     return paths
 
 
+def run_chapter_17(output_directory: Path = Path("outputs")) -> tuple[Path, ...]:
+    """Render named forms and controlled large-scale comparisons."""
+    forms = chapter_17_forms()
+    paths = tuple(output_directory / name for name in CHAPTER_17_FILENAMES)
+    for path, assembly in zip(paths, forms.values(), strict=True):
+        write_wav(path, render_events(assembly.events, 120))
+    return paths
+
+
 def _profile_text(label: str, pitches: Sequence[int]) -> str:
     profile = melodic_profile(pitches)
     lowest = pitch_to_name(profile.lowest) if profile.lowest is not None else "—"
@@ -944,7 +956,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15", "chapter-16"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15", "chapter-16", "chapter-17"),
         help="experiment to run",
     )
     parser.add_argument(
@@ -1515,7 +1527,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "doubling, call and response, countermelodies, timbral layering, unison, and spatial arrangement are acknowledged, "
             "not implemented. Chapter 16 repetition/contrast/form structures are deliberately absent.\n\nCreated:\n" +
             "\n".join(str(path) for path in paths))
-    else:
+    elif args.chapter == "chapter-16":
         paths = run_chapter_16(args.output_directory)
         p = chapter_16_passages()
         ending = compare_events(p["A"].events, p["A_ending"].events)
@@ -1549,4 +1561,57 @@ def main(argv: Sequence[str] | None = None) -> int:
             "This limited study acknowledges thematic transformation, fragmentation, saturation, sequence, augmentation/diminution, reharmonization, "
             "counterpoint, orchestration, and developmental harmony. It adds no recognizability score, randomness, named form, or form engine. "
             "Chapter 17 will organize these patterns into named forms.\n\nCreated:\n" + "\n".join(str(path) for path in paths))
+    else:
+        paths = run_chapter_17(args.output_directory)
+        forms = chapter_17_forms()
+        binary, ternary, capstone = forms["binary_form"], forms["ternary_form"], forms["form_capstone"]
+        blues_rows = "\n".join(
+            f"{bar:<4} {('C' if degree == 'I' else 'F' if degree == 'IV' else 'G'):<5} {degree}"
+            for bar, degree in enumerate(BLUES_DEGREES, 1)
+        )
+        cap_relations = ("original", "varied repeat", "contrast", "varied return")
+        cap_rows = "\n".join(
+            f"{display:<8} {p.start:>5g} {p.end:>5g}  {relation}"
+            for display, p, relation in zip(("A", "A'", "B", "A''"), capstone.placements, cap_relations, strict=True)
+        )
+        proportions = "  ".join(
+            f"{label} {percent:.0f}%" for label, percent in section_proportions(capstone)
+        ).replace("B_capstone", "B")
+        print(
+            "Chapter 17 — Musical Form\n\n"
+            "How can repetition, contrast, and return be organized into larger musical structures?\n"
+            "PASSAGE → SECTION → SECTION RELATIONSHIPS → FORM → LARGE-SCALE MUSICAL SHAPE\n\n"
+            "A Section stores a label separately from locally normalized immutable NoteEvents. A form plan is only a template; "
+            "FORM PLAN + SECTIONS → MUSICAL TIMELINE. Labels describe roles and do not generate musical behavior.\n\n"
+            "Binary:\nA B\nFORM: A B\n" + form_timeline(binary) +
+            "\nBinary can contain internal repeats and tonal relationships beyond this executable two-block model.\n\n"
+            "Ternary:\nA B A\nA establishes identity, B contrasts, and A literally returns.\n"
+            "What does the return change about the large-scale sense of closure?\n\n"
+            "AABA:\nA A B A\nVaried AABA:\nA A' B A''\n"
+            "A' changes texture; A'' changes ending and texture. Repetition and variation can coexist.\n\n"
+            "Verse/Chorus:\nVerse Chorus Verse Chorus\n"
+            "Here the verse is thinner/lower and chorus thicker/higher as experimental choices, not universal rules. "
+            "Section roles make these labels more informative than merely A/B.\n\n"
+            "12-Bar Blues (simplified triadic approximation):\nI I I I\nIV IV I I\nV IV I I\n\n"
+            "Bar  Chord Degree\n" + blues_rows +
+            "\nThe 48-beat harmonic cycle uses one chord per four-beat bar, straight eighth-note groove, root/fifth bass, and motif melody. "
+            "A second chorus retains harmony while varying surface melody; this does not capture the blues' full stylistic richness.\n\n"
+            "Through-Composed:\nA B C D\nSuccessive sections introduce distinct material, without implying that motifs never repeat. "
+            "Compare A B A with A B C: what changes when known material returns versus new material?\n\n"
+            "FORM CAPSTONE\nSection  Start   End  Relation\n" + cap_rows +
+            f"\nTotal beats: {capstone.duration:g}\nSection proportions: {proportions}\n"
+            "Active layers: A 2; A' 4; B 5; A'' 4\n"
+            "0        8        16                32       40\n"
+            "|--- A ---|--- A' ---|------ B ------|--- A'' ---|\n\n"
+            "Formal comparison (actual study durations):\n"
+            "Binary A B: 16; Ternary A B A: 24; AABA A A B A: 32; Verse/Chorus V C V C: 32; "
+            "12-bar blues: 48; Through-composed A B C D: 32 beats.\n\n"
+            "Immediate and one-beat-gap transitions ask how silence marks boundaries. Symmetric 8+8+8 and asymmetric 8+12+8 "
+            "studies ask how duration changes pacing. Texture, register, and harmony are compositional markers, not automatic formal rules.\n\n"
+            "Reader experiments: turn A B into A B A; vary the return; shorten or lengthen B; repeat A A B B; make AABA; "
+            "change only verse/chorus texture; repeat blues and vary melody; replace a return with C; remove texture differences. "
+            "Are boundaries still obvious?\n\n"
+            "These simplified models do not implement rounded binary, compound ternary, strophic, rondo, sonata, variation, developmental, "
+            "hybrid, or ambiguous forms. No parser, form detector, random plan, constraint solver, candidate search, or Chapter 18 system is added.\n\n"
+            "Created:\n" + "\n".join(str(path) for path in paths))
     return 0
