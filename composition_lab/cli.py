@@ -66,6 +66,11 @@ from .voice_leading import (
     progression_motion, smooth_progression_voicings, stationary_common_tones,
     voice_movements, within_motion_budget,
 )
+from .melody_harmony import (
+    HarmonicSpan, analyze_melody, chord_tone_duration_percentage,
+    chord_tone_percentage, harmonies_during_event, is_chord_tone,
+    is_suspension_like,
+)
 
 CHAPTER_00_NOTES = (
     ("C4", 261.63, 0.40),
@@ -210,6 +215,19 @@ CHAPTER_11_FILENAMES = (
     "chapter_11_high_voice.wav", "chapter_11_common_tones.wav",
     "chapter_11_I_V_vi_IV_smooth.wav", "chapter_11_intentional_leap.wav",
     "chapter_11_phrase_root_position.wav", "chapter_11_phrase_voice_led.wav",
+)
+CHAPTER_12_FILENAMES = (
+    "chapter_12_all_chord_tones.wav",
+    "chapter_12_chord_tone_melody.wav", "chapter_12_non_chord_tone_melody.wav",
+    "chapter_12_direct_motion.wav", "chapter_12_passing_tone.wav",
+    "chapter_12_static_chord_tone.wav", "chapter_12_neighbor_tone.wav",
+    "chapter_12_diatonic_approach.wav", "chapter_12_chromatic_approach.wav",
+    "chapter_12_without_suspension.wav", "chapter_12_with_suspension.wav",
+    "chapter_12_same_melody_harmony_a.wav", "chapter_12_same_melody_harmony_b.wav",
+    "chapter_12_same_harmony_melody_a.wav", "chapter_12_same_harmony_melody_b.wav",
+    "chapter_12_resolved_nct.wav", "chapter_12_unresolved_nct.wav",
+    "chapter_12_phrase_root_position.wav", "chapter_12_phrase_voice_led.wav",
+    "chapter_12_melody_harmony_phrase.wav",
 )
 
 
@@ -523,6 +541,78 @@ def run_chapter_11(output_directory: Path = Path("outputs")) -> tuple[Path, ...]
     return paths
 
 
+def chapter_12_spans(degrees: Sequence[int] = (1, 4, 5, 1),
+                     durations: Sequence[float] = (2.0, 2.0, 2.0, 2.0)) -> tuple[HarmonicSpan, ...]:
+    """Adapt the existing degree/chord progression to inspectable harmonic spans."""
+    return tuple(
+        HarmonicSpan(start, duration, chord, degree)
+        for start, duration, chord, degree in zip(
+            progression_starts(durations), durations,
+            progression_chords(60, MAJOR, degrees), degrees, strict=True)
+    )
+
+
+def _melody(pitches: Sequence[int], starts: Sequence[float] | None = None,
+            durations: Sequence[float] | None = None) -> tuple[NoteEvent, ...]:
+    starts = starts or tuple(float(i) for i in range(len(pitches)))
+    durations = durations or (1.0,) * len(pitches)
+    return tuple(NoteEvent(p, s, d, 94) for p, s, d in zip(pitches, starts, durations, strict=True))
+
+
+def _with_harmony(melody: Sequence[NoteEvent], degrees: Sequence[int] = (1, 4, 5, 1),
+                  durations: Sequence[float] = (2.0,) * 4, *, smooth: bool = True) -> tuple[NoteEvent, ...]:
+    chords = progression_chords(60, MAJOR, degrees)
+    voicings = smooth_progression_voicings(chords) if smooth else chords
+    harmony = tuple(
+        NoteEvent(pitch, start, duration, 48)
+        for start, duration, chord in zip(progression_starts(durations), durations, voicings, strict=True)
+        for pitch in chord
+    )
+    return harmony + tuple(melody)
+
+
+def chapter_12_material() -> tuple[tuple[NoteEvent, ...], ...]:
+    """Build audible controlled comparisons for melody/harmony relationships."""
+    all_tones = _melody((64, 67, 65, 69, 67, 71, 64, 60))
+    nct = _melody((64, 62, 65, 69, 69, 67, 64, 60))
+    direct = _melody((60, 64), (0, 1), (1, 1))
+    passing = _melody((60, 62, 64), (0, .5, 1), (.5, .5, 1))
+    static = _melody((64, 64), (0, 1), (1, 1))
+    neighbor = _melody((64, 65, 64), (0, .5, 1), (.5, .5, 1))
+    diatonic = _melody((62, 64), (0, 1), (1, 1))
+    chromatic = _melody((63, 64), (0, 1), (1, 1))
+    without = _melody((67, 65), (1, 2), (1, 1))
+    held = _melody((67, 65), (1, 3), (2, 1))
+    fixed = _melody((60, 62, 64, 67), (0, 1, 2, 3), (1,) * 4)
+    active = _melody((64, 62, 65, 69, 69, 67, 64, 60))
+    resolved = _melody((62, 64), (0, 1), (1, 1))
+    unresolved = _melody((62, 65), (0, 1), (1, 1))
+    phrase = _melody((60, 64, 62, 64, 65, 69, 68, 67, 64, 60),
+                      (0, 1, 2, 2.5, 3, 4, 4.5, 5, 6, 7),
+                      (1, 1, .5, .5, 1, .5, .5, 1, 1, 1))
+    root_phrase = _with_harmony(phrase, smooth=False)
+    voice_led_phrase = _with_harmony(phrase)
+    return (
+        _with_harmony(all_tones), _with_harmony(all_tones), _with_harmony(nct),
+        _with_harmony(direct, (1,), (2,)), _with_harmony(passing, (1,), (2,)),
+        _with_harmony(static, (1,), (2,)), _with_harmony(neighbor, (1,), (2,)),
+        _with_harmony(diatonic, (1,), (2,)), _with_harmony(chromatic, (1,), (2,)),
+        _with_harmony(without, (1, 4), (2, 2)), _with_harmony(held, (1, 4), (2, 2)),
+        _with_harmony(fixed, (1, 1), (2, 2)), _with_harmony(fixed, (2, 2), (2, 2)),
+        _with_harmony(all_tones), _with_harmony(active),
+        _with_harmony(resolved, (1,), (2,)), _with_harmony(unresolved, (1,), (2,)),
+        root_phrase, voice_led_phrase, voice_led_phrase,
+    )
+
+
+def run_chapter_12(output_directory: Path = Path("outputs")) -> tuple[Path, ...]:
+    """Render Chapter 12's deterministic alignment and context experiments."""
+    paths = tuple(output_directory / name for name in CHAPTER_12_FILENAMES)
+    for path, score in zip(paths, chapter_12_material(), strict=True):
+        write_wav(path, render_events(score, 120))
+    return paths
+
+
 def _profile_text(label: str, pitches: Sequence[int]) -> str:
     profile = melodic_profile(pitches)
     lowest = pitch_to_name(profile.lowest) if profile.lowest is not None else "—"
@@ -559,7 +649,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12"),
         help="experiment to run",
     )
     parser.add_argument(
@@ -874,7 +964,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "Root-position voicings remain intentionally plain; voice leading belongs to Chapter 11.\n\n"
             "Created:\n" + "\n".join(str(path) for path in paths)
         )
-    else:
+    elif args.chapter == "chapter-11":
         paths = run_chapter_11(args.output_directory)
         degrees = (1, 4, 5, 1)
         roots = progression_chords(60, MAJOR, degrees)
@@ -940,6 +1030,66 @@ def main(argv: Sequence[str] | None = None) -> int:
             "Lower motion measures less displacement, not better music. The intentional-leap file "
             "uses the same harmony for registral contrast. The search is greedy and local, not globally optimal.\n"
             "Similar, contrary, and oblique motion are descriptive previews, not counterpoint rules.\n\n"
+            "Created:\n" + "\n".join(str(path) for path in paths)
+        )
+    else:
+        paths = run_chapter_12(args.output_directory)
+        spans = chapter_12_spans()
+        melody = _melody(
+            (60, 62, 64, 65, 64, 67, 69, 67, 71, 64, 60),
+            (0, .5, 1, 1.25, 1.5, 2, 2.5, 4, 5, 6, 7),
+            (.5, .5, .25, .25, .5, .5, 1.5, 1, 1, 1, 1),
+        )
+        relations = analyze_melody(melody, spans)
+        romans = progression_roman_numerals(60, MAJOR, (1, 4, 5, 1))
+        timeline = "\n".join(
+            f"{span.start:>3.1f}–{span.end:<3.1f}  {roman:<3}  "
+            + " ".join(pitch_to_name(p)[:-1] for p in span.pitches)
+            for span, roman in zip(spans, romans, strict=True)
+        )
+        rows = "\n".join(
+            f"{relation.event.start:>4.1f}  {pitch_to_name(relation.event.pitch):<5}  "
+            f"{romans[spans.index(relation.harmony)]:<7}  "
+            f"{' '.join(pitch_to_name(p)[:-1] for p in relation.harmony.pitches):<11}  "
+            f"{relation.relation}"
+            for relation in relations
+        )
+        counts = {name: sum(r.relation == name for r in relations)
+                  for name in ("passing", "neighbor", "approach", "other-non-chord-tone")}
+        held, resolution = _melody((67, 65), (1, 3), (2, 1))
+        crossed = harmonies_during_event(held, chapter_12_spans((1, 4), (2, 2)))
+        same_pitch = 64
+        print(
+            "Chapter 12 — Melody Against Harmony\n\n"
+            "Previous chapters could create melody and harmony independently. Now each melody onset "
+            "is aligned with the active half-open harmonic span.\n\n"
+            "Progression: I IV V I\nStart–End  Chord tones\n" + timeline +
+            "\n\nMelody analysis:\nBeat  Pitch  Harmony  Chord tones  Relation\n" + rows +
+            f"\n\nChord-tone events: {sum(r.chord_tone for r in relations)} / {len(relations)} "
+            f"({chord_tone_percentage(relations):.1f}%)\n"
+            f"Chord-tone duration: {chord_tone_duration_percentage(relations):.1f}%\n"
+            f"Non-chord-tone events: {sum(not r.chord_tone for r in relations)} / {len(relations)}\n"
+            "Relationship types: " + ", ".join(f"{key}: {value}" for key, value in counts.items()) +
+            "\nThese percentages measure alignment, not melody quality. A non-chord tone is not "
+            "automatically wrong, ugly, or universally dissonant.\n\n"
+            "Passing: C4 → D4 → E4 fills a gap in one direction.\n"
+            "Neighbor: E4 → F4 → E4 decorates a stable pitch.\n"
+            "Approach: D4 (diatonic) or D#4 (chromatic) moves by step to E4.\n"
+            "Ambiguous patterns remain other-non-chord-tone. These local names are conservative descriptions.\n\n"
+            f"Suspension-like timeline: G4 overlaps {len(crossed)} chords; before change "
+            f"{'chord tone' if is_chord_tone(held.pitch, crossed[0].pitches) else 'non-chord tone'}, "
+            f"after change {'chord tone' if is_chord_tone(held.pitch, crossed[1].pitches) else 'non-chord tone'}, "
+            f"then step-resolution to F4: {'yes' if is_suspension_like(held, resolution, chapter_12_spans((1, 4), (2, 2))) else 'no'}.\n"
+            "The pitch does not move at the chord boundary, but its relationship changes. Not every held "
+            "non-chord tone is a suspension.\n\n"
+            f"Same pitch, different harmony: {pitch_to_name(same_pitch)} over C major is "
+            f"{'chord tone' if is_chord_tone(same_pitch, (60, 64, 67)) else 'non-chord tone'}; "
+            f"over D minor it is {'chord tone' if is_chord_tone(same_pitch, (62, 65, 69)) else 'non-chord tone'}.\n"
+            "The same I–IV–V–I chord identities retain membership under root-position or smooth voicing.\n\n"
+            "Function remains another layer: I/tonic, IV/predominant, V/dominant, I/tonic. "
+            "Chord identity, voicing, and melodic relationship are distinct.\n\n"
+            "This narrow tonal model does not classify appoggiaturas, anticipations, escape tones, pedal "
+            "points, extensions, modal or nonfunctional harmony, blues and jazz tensions, or polytonality.\n\n"
             "Created:\n" + "\n".join(str(path) for path in paths)
         )
     return 0
