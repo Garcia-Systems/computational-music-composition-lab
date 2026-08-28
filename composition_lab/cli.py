@@ -85,6 +85,8 @@ from .texture import (
     MusicalLayer, arpeggiate_voicing, arrangement_timeline, attack_density,
     attack_overlap, combine_event_layers, layer_metrics, repeated_chord_events,
 )
+from .chapter16 import chapter_16_passages, chapter_16_scores
+from .passages import compare_events, passage_duration, variation_matrix
 
 CHAPTER_00_NOTES = (
     ("C4", 261.63, 0.40),
@@ -287,6 +289,15 @@ CHAPTER_15_FILENAMES = (
     "chapter_15_root_position_accompaniment.wav", "chapter_15_voice_led_accompaniment.wav",
     "chapter_15_texture_arc.wav", "chapter_15_arrangement_capstone.wav",
 )
+CHAPTER_16_FILENAMES = tuple(f"chapter_16_{name}.wav" for name in (
+    "literal_repetition", "A_A_prime_ending", "pitch_variation", "rhythm_variation",
+    "register_variation", "texture_variation", "harmony_variation", "bass_variation",
+    "groove_variation", "A_B_contrast", "A_B_A_return", "literal_return", "varied_return",
+    "three_repeats_then_variation", "early_variation", "late_variation",
+    "contrast_with_motif_link", "texture_continuity", "texture_contrast",
+    "return_with_new_texture", "A_A_prime_study", "A_B_study", "A_B_A_study",
+    "A_B_A_prime_study", "development_capstone",
+))
 
 
 def run_chapter_00(output_directory: Path = Path("outputs")) -> Path:
@@ -889,6 +900,14 @@ def run_chapter_15(output_directory: Path = Path("outputs")) -> tuple[Path, ...]
     return paths
 
 
+def run_chapter_16(output_directory: Path = Path("outputs")) -> tuple[Path, ...]:
+    """Render repetition, controlled variation, contrast, and return studies."""
+    paths = tuple(output_directory / name for name in CHAPTER_16_FILENAMES)
+    for path, score in zip(paths, chapter_16_scores().values(), strict=True):
+        write_wav(path, render_events(score, 108))
+    return paths
+
+
 def _profile_text(label: str, pitches: Sequence[int]) -> str:
     profile = melodic_profile(pitches)
     lowest = pitch_to_name(profile.lowest) if profile.lowest is not None else "—"
@@ -925,7 +944,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15", "chapter-16"),
         help="experiment to run",
     )
     parser.add_argument(
@@ -1453,7 +1472,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "lines, figured bass, extended harmony, and style-specific articulation remain outside it.\n\n"
             "Created:\n" + "\n".join(str(path) for path in paths)
         )
-    else:
+    elif args.chapter == "chapter-15":
         paths = run_chapter_15(args.output_directory)
         melody, bass, harmony, groove = chapter_15_layers()
         broken = arpeggiate_voicing((60, 64, 67), 0, 4, (0, 1, 2, 1), 4, 65)
@@ -1496,4 +1515,38 @@ def main(argv: Sequence[str] | None = None) -> int:
             "doubling, call and response, countermelodies, timbral layering, unison, and spatial arrangement are acknowledged, "
             "not implemented. Chapter 16 repetition/contrast/form structures are deliberately absent.\n\nCreated:\n" +
             "\n".join(str(path) for path in paths))
+    else:
+        paths = run_chapter_16(args.output_directory)
+        p = chapter_16_passages()
+        ending = compare_events(p["A"].events, p["A_ending"].events)
+        matrix = variation_matrix((("A'", ("pitch",)), ("B", ("pitch", "rhythm", "harmony", "bass", "texture", "register")), ("A''", ("pitch", "texture"))))
+        print(
+            "Chapter 16 — Repetition, Contrast, and Variation\n\n"
+            "How can a composer repeat enough material to create identity while changing enough to create direction?\n"
+            "IDEA → REPETITION → VARIATION → CONTRAST → RETURN → DEVELOPMENT\n\n"
+            "Original passage: A (8 beats)\nLiteral repetition: A A\n"
+            "Repetition creates recognition, memory, expectation, and reinforcement; it is not inherently boring.\n\n"
+            "A' is a compositional label—not a special data type—meaning A changed in some way.\n"
+            f"A/A' ending facts: pitches equal={ending.pitch_sequence_equal}; onsets equal={ending.onset_sequence_equal}; durations equal={ending.duration_sequence_equal}.\n"
+            "How much can the ending change while the phrase remains related?\n\n"
+            "One-variable laboratory:\npitch: rhythm retained\nrhythm: pitch sequence retained\ntexture: core melody/harmony retained\n"
+            "harmony: diatonic IV becomes ii\nbass: roots become melodic\ngroove: one offbeat added\nregister: melody raised an octave.\n"
+            "Variation need not happen inside melody: any layer can carry it.\n\n"
+            "Contrast: A B\nB deliberately uses leaps, faster activity, high register, changed harmony, bass, and thick texture. "
+            "Its opening G–A–B–D transposes A's C–D–E–G motif, preserving family resemblance beneath contrast.\n\n"
+            "Return timeline:\nBeats     0–8    8–16   16–24\nLabel       A      B       A\nRelation original contrast return\n"
+            "Compare literal A B A with A B A': context can change perception even when return events do not.\n\n"
+            "Variation matrix (X = changed; . = retained):\n" + matrix + "\n\n"
+            f"Development inspector:\nA    {passage_duration(p['A_thin']):g} beats; original\n"
+            f"A'   {passage_duration(p['A_rhythm']):g} beats; rhythm changed\n"
+            f"B    {passage_duration(p['B_thick']):g} beats; pitch, contour, rhythm, harmony, bass, register, texture changed\n"
+            f"A''  {passage_duration(p['A_double']):g} beats; return with fuller texture and changed ending\n"
+            "Development: A A' B A'' (32 beats)\n\n"
+            "Code reuse avoids duplicate implementation; musical repetition deliberately repeats audible material. "
+            "Three identical A passages establish expectation before a fourth mutation; compare early and late placement.\n\n"
+            "Reader experiments: alter only final note, rhythm, or texture; transpose one fragment; construct contrasting B; preserve motif or groove; "
+            "return literally or differently; mutate repetition four; make A' so large you must ask when it feels like B.\n\n"
+            "This limited study acknowledges thematic transformation, fragmentation, saturation, sequence, augmentation/diminution, reharmonization, "
+            "counterpoint, orchestration, and developmental harmony. It adds no recognizability score, randomness, named form, or form engine. "
+            "Chapter 17 will organize these patterns into named forms.\n\nCreated:\n" + "\n".join(str(path) for path in paths))
     return 0
