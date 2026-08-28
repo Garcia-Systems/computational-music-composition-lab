@@ -11,7 +11,8 @@ from .pitch import pitch_to_frequency
 
 
 def events_as_records(
-    events: Sequence[NoteEvent], *, layers: Sequence[str] | None = None
+    events: Sequence[NoteEvent], *, layers: Sequence[str] | None = None,
+    instruments: Sequence[str] | None = None,
 ) -> list[dict[str, int | float | str]]:
     """Return deterministically onset-sorted event records.
 
@@ -20,6 +21,8 @@ def events_as_records(
     """
     if layers is not None and len(layers) != len(events):
         raise ValueError("layers must contain one label per event")
+    if instruments is not None and len(instruments) != len(events):
+        raise ValueError("instruments must contain one name per event")
     indexed = list(enumerate(events))
     indexed.sort(key=lambda item: (item[1].start, item[0]))
     records: list[dict[str, int | float | str]] = []
@@ -33,18 +36,21 @@ def events_as_records(
         }
         if layers is not None:
             record["layer"] = layers[index]
+        if instruments is not None:
+            record["instrument"] = instruments[index]
         records.append(record)
     return records
 
 
 def write_events_json(
-    events: Sequence[NoteEvent], path: Path, *, layers: Sequence[str] | None = None
+    events: Sequence[NoteEvent], path: Path, *, layers: Sequence[str] | None = None,
+    instruments: Sequence[str] | None = None,
 ) -> Path:
     """Write the Chapter 22 JSON interchange format, creating parents."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
-        json.dumps(events_as_records(events, layers=layers), indent=2) + "\n",
+        json.dumps(events_as_records(events, layers=layers, instruments=instruments), indent=2) + "\n",
         encoding="utf-8",
     )
     return path
