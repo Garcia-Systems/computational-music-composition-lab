@@ -34,8 +34,8 @@ involving randomness will use explicit seeds so results can be reproduced.
 ## Requirements and setup
 
 - Python 3.11 or newer
-- No Python runtime dependencies for Chapters 0–22; SuperCollider is optional
-  and used interactively only for Chapter 22 playback
+- No Python runtime dependencies for Chapters 0–23; SuperCollider is optional
+  and used interactively only for Chapters 22–23 playback
 
 From the repository root, either run directly:
 
@@ -63,6 +63,7 @@ python -m composition_lab chapter-19
 python -m composition_lab chapter-20
 python -m composition_lab chapter-21
 python -m composition_lab chapter-22
+python -m composition_lab chapter-23
 ```
 
 or install an editable copy and use its console command:
@@ -92,6 +93,7 @@ composition-lab chapter-19
 composition-lab chapter-20
 composition-lab chapter-21
 composition-lab chapter-22
+composition-lab chapter-23
 ```
 
 The commands create ordinary WAV files in `outputs/`; open them in any audio
@@ -173,6 +175,10 @@ output directory.
   sends Python-authored musical events through an inspectable JSON bridge to a
   simple real-time SuperCollider sine SynthDef while retaining Python reference audio.
   Interactive playback uses `supercollider/chapter_22_first_sound.scd`.
+- [Chapter 23 — Synthesizers as Instruments](chapters/23_synthesizers_as_instruments/README.md)
+  keeps compositions fixed while waveforms, pulse width, harmonic mixtures,
+  detuning, register, and explicit layer instrument maps change their timbre.
+  Interactive playback uses `supercollider/chapter_23_synthesizers_as_instruments.scd`.
 
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
@@ -196,10 +202,12 @@ Chapter 20 makes future choices depend on learned local relationships from prior
 musical sequences. Chapter 21 describes generated music with structural metrics
 while leaving aesthetic judgment to the listener. Chapter 22 makes Python musical
 events cross into a dedicated synthesis engine and become real-time synthesized sound.
+Chapter 23 turns a bare tone into reusable instruments with waveforms,
+oscillator mixtures, and bounded synthesis parameters while event data stays fixed.
 
 ## Planned journey
 
-Only Chapters 0 through 22 exist today. The broad route—not a claim of implemented
+Only Chapters 0 through 23 exist today. The broad route—not a claim of implemented
 features beyond those chapters—is:
 
 ```text
