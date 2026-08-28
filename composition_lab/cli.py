@@ -108,6 +108,7 @@ from .chapter21 import run_chapter_21
 from .chapter22 import run_chapter_22
 from .chapter23 import run_chapter_23
 from .chapter24 import run_chapter_24
+from .chapter25 import run_chapter_25
 from .markov import (
     build_transition_counts, build_transition_counts_from_sequences,
     generate_markov_sequence, generate_valid_markov_candidate,
@@ -982,7 +983,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15", "chapter-16", "chapter-17", "chapter-18", "chapter-19", "chapter-20", "chapter-21", "chapter-22", "chapter-23", "chapter-24"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15", "chapter-16", "chapter-17", "chapter-18", "chapter-19", "chapter-20", "chapter-21", "chapter-22", "chapter-23", "chapter-24", "chapter-25"),
         help="experiment to run",
     )
     parser.add_argument(
@@ -1852,6 +1853,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         run_chapter_22(args.output_directory)
     elif args.chapter == "chapter-23":
         run_chapter_23(args.output_directory)
-    else:
+    elif args.chapter == "chapter-24":
         run_chapter_24(args.output_directory)
+    else:
+        run_chapter_25(args.output_directory)
     return 0

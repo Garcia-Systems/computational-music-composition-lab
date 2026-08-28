@@ -34,8 +34,8 @@ involving randomness will use explicit seeds so results can be reproduced.
 ## Requirements and setup
 
 - Python 3.11 or newer
-- No Python runtime dependencies for Chapters 0–23; SuperCollider is optional
-  and used interactively only for Chapters 22–23 playback
+- No Python runtime dependencies for Chapters 0–25; SuperCollider is optional
+  and used interactively only for Chapters 22–25 playback
 
 From the repository root, either run directly:
 
@@ -65,6 +65,7 @@ python -m composition_lab chapter-21
 python -m composition_lab chapter-22
 python -m composition_lab chapter-23
 python -m composition_lab chapter-24
+python -m composition_lab chapter-25
 ```
 
 or install an editable copy and use its console command:
@@ -96,6 +97,7 @@ composition-lab chapter-21
 composition-lab chapter-22
 composition-lab chapter-23
 composition-lab chapter-24
+composition-lab chapter-25
 ```
 
 The commands create ordinary WAV files in `outputs/`; open them in any audio
@@ -185,6 +187,10 @@ output directory.
   uses ADSR, low-pass filtering, velocity response, and explicit gate ratios to
   shape a fixed composition. Interactive playback uses
   `supercollider/chapter_24_envelopes_filters_articulation.scd`.
+- [Chapter 25 — Space, Delay, Reverb, and Signal Routing](chapters/25_space_delay_reverb_routing/README.md)
+  keeps events fixed while restrained stereo pan and wet-only shared delay and
+  reverb returns place layers in space. Interactive playback uses
+  `supercollider/chapter_25_space_and_effects.scd`.
 
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
@@ -212,10 +218,12 @@ Chapter 23 turns a bare tone into reusable instruments with waveforms,
 oscillator mixtures, and bounded synthesis parameters while event data stays fixed.
 Chapter 24 shapes those instruments over time and frequency with envelopes,
 filters, velocity response, and articulation while the composition stays fixed.
+Chapter 25 adds stereo placement, delay, reverb, buses, and shared send/return
+routing while composition, playback configuration, and audio engine stay separate.
 
 ## Planned journey
 
-Only Chapters 0 through 24 exist today. The broad route—not a claim of implemented
+Only Chapters 0 through 25 exist today. The broad route—not a claim of implemented
 features beyond those chapters—is:
 
 ```text
