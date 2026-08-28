@@ -34,7 +34,7 @@ involving randomness will use explicit seeds so results can be reproduced.
 ## Requirements and setup
 
 - Python 3.11 or newer
-- No runtime dependencies for Chapters 0–4
+- No runtime dependencies for Chapters 0–5
 
 From the repository root, either run directly:
 
@@ -44,6 +44,7 @@ python -m composition_lab chapter-01
 python -m composition_lab chapter-02
 python -m composition_lab chapter-03
 python -m composition_lab chapter-04
+python -m composition_lab chapter-05
 ```
 
 or install an editable copy and use its console command:
@@ -55,6 +56,7 @@ composition-lab chapter-01
 composition-lab chapter-02
 composition-lab chapter-03
 composition-lab chapter-04
+composition-lab chapter-05
 ```
 
 The commands create ordinary WAV files in `outputs/`; open them in any audio
@@ -78,15 +80,19 @@ output directory.
 - [Chapter 4 — Scales, Keys, and Tonality](chapters/04_scales_keys_tonality/README.md)
   organizes pitch choices through transparent major and natural-minor patterns,
   tonics, scale degrees, and octave-independent membership.
+- [Chapter 5 — Intervals and Melodic Motion](chapters/05_intervals_melodic_motion/README.md)
+  measures signed motion, contour directions, range, and compact melodic profiles,
+  then makes controlled interval, repetition, range, and contour comparisons audible.
 
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
 computable; Chapter 2 makes musical time computable; Chapter 3 makes music into
-structured events; Chapter 4 organizes pitch choices through tonal systems.
+structured events; Chapter 4 organizes pitch choices through tonal systems;
+Chapter 5 makes melodic movement measurable without treating measurement as judgment.
 
 ## Planned journey
 
-Only Chapters 0, 1, 2, 3, and 4 exist today. The broad route—not a claim of implemented
+Only Chapters 0, 1, 2, 3, 4, and 5 exist today. The broad route—not a claim of implemented
 features beyond those chapters—is:
 
 ```text

@@ -23,6 +23,14 @@ from .scales import (
     major_scale,
     natural_minor_scale,
 )
+from .melody import (
+    classify_motion,
+    contour_directions,
+    interval_sequence,
+    melodic_profile,
+    motion_direction,
+    pitches_from_events,
+)
 
 CHAPTER_00_NOTES = (
     ("C4", 261.63, 0.40),
@@ -76,6 +84,26 @@ CHAPTER_04_FILENAMES = (
     "chapter_04_degree_7_ending.wav",
 )
 CHAPTER_04_DEGREES = (1, 2, 3, 5, 3, 2, 1)
+CHAPTER_05_FILENAMES = (
+    "chapter_05_stepwise.wav",
+    "chapter_05_leaping.wav",
+    "chapter_05_continuous_motion.wav",
+    "chapter_05_repeated_notes.wav",
+    "chapter_05_narrow_range.wav",
+    "chapter_05_wide_range.wav",
+    "chapter_05_arch.wav",
+    "chapter_05_inverted_arch.wav",
+)
+CHAPTER_05_MELODIES = {
+    "stepwise": (60, 62, 64, 65, 67, 65, 64, 62, 60),
+    "leaping": (60, 67, 62, 69, 64, 71, 65, 67, 60),
+    "continuous_motion": (60, 62, 64, 65, 67, 65, 62, 60),
+    "repeated_notes": (60, 60, 62, 62, 64, 64, 62, 60),
+    "narrow_range": (60, 62, 64, 62, 60, 62, 64, 62, 60),
+    "wide_range": (60, 64, 69, 64, 60, 64, 69, 64, 60),
+    "arch": (60, 62, 64, 67, 69, 67, 64, 62, 60),
+    "inverted_arch": (69, 67, 64, 62, 60, 62, 64, 67, 69),
+}
 
 
 def run_chapter_00(output_directory: Path = Path("outputs")) -> Path:
@@ -166,6 +194,38 @@ def run_chapter_04(output_directory: Path = Path("outputs")) -> tuple[Path, ...]
     return paths
 
 
+def _sequential_events(pitches: Sequence[int]) -> tuple[NoteEvent, ...]:
+    """Put Chapter 5 pitch material on one shared half-beat rhythm."""
+    return tuple(NoteEvent(pitch, index * 0.5, 0.5, 90) for index, pitch in enumerate(pitches))
+
+
+def run_chapter_05(output_directory: Path = Path("outputs")) -> tuple[Path, ...]:
+    """Render controlled interval, repetition, range, and contour comparisons."""
+    paths = tuple(output_directory / name for name in CHAPTER_05_FILENAMES)
+    scores = tuple(_sequential_events(pitches) for pitches in CHAPTER_05_MELODIES.values())
+    for path, score in zip(paths, scores, strict=True):
+        write_wav(path, render_events(score, 120))
+    return paths
+
+
+def _profile_text(label: str, pitches: Sequence[int]) -> str:
+    profile = melodic_profile(pitches)
+    lowest = pitch_to_name(profile.lowest) if profile.lowest is not None else "—"
+    highest = pitch_to_name(profile.highest) if profile.highest is not None else "—"
+    return (
+        f"{label}\n"
+        f"notes: {profile.notes}    movements: {profile.movements}\n"
+        f"lowest: {lowest}    highest: {highest}    range: {profile.range_semitones} semitones\n"
+        f"repeats: {profile.repeats} ({profile.repeat_percentage:.1f}%)    "
+        f"steps: {profile.steps} ({profile.stepwise_percentage:.1f}%)    "
+        f"leaps: {profile.leaps} ({profile.leap_percentage:.1f}%)\n"
+        f"ascending: {profile.ascending} ({profile.ascending_percentage:.1f}%)    "
+        f"descending: {profile.descending} ({profile.descending_percentage:.1f}%)    "
+        f"stationary: {profile.stationary} ({profile.stationary_percentage:.1f}%)\n"
+        f"average interval size: {profile.average_interval_size:.1f} semitones"
+    )
+
+
 def _pitch_table(melody: Sequence[int]) -> str:
     return "\n".join(
         f"{pitch:3}  {pitch_to_name(pitch):3}  {pitch_to_frequency(pitch):7.2f} Hz"
@@ -184,7 +244,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05"),
         help="experiment to run",
     )
     parser.add_argument(
@@ -263,7 +323,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "The pitches are identical. Why does simultaneity change the result?\n\n"
             "Created:\n" + "\n".join(str(path) for path in paths)
         )
-    else:
+    elif args.chapter == "chapter-04":
         paths = run_chapter_04(args.output_directory)
         c_major = major_scale(60)
         c_minor = natural_minor_scale(60)
@@ -291,5 +351,27 @@ def main(argv: Sequence[str] | None = None) -> int:
             "Listen: what changes with one chromatic note? Which ending feels more settled?\n"
             "These responses can depend on listener and style.\n\nCreated:\n" +
             "\n".join(str(path) for path in paths)
+        )
+    else:
+        paths = run_chapter_05(args.output_directory)
+        example_events = _sequential_events((60, 62, 64, 67, 64, 62, 60))
+        example = pitches_from_events(example_events)
+        intervals = interval_sequence(example)
+        print(
+            "Chapter 5 — Intervals and Melodic Motion\n\n"
+            "A melody is not only a sequence of pitches. It is also a sequence of movements.\n\n"
+            f"Melody:\n{' '.join(pitch_to_name(pitch) for pitch in example)}\n\n"
+            f"Intervals:\n{' '.join(f'{interval:+d}' for interval in intervals)}\n\n"
+            f"Motion:\n{' '.join(classify_motion(interval) for interval in intervals)}\n\n"
+            f"Direction:\n{' '.join(motion_direction(interval) for interval in intervals)}\n"
+            f"Compact contour: {' '.join(contour_directions(example))}\n\n"
+            + _profile_text("STEPWISE MELODY", CHAPTER_05_MELODIES["stepwise"])
+            + "\n\n"
+            + _profile_text("LEAPING MELODY", CHAPTER_05_MELODIES["leaping"])
+            + "\n\nScale degree is not semitone distance: in C major, 1→2 is +2, while 3→4 is +1.\n\n"
+            "Analysis explains how melodies differ structurally. Listening tells us what those differences mean musically.\n"
+            "Measurements describe movement; they do not determine beauty, emotion, memorability, quality, or meaning.\n\n"
+            "Created:\n" + "\n".join(str(path) for path in paths) +
+            "\n\nListen: how do interval size, repeated pitch, range, and contour change the character?"
         )
     return 0
