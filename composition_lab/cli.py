@@ -13,7 +13,7 @@ from .pitch import (
     transpose_pitch,
 )
 from .waveform import SAMPLE_RATE, render_notes, write_wav
-from .rhythm import sequential_starts, write_beat_sequence
+from .rhythm import beats_to_seconds, sequential_starts, write_beat_sequence
 from .events import NoteEvent, composition_duration, inspect_events, transpose_events
 from .event_rendering import render_events
 from .scales import (
@@ -70,6 +70,11 @@ from .melody_harmony import (
     HarmonicSpan, analyze_melody, chord_tone_duration_percentage,
     chord_tone_percentage, harmonies_during_event, is_chord_tone,
     is_suspension_like,
+)
+from .groove import (
+    GroovePattern, combine_layers, eighth_grid_labels, events_per_beat,
+    groove_events, is_offbeat_eighth, is_on_beat, pattern_grid, repeat_groove,
+    subdivision_positions,
 )
 
 CHAPTER_00_NOTES = (
@@ -228,6 +233,18 @@ CHAPTER_12_FILENAMES = (
     "chapter_12_resolved_nct.wav", "chapter_12_unresolved_nct.wav",
     "chapter_12_phrase_root_position.wav", "chapter_12_phrase_voice_led.wav",
     "chapter_12_melody_harmony_phrase.wav",
+)
+CHAPTER_13_FILENAMES = (
+    "chapter_13_quarter_note_pulse.wav", "chapter_13_eighth_note_pulse.wav",
+    "chapter_13_backbeat.wav", "chapter_13_downbeat_accent.wav",
+    "chapter_13_backbeat_accent.wav", "chapter_13_onbeat_pattern.wav",
+    "chapter_13_offbeat_pattern.wav", "chapter_13_syncopated_pattern.wav",
+    "chapter_13_short_offbeat.wav", "chapter_13_tied_offbeat.wav",
+    "chapter_13_one_cycle.wav", "chapter_13_four_cycles.wav",
+    "chapter_13_pattern_mutation.wav", "chapter_13_accent_mutation.wav",
+    "chapter_13_single_layer.wav", "chapter_13_layered_groove.wav",
+    "chapter_13_groove_70_bpm.wav", "chapter_13_groove_100_bpm.wav",
+    "chapter_13_groove_130_bpm.wav", "chapter_13_phrase_over_groove.wav",
 )
 
 
@@ -613,6 +630,72 @@ def run_chapter_12(output_directory: Path = Path("outputs")) -> tuple[Path, ...]
     return paths
 
 
+def chapter_13_patterns() -> dict[str, GroovePattern]:
+    """Return the small named patterns used by the Chapter 13 comparisons."""
+    return {
+        "quarters": GroovePattern(4, 2, (0, 2, 4, 6)),
+        "eighths": GroovePattern(4, 2, tuple(range(8))),
+        "downbeat": GroovePattern(4, 2, tuple(range(8)), (110, 55, 70, 55, 100, 55, 70, 55)),
+        "backbeat": GroovePattern(4, 2, tuple(range(8)), (65, 55, 110, 55, 65, 55, 110, 55)),
+        "onbeat": GroovePattern(4, 2, (0, 2, 4, 6)),
+        "offbeat": GroovePattern(4, 2, (1, 3, 5, 7)),
+        "syncopated": GroovePattern(4, 2, (0, 2, 3, 5, 7), (90, 75, 105, 80, 95)),
+        "low": GroovePattern(4, 2, (0, 4), (105, 95)),
+        "mid": GroovePattern(4, 2, (2, 6), (110, 110)),
+        "high": GroovePattern(4, 2, tuple(range(8)), (72, 55, 65, 55, 72, 55, 65, 55)),
+    }
+
+
+def chapter_13_layered_cycle() -> tuple[NoteEvent, ...]:
+    """Build LOW/MID/HIGH roles using pitches as deliberately simple timbral proxies."""
+    patterns = chapter_13_patterns()
+    return combine_layers(groove_events(patterns["low"], 48, note_duration=.16),
+                          groove_events(patterns["mid"], 60, note_duration=.12),
+                          groove_events(patterns["high"], 72, note_duration=.08))
+
+
+def chapter_13_material() -> tuple[tuple[NoteEvent, ...], ...]:
+    """Build deterministic pulse, syncopation, repetition, layering, and phrase scores."""
+    p = chapter_13_patterns()
+    quarters = groove_events(p["quarters"], note_duration=.12)
+    eighths = groove_events(p["eighths"], note_duration=.12)
+    downbeat = groove_events(p["downbeat"], note_duration=.12)
+    backbeat = groove_events(p["backbeat"], note_duration=.12)
+    onbeat = groove_events(p["onbeat"], note_duration=.14)
+    offbeat = groove_events(p["offbeat"], note_duration=.14)
+    syncopated = groove_events(p["syncopated"], note_duration=.14)
+    short = (NoteEvent(60, 1.5, .2, 100),)
+    tied = (NoteEvent(60, 1.5, 1.0, 100),)
+    four = repeat_groove(syncopated, 4, 4)
+    mutated = repeat_groove(onbeat, 3, 4) + groove_events(
+        GroovePattern(4, 2, (0, 2, 3, 4, 6)), start=12, note_duration=.14)
+    accent_mutated = repeat_groove(groove_events(p["eighths"], note_duration=.1), 3, 4) + groove_events(
+        GroovePattern(4, 2, tuple(range(8)), (90, 90, 90, 90, 90, 90, 90, 120)),
+        start=12, note_duration=.1)
+    high = groove_events(p["high"], 72, note_duration=.08)
+    layered = chapter_13_layered_cycle()
+    repeated_layered = repeat_groove(layered, 4, 4)
+    phrase = (
+        NoteEvent(67, 0, 1, 82), NoteEvent(69, 1, .5, 86), NoteEvent(71, 1.5, .5, 90),
+        NoteEvent(72, 2, 1, 98), NoteEvent(69, 3, 1, 84), NoteEvent(67, 4, 1, 82),
+        NoteEvent(64, 5, 1, 78), NoteEvent(62, 6, 1, 76), NoteEvent(60, 7, 1, 88),
+    )
+    phrase_score = repeat_groove(layered, 2, 4) + phrase
+    return (quarters, eighths, groove_events(GroovePattern(4, 2, (2, 6), (110, 110)), note_duration=.14),
+            downbeat, backbeat, onbeat, offbeat, syncopated, short, tied,
+            syncopated, four, mutated, accent_mutated, high, repeated_layered,
+            repeated_layered, repeated_layered, repeated_layered, phrase_score)
+
+
+def run_chapter_13(output_directory: Path = Path("outputs")) -> tuple[Path, ...]:
+    """Render Chapter 13 while preserving all structural positions in beats."""
+    paths = tuple(output_directory / name for name in CHAPTER_13_FILENAMES)
+    bpms = (100,) * 16 + (70, 100, 130, 100)
+    for path, score, bpm in zip(paths, chapter_13_material(), bpms, strict=True):
+        write_wav(path, render_events(score, bpm))
+    return paths
+
+
 def _profile_text(label: str, pitches: Sequence[int]) -> str:
     profile = melodic_profile(pitches)
     lowest = pitch_to_name(profile.lowest) if profile.lowest is not None else "—"
@@ -649,7 +732,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13"),
         help="experiment to run",
     )
     parser.add_argument(
@@ -1032,7 +1115,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "Similar, contrary, and oblique motion are descriptive previews, not counterpoint rules.\n\n"
             "Created:\n" + "\n".join(str(path) for path in paths)
         )
-    else:
+    elif args.chapter == "chapter-12":
         paths = run_chapter_12(args.output_directory)
         spans = chapter_12_spans()
         melody = _melody(
@@ -1091,5 +1174,45 @@ def main(argv: Sequence[str] | None = None) -> int:
             "This narrow tonal model does not classify appoggiaturas, anticipations, escape tones, pedal "
             "points, extensions, modal or nonfunctional harmony, blues and jazz tensions, or polytonality.\n\n"
             "Created:\n" + "\n".join(str(path) for path in paths)
+        )
+    else:
+        paths = run_chapter_13(args.output_directory)
+        patterns = chapter_13_patterns()
+        syncopated = groove_events(patterns["syncopated"])
+        onbeats = tuple(event.start for event in syncopated if is_on_beat(event.start))
+        offbeats = tuple(event.start for event in syncopated if is_offbeat_eighth(event.start))
+        print(
+            "Chapter 13 — Groove, Pulse, and Syncopation\n\n"
+            "What recurring temporal framework turns a duration list into a pattern?\n"
+            "TIME → PULSE → SUBDIVISION → PATTERN → ACCENT → SYNCOPATION → GROOVE\n\n"
+            f"Pulse is a recurring temporal reference. At 120 BPM, one beat is {beats_to_seconds(1, 120):g} seconds.\n"
+            "Meter model: 4/4\nSubdivision: straight eighth notes\n"
+            "Grid:       " + eighth_grid_labels() + "\n"
+            "Positions:  " + " ".join(f"{value:g}" for value in subdivision_positions(4, 2)) + "\n"
+            "Sixteenths may be labeled 1 e & a, but are not this chapter's primary grid.\n\n"
+            "GRID means every available onset; PATTERN means selected positions.\n"
+            "Backbeat:   " + pattern_grid(GroovePattern(4, 2, (2, 6))) + "\n"
+            "Syncopated: " + pattern_grid(patterns["syncopated"]) + "\n"
+            f"Active steps: {', '.join(map(str, patterns['syncopated'].active_steps))}\n"
+            f"Velocities: {', '.join(map(str, patterns['syncopated'].velocities or ()))}\n"
+            f"On-beat attacks: {onbeats}\nOffbeat attacks: {offbeats}\n"
+            f"Density: {events_per_beat(syncopated, 4):.2f} attacks per beat\n\n"
+            "Accent is relative emphasis, represented here by velocity independently of onset. "
+            "Duration, register, articulation, timbre, density, and context can also create accent.\n"
+            "The downbeat/backbeat files keep timing fixed while moving emphasis. Backbeats on 2 and 4 "
+            "are characteristic of many rock, pop, blues, funk, and related traditions—not a universal rule.\n\n"
+            "Syncopation here is a constructed conflict with expected metric emphasis: offbeat attacks, "
+            "an omitted expected beat, or an offbeat duration crossing a beat. It is described, not scored.\n\n"
+            "Layered groove (simple pitched proxies, not synthesized drums):\n"
+            "      " + eighth_grid_labels() + "\n"
+            "LOW   " + pattern_grid(patterns["low"]) + "\n"
+            "MID   " + pattern_grid(patterns["mid"]) + "\n"
+            "HIGH  " + pattern_grid(patterns["high"]) + "\n\n"
+            "Four exact repetitions establish expectation; the mutation files change one final cycle "
+            "by onset or accent. Tempo files preserve beat-relative structure at 70, 100, and 130 BPM.\n\n"
+            "This deliberately narrow model does not implement swing, shuffle, microtiming, polymeter, "
+            "polyrhythm, clave, tuplets, asymmetric meter, rubato, or culturally specific rhythmic systems. "
+            "Chapter 14 bass-line design is not implemented.\n\nCreated:\n" +
+            "\n".join(str(path) for path in paths)
         )
     return 0

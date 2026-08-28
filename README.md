@@ -34,7 +34,7 @@ involving randomness will use explicit seeds so results can be reproduced.
 ## Requirements and setup
 
 - Python 3.11 or newer
-- No runtime dependencies for Chapters 0–12
+- No runtime dependencies for Chapters 0–13
 
 From the repository root, either run directly:
 
@@ -52,6 +52,7 @@ python -m composition_lab chapter-09
 python -m composition_lab chapter-10
 python -m composition_lab chapter-11
 python -m composition_lab chapter-12
+python -m composition_lab chapter-13
 ```
 
 or install an editable copy and use its console command:
@@ -71,6 +72,7 @@ composition-lab chapter-09
 composition-lab chapter-10
 composition-lab chapter-11
 composition-lab chapter-12
+composition-lab chapter-13
 ```
 
 The commands create ordinary WAV files in `outputs/`; open them in any audio
@@ -118,6 +120,9 @@ output directory.
 - [Chapter 12 — Melody Against Harmony](chapters/12_melody_against_harmony/README.md)
   aligns melody onsets and sustained events with harmonic spans, distinguishes
   chord tones from conservatively named non-chord tones, and makes context audible.
+- [Chapter 13 — Groove, Pulse, and Syncopation](chapters/13_groove_pulse_syncopation/README.md)
+  makes repeated timing, accent, displacement, expectation, and interacting
+  rhythmic roles audible on a transparent beat-relative grid.
 
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
@@ -129,11 +134,12 @@ motifs into directed musical phrases; Chapter 8 makes simultaneous pitches into
 harmonic structures; Chapter 9 makes chords into harmonic motion through time;
 Chapter 10 gives that motion functional direction and resolution; Chapter 11 makes
 harmonic progressions into interacting melodic voices; Chapter 12 gives melody
-meaning relative to the harmony beneath it.
+meaning relative to the harmony beneath it; Chapter 13 makes repeated timing,
+accent, and displacement into groove.
 
 ## Planned journey
 
-Only Chapters 0 through 12 exist today. The broad route—not a claim of implemented
+Only Chapters 0 through 13 exist today. The broad route—not a claim of implemented
 features beyond those chapters—is:
 
 ```text
