@@ -34,13 +34,14 @@ involving randomness will use explicit seeds so results can be reproduced.
 ## Requirements and setup
 
 - Python 3.11 or newer
-- No runtime dependencies for Chapters 0–1
+- No runtime dependencies for Chapters 0–2
 
 From the repository root, either run directly:
 
 ```bash
 python -m composition_lab chapter-00
 python -m composition_lab chapter-01
+python -m composition_lab chapter-02
 ```
 
 or install an editable copy and use its console command:
@@ -49,6 +50,7 @@ or install an editable copy and use its console command:
 python -m pip install -e .
 composition-lab chapter-00
 composition-lab chapter-01
+composition-lab chapter-02
 ```
 
 The commands create ordinary WAV files in `outputs/`; open them in any audio
@@ -63,10 +65,17 @@ output directory.
 - [Chapter 1 — Pitch Becomes Computable](chapters/01_pitch_becomes_computable/README.md)
   replaces stored frequencies with pitch names and integers, then makes
   transposition and interval preservation audible.
+- [Chapter 2 — Time and Rhythm](chapters/02_time_and_rhythm/README.md)
+  separates beats from seconds, then makes rhythm, tempo, rests, meter,
+  subdivision, and syncopation audible.
+
+The progression so far is direct: Chapter 0 shows that sound can be generated
+from numerical musical decisions; Chapter 1 makes pitch relationships
+computable; Chapter 2 makes musical time computable.
 
 ## Planned journey
 
-Only Chapters 0 and 1 exist today. The broad route—not a claim of implemented
+Only Chapters 0, 1, and 2 exist today. The broad route—not a claim of implemented
 features beyond those chapters—is:
 
 ```text
