@@ -31,6 +31,18 @@ from .melody import (
     motion_direction,
     pitches_from_events,
 )
+from .motifs import (
+    augment_motif,
+    build_development_study,
+    diminish_motif,
+    displace_motif,
+    invert_motif,
+    normalize_events,
+    repeat_motif,
+    retrograde_motif,
+    sequence_motif,
+    transpose_motif,
+)
 
 CHAPTER_00_NOTES = (
     ("C4", 261.63, 0.40),
@@ -104,6 +116,24 @@ CHAPTER_05_MELODIES = {
     "arch": (60, 62, 64, 67, 69, 67, 64, 62, 60),
     "inverted_arch": (69, 67, 64, 62, 60, 62, 64, 67, 69),
 }
+CHAPTER_06_MOTIF = (
+    NoteEvent(60, 0.0, 0.5, 84),
+    NoteEvent(62, 0.5, 0.5, 88),
+    NoteEvent(64, 1.0, 1.0, 94),
+    NoteEvent(67, 2.0, 1.0, 100),
+)
+CHAPTER_06_FILENAMES = (
+    "chapter_06_original.wav",
+    "chapter_06_repeated.wav",
+    "chapter_06_transposed.wav",
+    "chapter_06_sequence.wav",
+    "chapter_06_retrograde.wav",
+    "chapter_06_inversion.wav",
+    "chapter_06_augmented.wav",
+    "chapter_06_diminished.wav",
+    "chapter_06_displaced.wav",
+    "chapter_06_development_study.wav",
+)
 
 
 def run_chapter_00(output_directory: Path = Path("outputs")) -> Path:
@@ -208,6 +238,34 @@ def run_chapter_05(output_directory: Path = Path("outputs")) -> tuple[Path, ...]
     return paths
 
 
+def chapter_06_material() -> tuple[tuple[NoteEvent, ...], tuple[tuple[NoteEvent, ...], ...]]:
+    """Return the fixed motif and every listening comparison without rendering."""
+    motif = tuple(normalize_events(CHAPTER_06_MOTIF))
+    development, _ = build_development_study(motif)
+    transformations = (
+        motif,
+        tuple(repeat_motif(motif, 4)),
+        tuple(transpose_motif(motif, 5)),
+        tuple(sequence_motif(motif, (0, 2, 4, 5))),
+        tuple(retrograde_motif(motif)),
+        tuple(invert_motif(motif, 60)),
+        tuple(augment_motif(motif)),
+        tuple(diminish_motif(motif)),
+        tuple(displace_motif(motif, 0.5)),
+        tuple(development),
+    )
+    return motif, transformations
+
+
+def run_chapter_06(output_directory: Path = Path("outputs")) -> tuple[Path, ...]:
+    """Render motif transformations and the longer development study."""
+    _, scores = chapter_06_material()
+    paths = tuple(output_directory / name for name in CHAPTER_06_FILENAMES)
+    for path, score in zip(paths, scores, strict=True):
+        write_wav(path, render_events(score, 120))
+    return paths
+
+
 def _profile_text(label: str, pitches: Sequence[int]) -> str:
     profile = melodic_profile(pitches)
     lowest = pitch_to_name(profile.lowest) if profile.lowest is not None else "—"
@@ -244,7 +302,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06"),
         help="experiment to run",
     )
     parser.add_argument(
@@ -352,7 +410,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "These responses can depend on listener and style.\n\nCreated:\n" +
             "\n".join(str(path) for path in paths)
         )
-    else:
+    elif args.chapter == "chapter-05":
         paths = run_chapter_05(args.output_directory)
         example_events = _sequential_events((60, 62, 64, 67, 64, 62, 60))
         example = pitches_from_events(example_events)
@@ -373,5 +431,43 @@ def main(argv: Sequence[str] | None = None) -> int:
             "Measurements describe movement; they do not determine beauty, emotion, memorability, quality, or meaning.\n\n"
             "Created:\n" + "\n".join(str(path) for path in paths) +
             "\n\nListen: how do interval size, repeated pitch, range, and contour change the character?"
+        )
+    else:
+        paths = run_chapter_06(args.output_directory)
+        motif, scores = chapter_06_material()
+        transposed, retrograde, inversion = scores[2], scores[4], scores[5]
+        _, sections = build_development_study(motif)
+
+        def summary(label: str, events: Sequence[NoteEvent]) -> str:
+            pitches = pitches_from_events(events)
+            return (
+                f"{label}\n"
+                f"pitches: {' '.join(pitch_to_name(pitch) for pitch in pitches)}\n"
+                f"starts: {' '.join(f'{event.start:.2f}' for event in events)}\n"
+                f"durations: {' '.join(f'{event.duration:.2f}' for event in events)}\n"
+                f"intervals: {' '.join(f'{value:+d}' for value in interval_sequence(pitches))}"
+            )
+
+        structure = "\n".join(
+            f"Section {index}: beats {section.start:.1f}–{section.end:.1f}  {section.label}"
+            for index, section in enumerate(sections, 1)
+        )
+        print(
+            "Chapter 6 — Motifs and Transformation\n\n"
+            "A motif is a short musical idea recognizable enough to repeat, vary, or develop.\n"
+            "What has to remain the same for us to recognize it?\n\n"
+            + summary("ORIGINAL", motif) + "\n\n"
+            + summary("TRANSPOSE +5", transposed) + "\n\n"
+            + summary("RETROGRADE", retrograde) + "\n\n"
+            + summary("INVERSION AROUND C4", inversion) + "\n\n"
+            "AUGMENTATION: starts and durations ×2\n"
+            "DIMINUTION: starts and durations ×0.5\n"
+            "DISPLACEMENT: internal relationships preserved, onset +0.5 beat\n\n"
+            "Transposition preserves intervals and rhythm. Retrograde reflects events in time.\n"
+            "Inversion preserves interval magnitudes but reverses signs. Temporal scaling preserves proportions.\n"
+            "Every operation returns new immutable events; the original remains unchanged.\n\n"
+            "Development study:\n" + structure + "\n\nCreated:\n"
+            + "\n".join(str(path) for path in paths)
+            + "\n\nHow can repetition remain recognizable without being literal?"
         )
     return 0

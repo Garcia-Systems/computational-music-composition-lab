@@ -34,7 +34,7 @@ involving randomness will use explicit seeds so results can be reproduced.
 ## Requirements and setup
 
 - Python 3.11 or newer
-- No runtime dependencies for Chapters 0–5
+- No runtime dependencies for Chapters 0–6
 
 From the repository root, either run directly:
 
@@ -45,6 +45,7 @@ python -m composition_lab chapter-02
 python -m composition_lab chapter-03
 python -m composition_lab chapter-04
 python -m composition_lab chapter-05
+python -m composition_lab chapter-06
 ```
 
 or install an editable copy and use its console command:
@@ -57,6 +58,7 @@ composition-lab chapter-02
 composition-lab chapter-03
 composition-lab chapter-04
 composition-lab chapter-05
+composition-lab chapter-06
 ```
 
 The commands create ordinary WAV files in `outputs/`; open them in any audio
@@ -83,16 +85,20 @@ output directory.
 - [Chapter 5 — Intervals and Melodic Motion](chapters/05_intervals_melodic_motion/README.md)
   measures signed motion, contour directions, range, and compact melodic profiles,
   then makes controlled interval, repetition, range, and contour comparisons audible.
+- [Chapter 6 — Motifs and Transformation](chapters/06_motifs_transformation/README.md)
+  turns short `NoteEvent` ideas into repeatable, transposable, reversible,
+  invertible, time-scalable material and combines those changes in a development study.
 
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
 computable; Chapter 2 makes musical time computable; Chapter 3 makes music into
 structured events; Chapter 4 organizes pitch choices through tonal systems;
-Chapter 5 makes melodic movement measurable without treating measurement as judgment.
+Chapter 5 makes melodic movement measurable without treating measurement as judgment;
+Chapter 6 makes small musical ideas transformable material.
 
 ## Planned journey
 
-Only Chapters 0, 1, 2, 3, 4, and 5 exist today. The broad route—not a claim of implemented
+Only Chapters 0 through 6 exist today. The broad route—not a claim of implemented
 features beyond those chapters—is:
 
 ```text
