@@ -9,10 +9,10 @@ question is:
 > hear the results, and use those experiments to become better composers?
 
 Python is the compositional and analytical engine: it makes musical decisions
-visible as inspectable data and small transformations. Much later,
-SuperCollider will become the synthesis, sound-design, and real-time performance
-engine. It is intentionally **not required now**. The completed chapters use
-only Python's standard library and keep every step through audio visible.
+visible as inspectable data and small transformations. Part VII begins using
+SuperCollider as an optional synthesis and real-time performance engine while
+retaining every earlier Python renderer. It is **not required** to run the
+Python chapter commands or tests, which use only the standard library.
 
 ## The laboratory model
 
@@ -34,7 +34,8 @@ involving randomness will use explicit seeds so results can be reproduced.
 ## Requirements and setup
 
 - Python 3.11 or newer
-- No runtime dependencies for Chapters 0–21
+- No Python runtime dependencies for Chapters 0–22; SuperCollider is optional
+  and used interactively only for Chapter 22 playback
 
 From the repository root, either run directly:
 
@@ -61,6 +62,7 @@ python -m composition_lab chapter-18
 python -m composition_lab chapter-19
 python -m composition_lab chapter-20
 python -m composition_lab chapter-21
+python -m composition_lab chapter-22
 ```
 
 or install an editable copy and use its console command:
@@ -89,6 +91,7 @@ composition-lab chapter-18
 composition-lab chapter-19
 composition-lab chapter-20
 composition-lab chapter-21
+composition-lab chapter-22
 ```
 
 The commands create ordinary WAV files in `outputs/`; open them in any audio
@@ -164,6 +167,13 @@ output directory.
   describes melody, rhythm, repetition, harmony alignment, training overlap,
   constraints, and generator diversity while leaving aesthetic judgment to the listener.
 
+### Part VII — SuperCollider
+
+- [Chapter 22 — From Notes to Sound](chapters/22_from_notes_to_sound/README.md)
+  sends Python-authored musical events through an inspectable JSON bridge to a
+  simple real-time SuperCollider sine SynthDef while retaining Python reference audio.
+  Interactive playback uses `supercollider/chapter_22_first_sound.scd`.
+
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
 computable; Chapter 2 makes musical time computable; Chapter 3 makes music into
@@ -184,11 +194,12 @@ constraints define spaces of possible compositions that the computer can search.
 makes those spaces explorable with seeded randomness without sacrificing reproducibility.
 Chapter 20 makes future choices depend on learned local relationships from prior
 musical sequences. Chapter 21 describes generated music with structural metrics
-while leaving aesthetic judgment to the listener.
+while leaving aesthetic judgment to the listener. Chapter 22 makes Python musical
+events cross into a dedicated synthesis engine and become real-time synthesized sound.
 
 ## Planned journey
 
-Only Chapters 0 through 21 exist today. The broad route—not a claim of implemented
+Only Chapters 0 through 22 exist today. The broad route—not a claim of implemented
 features beyond those chapters—is:
 
 ```text
