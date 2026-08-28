@@ -43,6 +43,10 @@ from .motifs import (
     sequence_motif,
     transpose_motif,
 )
+from .phrases import (
+    build_complete_phrase, build_flat_phrase, build_question, ending_variant,
+    phrase_span, place_after,
+)
 
 CHAPTER_00_NOTES = (
     ("C4", 261.63, 0.40),
@@ -133,6 +137,15 @@ CHAPTER_06_FILENAMES = (
     "chapter_06_diminished.wav",
     "chapter_06_displaced.wav",
     "chapter_06_development_study.wav",
+)
+CHAPTER_07_FILENAMES = (
+    "chapter_07_flat_phrase.wav", "chapter_07_shaped_phrase.wav",
+    "chapter_07_tonic_ending.wav", "chapter_07_open_ending.wav",
+    "chapter_07_short_ending.wav", "chapter_07_long_ending.wav",
+    "chapter_07_question.wav", "chapter_07_answer.wav",
+    "chapter_07_question_answer.wav", "chapter_07_literal_repeat_pair.wav",
+    "chapter_07_answer_pair.wav", "chapter_07_complete_phrase.wav",
+    "chapter_07_phrase_pair_capstone.wav",
 )
 
 
@@ -266,6 +279,38 @@ def run_chapter_06(output_directory: Path = Path("outputs")) -> tuple[Path, ...]
     return paths
 
 
+def chapter_07_material() -> tuple[tuple[NoteEvent, ...], ...]:
+    """Return every deterministic Chapter 7 comparison without rendering."""
+    motif = tuple(normalize_events(CHAPTER_06_MOTIF))
+    shaped, _ = build_complete_phrase(motif)
+    flat = build_flat_phrase(motif)
+    tonic, open_ending = ending_variant(), ending_variant(62)
+    short, long = ending_variant(final_duration=.5), ending_variant(final_duration=2)
+    question, answer = build_question(), build_question(True)
+    question_answer = place_after(question, answer, gap=1)
+    literal_pair = place_after(question, question, gap=1)
+    answer_pair = question_answer
+    # Preserve the complete arc while changing the paired endings: A remains
+    # open on degree 2; B answers with the long tonic arrival.
+    first = list(shaped)
+    first[-1] = NoteEvent(62, first[-1].start, 3, 74)
+    second = list(shaped)
+    second[-1] = NoteEvent(60, second[-1].start, 3, 78)
+    capstone = place_after(first, second, gap=2)
+    return (
+        flat, shaped, tonic, open_ending, short, long, question, answer,
+        question_answer, literal_pair, answer_pair, shaped, capstone,
+    )
+
+
+def run_chapter_07(output_directory: Path = Path("outputs")) -> tuple[Path, ...]:
+    """Render phrase direction, closure, response, and capstone studies."""
+    paths = tuple(output_directory / name for name in CHAPTER_07_FILENAMES)
+    for path, score in zip(paths, chapter_07_material(), strict=True):
+        write_wav(path, render_events(score, 120))
+    return paths
+
+
 def _profile_text(label: str, pitches: Sequence[int]) -> str:
     profile = melodic_profile(pitches)
     lowest = pitch_to_name(profile.lowest) if profile.lowest is not None else "—"
@@ -302,7 +347,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07"),
         help="experiment to run",
     )
     parser.add_argument(
@@ -432,7 +477,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "Created:\n" + "\n".join(str(path) for path in paths) +
             "\n\nListen: how do interval size, repeated pitch, range, and contour change the character?"
         )
-    else:
+    elif args.chapter == "chapter-06":
         paths = run_chapter_06(args.output_directory)
         motif, scores = chapter_06_material()
         transposed, retrograde, inversion = scores[2], scores[4], scores[5]
@@ -469,5 +514,40 @@ def main(argv: Sequence[str] | None = None) -> int:
             "Development study:\n" + structure + "\n\nCreated:\n"
             + "\n".join(str(path) for path in paths)
             + "\n\nHow can repetition remain recognizable without being literal?"
+        )
+    else:
+        paths = run_chapter_07(args.output_directory)
+        motif = tuple(normalize_events(CHAPTER_06_MOTIF))
+        phrase, sections = build_complete_phrase(motif)
+        question, answer = build_question(), build_question(True)
+        profile = melodic_profile(pitches_from_events(phrase))
+        structure = "\n".join(
+            f"{section.label.title()}: beats {section.start:g}–{section.end:g}"
+            for section in sections
+        )
+        print(
+            "Chapter 7 — Phrases, Questions, and Closure\n\n"
+            "A phrase is a bounded musical thought containing enough internal direction "
+            "to feel like a meaningful unit.\n"
+            "We now arrange transformed material to create direction over time.\n\n"
+            "Roles: OPENING → CONTINUATION → CLIMAX → CLOSING\n"
+            "These roles are experimental scaffolding, not universal laws.\n\n"
+            f"Motif: {' '.join(pitch_to_name(event.pitch) for event in motif)}\n\n"
+            "Complete phrase:\n" + structure + "\n"
+            "Continuation: two-note fragments, twice the opening activity\n"
+            "Designed climax: C5 at beat 9, velocity 105\n"
+            "Closing: descending to tonic, final duration 3 beats\n\n"
+            f"Overall range: {profile.range_semitones} semitones; "
+            f"average interval: {profile.average_interval_size:.1f} semitones\n"
+            "Analysis describes the construction. Listening evaluates the musical effect.\n\n"
+            "Flat vs shaped: stable activity/register/velocity versus rising fragments, "
+            "high point, and release. Does shaping create a destination?\n"
+            f"Question: ends on degree 2 ({pitch_to_name(question[-1].pitch)})\n"
+            f"Answer: ends on degree 1 ({pitch_to_name(answer[-1].pitch)})\n"
+            "Repetition creates recognition. Variation can create response.\n"
+            "Final pitch, final duration, and a real timeline gap are isolated comparisons.\n\n"
+            "Phrase behavior differs across classical, blues, jazz, rock, folk, electronic, "
+            "non-Western, through-composed, and highly repetitive music.\n\nCreated:\n"
+            + "\n".join(str(path) for path in paths)
         )
     return 0
