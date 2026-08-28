@@ -60,6 +60,12 @@ from .progressions import (
 from .harmonic_function import (
     abbreviated_functional_path, functional_path, harmonic_function,
 )
+from .voice_leading import (
+    bass_sequence, choose_nearest_inversion, common_pitch_classes,
+    extract_voice_lines, inversion_candidates, maximum_voice_motion,
+    progression_motion, smooth_progression_voicings, stationary_common_tones,
+    voice_movements, within_motion_budget,
+)
 
 CHAPTER_00_NOTES = (
     ("C4", 261.63, 0.40),
@@ -194,6 +200,16 @@ CHAPTER_10_FILENAMES = (
     "chapter_10_compact_functional_arc.wav", "chapter_10_expanded_functional_arc.wav",
     "chapter_10_short_dominant.wav", "chapter_10_long_dominant.wav",
     "chapter_10_functional_phrase.wav",
+)
+CHAPTER_11_FILENAMES = (
+    "chapter_11_root_position_transition.wav",
+    "chapter_11_smoother_transition.wav",
+    "chapter_11_root_position_progression.wav",
+    "chapter_11_smooth_progression.wav",
+    "chapter_11_low_voice.wav", "chapter_11_middle_voice.wav",
+    "chapter_11_high_voice.wav", "chapter_11_common_tones.wav",
+    "chapter_11_I_V_vi_IV_smooth.wav", "chapter_11_intentional_leap.wav",
+    "chapter_11_phrase_root_position.wav", "chapter_11_phrase_voice_led.wav",
 )
 
 
@@ -469,6 +485,44 @@ def run_chapter_10(output_directory: Path = Path("outputs")) -> tuple[Path, ...]
     return paths
 
 
+def _voicing_events(voicings: Sequence[Sequence[int]], duration: float = 2.0,
+                    velocity: int = 72) -> tuple[NoteEvent, ...]:
+    return tuple(
+        NoteEvent(pitch, index * duration, duration, velocity)
+        for index, voicing in enumerate(voicings) for pitch in voicing
+    )
+
+
+def chapter_11_material() -> tuple[tuple[NoteEvent, ...], ...]:
+    """Build Chapter 11's controlled transitions, voices, and phrase comparisons."""
+    primary = progression_chords(60, MAJOR, (1, 4, 5, 1))
+    smooth = smooth_progression_voicings(primary)
+    second = smooth_progression_voicings(progression_chords(60, MAJOR, (1, 5, 6, 4)))
+    common = smooth_progression_voicings(progression_chords(60, MAJOR, (1, 6, 4, 5)))
+    lines = extract_voice_lines(smooth)
+    voice_scores = tuple(_sequential_events(line) for line in lines)
+    phrase_melody = events_from_degrees(
+        (1, 3, 2, 4, 4, 6, 5, 7, 1), 72, MAJOR,
+        (1, 1, 1, 1, 1, 1, 0.5, 0.5, 1), velocity=92,
+    )
+    root_phrase = _voicing_events(primary, velocity=54) + tuple(phrase_melody)
+    smooth_phrase = _voicing_events(smooth, velocity=54) + tuple(phrase_melody)
+    return (
+        _voicing_events(primary[:2]), _voicing_events((primary[0], smooth[1])),
+        _voicing_events(primary), _voicing_events(smooth),
+        *voice_scores, _voicing_events(common), _voicing_events(second),
+        _voicing_events((primary[0], primary[1])), root_phrase, smooth_phrase,
+    )
+
+
+def run_chapter_11(output_directory: Path = Path("outputs")) -> tuple[Path, ...]:
+    """Render the deterministic Chapter 11 voice-leading experiments."""
+    paths = tuple(output_directory / name for name in CHAPTER_11_FILENAMES)
+    for path, score in zip(paths, chapter_11_material(), strict=True):
+        write_wav(path, render_events(score, 120))
+    return paths
+
+
 def _profile_text(label: str, pitches: Sequence[int]) -> str:
     profile = melodic_profile(pitches)
     lowest = pitch_to_name(profile.lowest) if profile.lowest is not None else "—"
@@ -505,7 +559,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11"),
         help="experiment to run",
     )
     parser.add_argument(
@@ -786,7 +840,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "voice-leading optimization is deliberately deferred.\n\nCreated:\n" +
             "\n".join(str(path) for path in paths)
         )
-    else:
+    elif args.chapter == "chapter-10":
         paths = run_chapter_10(args.output_directory)
         degrees = (1, 4, 5, 1)
         durations = (2.0,) * 4
@@ -818,6 +872,74 @@ def main(argv: Sequence[str] | None = None) -> int:
             "style, or listener response. Modal, blues-based, chromatic, nonfunctional, pedal-based, "
             "static, planed, quartal, rhythmically driven, and ambiguous harmony need other accounts.\n"
             "Root-position voicings remain intentionally plain; voice leading belongs to Chapter 11.\n\n"
+            "Created:\n" + "\n".join(str(path) for path in paths)
+        )
+    else:
+        paths = run_chapter_11(args.output_directory)
+        degrees = (1, 4, 5, 1)
+        roots = progression_chords(60, MAJOR, degrees)
+        smooth = smooth_progression_voicings(roots)
+        root_steps, root_total = progression_motion(roots)
+        smooth_steps, smooth_total = progression_motion(smooth)
+        candidates = inversion_candidates(roots[1])
+        selected = choose_nearest_inversion(roots[0], roots[1])
+
+        def notes(voicing: Sequence[int]) -> str:
+            return " ".join(pitch_to_name(pitch) for pitch in voicing)
+
+        candidate_rows = "\n".join(
+            f"{notes(candidate):<14} movement: "
+            f"{' '.join(f'{move:+d}' for move in voice_movements(roots[0], candidate))}  "
+            f"total={sum(abs(move) for move in voice_movements(roots[0], candidate))}  "
+            f"max={maximum_voice_motion(roots[0], candidate)}"
+            for candidate in candidates
+        )
+        smooth_rows = "\n".join(
+            f"{roman}: {notes(voicing)}" + (
+                "" if index == 0 else
+                f"  movement {' '.join(f'{move:+d}' for move in voice_movements(smooth[index - 1], voicing))}"
+            )
+            for index, (roman, voicing) in enumerate(zip(
+                progression_roman_numerals(60, MAJOR, degrees), smooth, strict=True
+            ))
+        )
+        voice_rows = []
+        for label, line in zip(("Low", "Middle", "High"), extract_voice_lines(smooth), strict=True):
+            profile = melodic_profile(line)
+            intervals = interval_sequence(line)
+            voice_rows.append(
+                f"{label} voice: {notes(line)}\n"
+                f"intervals: {' '.join(f'{value:+d}' for value in intervals)}; "
+                f"range={profile.range_semitones}; average={profile.average_interval_size:.1f}; "
+                f"maximum leap={max((abs(value) for value in intervals), default=0)}"
+            )
+        print(
+            "Chapter 11 — Voice Leading and Efficient Motion\n\n"
+            "A progression names available harmonies; it does not uniquely determine register.\n"
+            "Here a voice is one sorted low/middle/high position through equal three-note voicings.\n"
+            "Real voice identity can be more nuanced than preserving sorted positions.\n\n"
+            "Experiment 1 — I → IV candidate inspector\nPrevious: " + notes(roots[0]) +
+            "\nCandidates (inversion × whole-voicing shifts -12/0/+12, range C3–C6):\n" +
+            candidate_rows + "\nSelected: " + notes(selected) +
+            f"\nWithin five-semitone budget: {'yes' if within_motion_budget(roots[0], selected, 5) else 'no'}\n\n"
+            "VOICE LEADING\nProgression: I IV V I\nFunction: " +
+            " → ".join(abbreviated_functional_path(degrees)) +
+            "\n\nRoot-position voicings:\n" + "\n".join(notes(chord) for chord in roots) +
+            f"\nTransition motion: {root_steps}\nTotal motion: {root_total}\n\n"
+            "Smoothed voicings:\n" + smooth_rows +
+            f"\nTransition motion: {smooth_steps}\nTotal motion: {smooth_total}\n\n" +
+            "\n\n".join(voice_rows) +
+            "\n\nChord roots: " + " → ".join(pitch_to_name(chord[0]) for chord in roots) +
+            "\nActual bass: " + " → ".join(pitch_to_name(pitch) for pitch in bass_sequence(smooth)) +
+            "\nHarmonic root motion and sounding bass motion are separate layers.\n\n"
+            "I→vi common pitch classes: " + " ".join(
+                pitch_to_name(pc + 60)[:-1] for pc in common_pitch_classes(roots[0], progression_chords(60, MAJOR, (6,))[0])
+            ) + "\nStationary tones in I→IV selection: " +
+            (" ".join(pitch_to_name(p) for p in stationary_common_tones(roots[0], selected)) or "none") +
+            "\nG4 and G5 share a pitch class, but only an unchanged absolute pitch in the same voice is stationary.\n\n"
+            "Lower motion measures less displacement, not better music. The intentional-leap file "
+            "uses the same harmony for registral contrast. The search is greedy and local, not globally optimal.\n"
+            "Similar, contrary, and oblique motion are descriptive previews, not counterpoint rules.\n\n"
             "Created:\n" + "\n".join(str(path) for path in paths)
         )
     return 0
