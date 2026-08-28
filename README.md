@@ -34,7 +34,7 @@ involving randomness will use explicit seeds so results can be reproduced.
 ## Requirements and setup
 
 - Python 3.11 or newer
-- No runtime dependencies for Chapters 0–2
+- No runtime dependencies for Chapters 0–3
 
 From the repository root, either run directly:
 
@@ -42,6 +42,7 @@ From the repository root, either run directly:
 python -m composition_lab chapter-00
 python -m composition_lab chapter-01
 python -m composition_lab chapter-02
+python -m composition_lab chapter-03
 ```
 
 or install an editable copy and use its console command:
@@ -51,6 +52,7 @@ python -m pip install -e .
 composition-lab chapter-00
 composition-lab chapter-01
 composition-lab chapter-02
+composition-lab chapter-03
 ```
 
 The commands create ordinary WAV files in `outputs/`; open them in any audio
@@ -68,14 +70,19 @@ output directory.
 - [Chapter 2 — Time and Rhythm](chapters/02_time_and_rhythm/README.md)
   separates beats from seconds, then makes rhythm, tempo, rests, meter,
   subdivision, and syncopation audible.
+- [Chapter 3 — The Musical Event](chapters/03_musical_event/README.md)
+  joins pitch, onset, duration, and performance intensity in an immutable,
+  inspectable event; events can overlap on a shared rendered timeline.
 
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
-computable; Chapter 2 makes musical time computable.
+computable; Chapter 2 makes musical time computable; Chapter 3 establishes the
+event data model that later chapters can use for increasingly sophisticated
+compositions.
 
 ## Planned journey
 
-Only Chapters 0, 1, and 2 exist today. The broad route—not a claim of implemented
+Only Chapters 0, 1, 2, and 3 exist today. The broad route—not a claim of implemented
 features beyond those chapters—is:
 
 ```text
