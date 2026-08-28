@@ -52,6 +52,11 @@ from .chords import (
     chord_events, diminished_triad, invert_chord, major_triad, minor_triad,
     triad_from_scale_degree, triad_quality,
 )
+from .progressions import (
+    progression_chords, progression_duration, progression_events,
+    progression_roman_numerals, progression_starts, repeat_progression,
+    root_sequence,
+)
 
 CHAPTER_00_NOTES = (
     ("C4", 261.63, 0.40),
@@ -160,6 +165,18 @@ CHAPTER_08_FILENAMES = (
     "chapter_08_closed_voicing.wav", "chapter_08_open_voicing.wav",
     "chapter_08_block_chord.wav", "chapter_08_broken_chord.wav",
     "chapter_08_c_major_diatonic_triads.wav", "chapter_08_harmony_preview.wav",
+)
+CHAPTER_09_FILENAMES = (
+    "chapter_09_I_IV_V_I.wav",
+    "chapter_09_open_progression.wav", "chapter_09_closed_progression.wav",
+    "chapter_09_harmonic_rhythm_slow.wav",
+    "chapter_09_harmonic_rhythm_medium.wav",
+    "chapter_09_harmonic_rhythm_fast.wav",
+    "chapter_09_I_IV_V_I_C_major.wav", "chapter_09_I_IV_V_I_F_major.wav",
+    "chapter_09_I_IV_V_I_G_major.wav", "chapter_09_I_V_vi_IV.wav",
+    "chapter_09_order_a.wav", "chapter_09_order_b.wav",
+    "chapter_09_repeated_loop.wav", "chapter_09_harmonic_variation.wav",
+    "chapter_09_melody_over_progression_preview.wav",
 )
 
 
@@ -359,6 +376,44 @@ def run_chapter_08(output_directory: Path = Path("outputs")) -> tuple[Path, ...]
     return paths
 
 
+def chapter_09_material() -> tuple[tuple[NoteEvent, ...], ...]:
+    """Return progression comparisons while keeping degrees separate from rhythm."""
+    basic = (1, 4, 5, 1)
+    medium = (2.0,) * 4
+    loop = (1, 5, 6, 4)
+    repeated_degrees, repeated_durations = repeat_progression(loop, medium, 2)
+    chords_for_layer = progression_events(60, MAJOR, basic, medium, velocity=60)
+    melody = events_from_degrees(
+        (1, 2, 3, 5, 4, 3, 2, 7, 1, 3, 2, 1, 7, 2, 1, 1),
+        72, MAJOR, (0.5,) * 16, velocity=90,
+    )
+    return (
+        progression_events(60, MAJOR, basic, medium),
+        progression_events(60, MAJOR, (1, 4, 5), (2.0,) * 3),
+        progression_events(60, MAJOR, basic, medium),
+        progression_events(60, MAJOR, basic, (4.0,) * 4),
+        progression_events(60, MAJOR, basic, medium),
+        progression_events(60, MAJOR, basic, (1.0,) * 4),
+        progression_events(60, MAJOR, basic, medium),
+        progression_events(65, MAJOR, basic, medium),
+        progression_events(67, MAJOR, basic, medium),
+        progression_events(60, MAJOR, loop, medium),
+        progression_events(60, MAJOR, loop, medium),
+        progression_events(60, MAJOR, (1, 4, 6, 5), medium),
+        progression_events(60, MAJOR, repeated_degrees, repeated_durations),
+        progression_events(60, MAJOR, (1, 5, 4, 4), medium),
+        tuple(chords_for_layer) + tuple(melody),
+    )
+
+
+def run_chapter_09(output_directory: Path = Path("outputs")) -> tuple[Path, ...]:
+    """Render Chapter 9's deterministic harmonic-motion experiments."""
+    paths = tuple(output_directory / name for name in CHAPTER_09_FILENAMES)
+    for path, score in zip(paths, chapter_09_material(), strict=True):
+        write_wav(path, render_events(score, 120))
+    return paths
+
+
 def _profile_text(label: str, pitches: Sequence[int]) -> str:
     profile = melodic_profile(pitches)
     lowest = pitch_to_name(profile.lowest) if profile.lowest is not None else "—"
@@ -395,7 +450,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09"),
         help="experiment to run",
     )
     parser.add_argument(
@@ -598,7 +653,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "non-Western, through-composed, and highly repetitive music.\n\nCreated:\n"
             + "\n".join(str(path) for path in paths)
         )
-    else:
+    elif args.chapter == "chapter-08":
         paths = run_chapter_08(args.output_directory)
         qualities = (
             ("C major", major_triad(60), MAJOR_TRIAD),
@@ -633,5 +688,47 @@ def main(argv: Sequence[str] | None = None) -> int:
             "\n\nBlock chords sound together; an arpeggio presents the same tones sequentially.\n"
             "Closed and open voicings retain pitch classes while changing register and spacing.\n\n"
             "Created:\n" + "\n".join(str(path) for path in paths)
+        )
+    else:
+        paths = run_chapter_09(args.output_directory)
+        degrees = (1, 4, 5, 1)
+        durations = (2.0,) * 4
+        chords = progression_chords(60, MAJOR, degrees)
+        romans = progression_roman_numerals(60, MAJOR, degrees)
+        starts = progression_starts(durations)
+        rows = "\n".join(
+            f"{start:>4.1f}–{start + duration:<4.1f}  {degree:<6}  {roman:<5}  "
+            f"{pitch_to_name(chord[0])[:-1]:<4}  {' '.join(pitch_to_name(p) for p in chord)}"
+            for start, duration, degree, roman, chord in zip(
+                starts, durations, degrees, romans, chords, strict=True
+            )
+        )
+        # These key-aware labels prefer B-flat in F major; the pitch module's
+        # general chromatic formatter otherwise (correctly) defaults to sharps.
+        key_roots = "\n".join((
+            "C major: C → F → G → C",
+            "F major: F → Bb → C → F",
+            "G major: G → C → D → G",
+        ))
+        print(
+            "Chapter 9 — Chord Progressions and Harmonic Motion\n\n"
+            "A chord describes vertical pitch organization; a progression describes "
+            "harmonic relationships over time.\n"
+            "A chord has one identity in isolation and another role among other chords.\n\n"
+            "Key: C major\nProgression: " + " ".join(romans) +
+            "\nDegrees: " + " ".join(map(str, degrees)) +
+            "\nChords:\n" + "\n".join(
+                f"{pitch_to_name(chord[0])[:-1]} {triad_quality(chord)}" for chord in chords
+            ) +
+            "\n\nHarmonic rhythm: 2 beats per chord\n"
+            f"Total span: {progression_duration(durations):g} beats\n\n"
+            "Start–End  Degree  Roman  Root  Chord\n" + rows +
+            "\n\nThe same I IV V I structure in different keys:\n" + key_roots +
+            "\n\nHarmonic rhythm comparison: 4, 2, and 1 beat per chord "
+            "produce spans of 16, 8, and 4 beats.\n"
+            "Root-position bass: " + " → ".join(pitch_to_name(p) for p in root_sequence(60, MAJOR, degrees)) +
+            "\nRoot position is inspectable, but its voices may jump farther than necessary; "
+            "voice-leading optimization is deliberately deferred.\n\nCreated:\n" +
+            "\n".join(str(path) for path in paths)
         )
     return 0
