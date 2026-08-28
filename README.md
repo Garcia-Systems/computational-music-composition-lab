@@ -34,7 +34,7 @@ involving randomness will use explicit seeds so results can be reproduced.
 ## Requirements and setup
 
 - Python 3.11 or newer
-- No runtime dependencies for Chapters 0–7
+- No runtime dependencies for Chapters 0–8
 
 From the repository root, either run directly:
 
@@ -47,6 +47,7 @@ python -m composition_lab chapter-04
 python -m composition_lab chapter-05
 python -m composition_lab chapter-06
 python -m composition_lab chapter-07
+python -m composition_lab chapter-08
 ```
 
 or install an editable copy and use its console command:
@@ -61,6 +62,7 @@ composition-lab chapter-04
 composition-lab chapter-05
 composition-lab chapter-06
 composition-lab chapter-07
+composition-lab chapter-08
 ```
 
 The commands create ordinary WAV files in `outputs/`; open them in any audio
@@ -93,6 +95,9 @@ output directory.
 - [Chapter 7 — Phrases, Questions, and Closure](chapters/07_phrases_questions_closure/README.md)
   arranges motifs into openings, fragmenting continuations, designed climaxes,
   melodic closures, and related question-and-answer phrase pairs.
+- [Chapter 8 — Chords and Vertical Structure](chapters/08_chords_vertical_structure/README.md)
+  organizes simultaneous pitches as major, minor, and diminished triads, then
+  makes inversion, voicing, arpeggiation, and diatonic chord construction audible.
 
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
@@ -100,11 +105,12 @@ computable; Chapter 2 makes musical time computable; Chapter 3 makes music into
 structured events; Chapter 4 organizes pitch choices through tonal systems;
 Chapter 5 makes melodic movement measurable without treating measurement as judgment;
 Chapter 6 makes small musical ideas transformable material; Chapter 7 makes
-motifs into directed musical phrases.
+motifs into directed musical phrases; Chapter 8 makes simultaneous pitches into
+harmonic structures.
 
 ## Planned journey
 
-Only Chapters 0 through 7 exist today. The broad route—not a claim of implemented
+Only Chapters 0 through 8 exist today. The broad route—not a claim of implemented
 features beyond those chapters—is:
 
 ```text

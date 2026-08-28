@@ -47,6 +47,11 @@ from .phrases import (
     build_complete_phrase, build_flat_phrase, build_question, ending_variant,
     phrase_span, place_after,
 )
+from .chords import (
+    MAJOR_TRIAD, MINOR_TRIAD, DIMINISHED_TRIAD, arpeggiate_chord,
+    chord_events, diminished_triad, invert_chord, major_triad, minor_triad,
+    triad_from_scale_degree, triad_quality,
+)
 
 CHAPTER_00_NOTES = (
     ("C4", 261.63, 0.40),
@@ -146,6 +151,15 @@ CHAPTER_07_FILENAMES = (
     "chapter_07_question_answer.wav", "chapter_07_literal_repeat_pair.wav",
     "chapter_07_answer_pair.wav", "chapter_07_complete_phrase.wav",
     "chapter_07_phrase_pair_capstone.wav",
+)
+CHAPTER_08_FILENAMES = (
+    "chapter_08_c_major.wav", "chapter_08_c_minor.wav",
+    "chapter_08_c_diminished.wav", "chapter_08_c_major_root.wav",
+    "chapter_08_c_major_first_inversion.wav",
+    "chapter_08_c_major_second_inversion.wav",
+    "chapter_08_closed_voicing.wav", "chapter_08_open_voicing.wav",
+    "chapter_08_block_chord.wav", "chapter_08_broken_chord.wav",
+    "chapter_08_c_major_diatonic_triads.wav", "chapter_08_harmony_preview.wav",
 )
 
 
@@ -311,6 +325,40 @@ def run_chapter_07(output_directory: Path = Path("outputs")) -> tuple[Path, ...]
     return paths
 
 
+def chapter_08_material() -> tuple[tuple[NoteEvent, ...], ...]:
+    """Return controlled chord-quality, voicing, texture, and scale studies."""
+    major, minor, diminished = major_triad(60), minor_triad(60), diminished_triad(60)
+    root = chord_events(major)
+    first = chord_events(invert_chord(major, 1))
+    second = chord_events(invert_chord(major, 2))
+    closed = chord_events(major)
+    open_voicing = chord_events((60, 67, 76))
+    block = chord_events(major, duration=1.5)
+    broken = arpeggiate_chord(major, note_duration=.5, step=.5)
+    diatonic: list[NoteEvent] = []
+    for degree in range(1, 8):
+        diatonic.extend(chord_events(
+            triad_from_scale_degree(60, MAJOR, degree), start=(degree - 1) * 1.5,
+            duration=1.0,
+        ))
+    preview: list[NoteEvent] = []
+    for index, pitches in enumerate((major_triad(60), major_triad(65), major_triad(67), major_triad(60))):
+        preview.extend(chord_events(pitches, start=index * 2.0, duration=1.75))
+    return (
+        chord_events(major), chord_events(minor), chord_events(diminished),
+        root, first, second, closed, open_voicing, block, broken,
+        tuple(diatonic), tuple(preview),
+    )
+
+
+def run_chapter_08(output_directory: Path = Path("outputs")) -> tuple[Path, ...]:
+    """Render Chapter 8's deterministic vertical-structure experiments."""
+    paths = tuple(output_directory / name for name in CHAPTER_08_FILENAMES)
+    for path, score in zip(paths, chapter_08_material(), strict=True):
+        write_wav(path, render_events(score, 120))
+    return paths
+
+
 def _profile_text(label: str, pitches: Sequence[int]) -> str:
     profile = melodic_profile(pitches)
     lowest = pitch_to_name(profile.lowest) if profile.lowest is not None else "—"
@@ -347,7 +395,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08"),
         help="experiment to run",
     )
     parser.add_argument(
@@ -515,7 +563,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             + "\n".join(str(path) for path in paths)
             + "\n\nHow can repetition remain recognizable without being literal?"
         )
-    else:
+    elif args.chapter == "chapter-07":
         paths = run_chapter_07(args.output_directory)
         motif = tuple(normalize_events(CHAPTER_06_MOTIF))
         phrase, sections = build_complete_phrase(motif)
@@ -549,5 +597,41 @@ def main(argv: Sequence[str] | None = None) -> int:
             "Phrase behavior differs across classical, blues, jazz, rock, folk, electronic, "
             "non-Western, through-composed, and highly repetitive music.\n\nCreated:\n"
             + "\n".join(str(path) for path in paths)
+        )
+    else:
+        paths = run_chapter_08(args.output_directory)
+        qualities = (
+            ("C major", major_triad(60), MAJOR_TRIAD),
+            ("C minor", minor_triad(60), MINOR_TRIAD),
+            ("C diminished", diminished_triad(60), DIMINISHED_TRIAD),
+        )
+        inspections = "\n\n".join(
+            f"{label}:\n{' '.join(pitch_to_name(p) for p in pitches)}\n"
+            f"intervals: {' '.join(map(str, intervals))}"
+            for label, pitches, intervals in qualities
+        )
+        major = major_triad(60)
+        inversions = "\n\n".join(
+            f"{label}:\n{' '.join(pitch_to_name(p) for p in invert_chord(major, number))}"
+            for number, label in enumerate(("root", "first", "second"))
+        )
+        inventory = "\n".join(
+            f"{degree}  {pitch_to_name(triad[0])[:-1]:<2}  "
+            f"{' '.join(pitch_to_name(p) for p in triad):<12}  {triad_quality(triad)}"
+            for degree in range(1, 8)
+            for triad in (triad_from_scale_degree(60, MAJOR, degree),)
+        )
+        print(
+            "Chapter 8 — Chords and Vertical Structure\n\n"
+            "A chord is a group of pitches organized to function as one harmonic sonority.\n"
+            "Structure + reference pitch = absolute pitches.\n\n" + inspections +
+            "\n\nC major inversions:\n\n" + inversions +
+            "\n\nROOT defines the chord; BASS is its lowest sounding pitch. "
+            "They differ in an inversion. Chord inversion reorders tones; Chapter 6 "
+            "melodic inversion reverses interval direction.\n\n"
+            "C major diatonic triads:\nDegree  Root  Notes         Quality\n" + inventory +
+            "\n\nBlock chords sound together; an arpeggio presents the same tones sequentially.\n"
+            "Closed and open voicings retain pitch classes while changing register and spacing.\n\n"
+            "Created:\n" + "\n".join(str(path) for path in paths)
         )
     return 0
