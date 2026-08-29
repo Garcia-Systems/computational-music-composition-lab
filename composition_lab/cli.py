@@ -117,6 +117,7 @@ from .chapter30 import run_chapter_30
 from .chapter31 import run_chapter_31
 from .chapter32 import run_chapter_32
 from .chapter33 import run_chapter_33
+from .chapter34 import run_chapter_34
 from .markov import (
     build_transition_counts, build_transition_counts_from_sequences,
     generate_markov_sequence, generate_valid_markov_candidate,
@@ -991,11 +992,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
         "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15", "chapter-16", "chapter-17", "chapter-18", "chapter-19", "chapter-20", "chapter-21", "chapter-22", "chapter-23", "chapter-24", "chapter-25", "chapter-26", "chapter-27", "chapter-28", "chapter-29", "chapter-30", "chapter-31", "chapter-32", "chapter-33"),
+        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15", "chapter-16", "chapter-17", "chapter-18", "chapter-19", "chapter-20", "chapter-21", "chapter-22", "chapter-23", "chapter-24", "chapter-25", "chapter-26", "chapter-27", "chapter-28", "chapter-29", "chapter-30", "chapter-31", "chapter-32", "chapter-33", "chapter-34"),
         help="experiment to run",
     )
     parser.add_argument("--live", action="store_true", help="transmit Chapter 26–28 OSC (default is a safe dry run)")
     parser.add_argument("--replay", action="store_true", help="Chapter 28: load recorded event history without regeneration")
+    parser.add_argument("--candidates", action="store_true", help="Chapter 34: print stored candidate details")
     parser.add_argument("--lookahead", type=float, default=4, help="Chapter 28 lookahead in beats")
     parser.add_argument("--seed", type=int, default=2026, help="Chapter 27 composition seed")
     parser.add_argument("--bpm", type=float, default=108, help="Chapter 27 tempo")
@@ -1900,8 +1902,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         run_chapter_32(args.output_directory,
                        bpm=96 if args.bpm == 108 else args.bpm,
                        live=args.live, host=args.host, port=args.port)
-    else:
+    elif args.chapter == "chapter-33":
         run_chapter_33(args.output_directory, master_seed=args.seed,
                        bpm=96 if args.bpm == 108 else args.bpm,
                        live=args.live, host=args.host, port=args.port)
+    else:
+        run_chapter_34(args.output_directory, master_seed=args.seed,
+                       bpm=96 if args.bpm == 108 else args.bpm,
+                       candidates=args.candidates, live=args.live,
+                       host=args.host, port=args.port)
     return 0
