@@ -237,6 +237,24 @@ features associated with particular musical practices.
   Repetition, process, gradual transformation, phase, pattern interaction, and
   layer accumulation.
 
+### Part X — Capstone
+
+The final part stops asking what the computer can do and starts asking how those
+capabilities should be used inside an actual compositional process.
+
+- [Chapter 33 — Human + Algorithm](chapters/33_human_algorithm/README.md)
+  Compositional delegation, candidate generation, human selection, revision,
+  provenance, and authorship.
+- **Chapter 34 — Compose a Complete Piece**
+  A full end-to-end composition from brief through finished performance.
+- **Chapter 35 — What Did the Computer Actually Compose?**
+  A final audit of authorship, generation, transformation, and human judgment.
+
+```text
+MUSIC THEORY (Chapters 1–17) → GENERATION (18–21) → SOUND (22–25)
+→ PERFORMANCE (26–28) → STYLE (29–32) → AUTHORSHIP / WORKFLOW (33–35)
+```
+
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
 computable; Chapter 2 makes musical time computable; Chapter 3 makes music into
