@@ -248,8 +248,8 @@ capabilities should be used inside an actual compositional process.
 - [Chapter 34 — Compose a Complete Piece](chapters/34_compose_complete_piece/README.md)
   Use the full laboratory to create one original composition from brief through
   finished playback.
-- **Chapter 35 — What Did the Computer Actually Compose?**
-  A final audit of authorship, generation, transformation, and human judgment.
+- [Chapter 35 — What Did the Computer Actually Compose?](chapters/35_what_did_the_computer_compose/README.md)
+  Audit generation, transformation, selection, revision, rendering, and authorship.
 
 ```text
 MUSIC THEORY (Chapters 1–17) → GENERATION (18–21) → SOUND (22–25)
@@ -288,19 +288,32 @@ Chapter 26 adds the live Python → OSC → sclang bridge. Chapter 27 assembles 
 complete score before playback. Chapter 28 defers bounded melodic and rhythmic
 decisions until performance time while keeping synthesis in SuperCollider.
 
-## Planned journey
+# What This Laboratory Was Really About
 
-Chapters 0 through 28 exist today. The broad route—not a claim of implemented
-features beyond those chapters—is:
+**Executable textbook curriculum complete: Chapters 0–35.** The laboratory remains open for research and further experiments.
+
+Sound became numbers; numbers became notes; notes became events; events became melody and harmony; patterns became form; rules became generators; generators became candidates; candidates became performances; and performances became sound again.
+
+The important question was never merely, “Can the computer make music?” More useful questions are: What representation are we using? What decisions are delegated? What constrains the result? What remains human judgment? What can we observe?
 
 ```text
-sound / notes → pitch → rhythm → musical events → scales and tonality
-→ intervals → motifs → phrases → chords → harmony → voice leading
-→ melody against harmony → groove → bass → texture → variation → form
-→ constraint-based composition → controlled randomness → musical memory
-→ structural evaluation → synthesis → SuperCollider
-→ OSC → algorithmic performance → style laboratories → complete composition
+frequency → samples → WAV
+
+human intention → symbolic composition → algorithmic decisions
+→ finalized events → performance instructions → audio samples → human listening
 ```
+
+```text
+COMPOSITION  what musical events happen and when
+     ↓
+PERFORMANCE  how those events are triggered and interpreted
+     ↓
+SOUND        the audio signal produced
+
+AUTHORSHIP / PROVENANCE  who or what made the decisions at each stage
+```
+
+The algorithm can materially contribute pitches, rhythms, transformations, arrangements, and performance decisions when those responsibilities are delegated. The human can define goals, design possibility spaces, select alternatives, revise results, organize material, and decide when a composition is finished. Structural metrics can describe a piece, and provenance can explain how it was constructed, but neither can replace listening.
 
 ## Run the tests
 
