@@ -1,322 +1,192 @@
 # Computational Music Composition Lab
 
-## An Executable Textbook for Composition, Generative Music, and Sound Design with Python and SuperCollider
+## An executable textbook for composition, generative music, and sound design with Python and SuperCollider
 
-This is a music composition textbook that you **read and execute**. Its central
-question is:
+**Executable textbook curriculum: complete**
+**Chapters: 0–35**
 
-> How can we represent musical ideas as data, transform them computationally,
-> hear the results, and use those experiments to become better composers?
+This is a composition textbook that you **read, run, and hear**. It is for motivated readers who know basic Python or are willing to trace small functions; music-theory terms are introduced as the experiments need them. Its organizing question is:
 
-Python is the compositional and analytical engine: it makes musical decisions
-visible as inspectable data and small transformations. Part VII begins using
-SuperCollider as an optional synthesis and real-time performance engine while
-retaining every earlier Python renderer. It is **not required** to run the
-Python chapter commands or tests, which use only the standard library.
+> How can we represent musical ideas as data, transform them computationally, hear the results, and use those experiments to become better composers?
 
-## The laboratory model
+The curriculum is complete, not “finished forever”: corrections and bounded revisions remain welcome, while notation, MIDI workflows, microtonality, orchestration, and machine learning are deliberately outside this edition.
 
-Every chapter should produce something audible. The book distinguishes three
-layers, even when an early experiment temporarily combines them:
+## Start here
+
+1. Install **Python 3.11 or newer**.
+2. From a fresh clone, run `python -m pip install -e .`. The declared `python-osc` dependency supports optional live OSC; dry-run chapters do not contact a network or audio server.
+3. Read [Chapter 0](chapters/00_composition_lab/README.md), then run `python -m composition_lab chapter-00`.
+4. Open `outputs/chapter_00_first_composition.wav` in any audio player. Do not substitute reading the terminal output for listening.
+5. Continue sequentially. Use `python -m composition_lab chapters` to see every command.
+6. Before Part VII, optionally install SuperCollider and follow [the concise setup guide](supercollider/README.md). SuperCollider is not required for Python reference WAVs, dry runs, structural verification, or tests.
+
+Generated files use predictable `outputs/chapter_XX_*` names. They are intentionally ignored by Git; `outputs/.gitkeep` preserves the directory. Committed Chapter 35 report examples document the canonical audit, while rerunning commands may regenerate ignored working artifacts.
+
+## The book's architecture
 
 ```text
-COMPOSITION — What musical events happen and when?
+MUSICAL IDEA
+    ↓
+SYMBOLIC EVENTS (pitch; onset and duration in beats; velocity)
+    ↓
+TRANSFORMATION / GENERATION
+    ↓
+FORM + LAYERS
+    ↓
+PLAYBACK CONFIGURATION
+    ↓
+REFERENCE WAV or OSC CONTROL → SUPERCOLLIDER
+    ↓
+AUDIO
+```
+
+```text
+COMPOSITION — what musical events happen and when
        ↓
-PERFORMANCE — How are those events performed?
+PERFORMANCE — how those events are played
        ↓
-SOUND — What acoustic signal is produced?
+SOUND — the acoustic signal produced
+
+PROVENANCE — who or what made the decisions at every layer
 ```
 
-Code is introduced when a musical question requires it—not as syntax for its
-own sake. Important musical mechanics remain transparent, and future experiments
-involving randomness will use explicit seeds so results can be reproduced.
+OSC messages are control data, **not audio samples**. Symbolic timing remains in beats; tempo converts beats to seconds at rendering or real-time scheduling boundaries. MIDI-style pitch integers identify equal-tempered pitches; frequency in Hz is derived only when sound or a protocol payload needs it.
 
-## Requirements and setup
-
-- Python 3.11 or newer
-- No Python runtime dependencies for Chapters 0–25. Chapter 26 live mode uses the small
-  `python-osc` dependency; SuperCollider remains optional and interactive
-
-From the repository root, either run directly:
-
-```bash
-python -m composition_lab chapter-00
-python -m composition_lab chapter-01
-python -m composition_lab chapter-02
-python -m composition_lab chapter-03
-python -m composition_lab chapter-04
-python -m composition_lab chapter-05
-python -m composition_lab chapter-06
-python -m composition_lab chapter-07
-python -m composition_lab chapter-08
-python -m composition_lab chapter-09
-python -m composition_lab chapter-10
-python -m composition_lab chapter-11
-python -m composition_lab chapter-12
-python -m composition_lab chapter-13
-python -m composition_lab chapter-14
-python -m composition_lab chapter-15
-python -m composition_lab chapter-16
-python -m composition_lab chapter-17
-python -m composition_lab chapter-18
-python -m composition_lab chapter-19
-python -m composition_lab chapter-20
-python -m composition_lab chapter-21
-python -m composition_lab chapter-22
-python -m composition_lab chapter-23
-python -m composition_lab chapter-24
-python -m composition_lab chapter-25
-python -m composition_lab chapter-26
-python -m composition_lab chapter-26 --live
-python -m composition_lab chapter-27
-python -m composition_lab chapter-27 --live
-python -m composition_lab chapter-28
-python -m composition_lab chapter-29
-python -m composition_lab chapter-29 --live
-python -m composition_lab chapter-30
-python -m composition_lab chapter-30 --live
-python -m composition_lab chapter-31
-python -m composition_lab chapter-31 --live
-```
-
-or install an editable copy and use its console command:
-
-```bash
-python -m pip install -e .
-composition-lab chapter-00
-composition-lab chapter-01
-composition-lab chapter-02
-composition-lab chapter-03
-composition-lab chapter-04
-composition-lab chapter-05
-composition-lab chapter-06
-composition-lab chapter-07
-composition-lab chapter-08
-composition-lab chapter-09
-composition-lab chapter-10
-composition-lab chapter-11
-composition-lab chapter-12
-composition-lab chapter-13
-composition-lab chapter-14
-composition-lab chapter-15
-composition-lab chapter-16
-composition-lab chapter-17
-composition-lab chapter-18
-composition-lab chapter-19
-composition-lab chapter-20
-composition-lab chapter-21
-composition-lab chapter-22
-composition-lab chapter-23
-composition-lab chapter-24
-composition-lab chapter-25
-composition-lab chapter-26
-```
-
-The commands create ordinary WAV files in `outputs/`; open them in any audio
-player. Generated audio is ignored by Git; only `outputs/.gitkeep` preserves the
-output directory.
-
-## Completed chapters
-
-- [Chapter 0 — The Composition Laboratory](chapters/00_composition_lab/README.md)
-  carries one hard-coded-frequency idea from musical choice through waveform to
-  listening, establishing the executable-textbook method.
-- [Chapter 1 — Pitch Becomes Computable](chapters/01_pitch_becomes_computable/README.md)
-  replaces stored frequencies with pitch names and integers, then makes
-  transposition and interval preservation audible.
-- [Chapter 2 — Time and Rhythm](chapters/02_time_and_rhythm/README.md)
-  separates beats from seconds, then makes rhythm, tempo, rests, meter,
-  subdivision, and syncopation audible.
-- [Chapter 3 — The Musical Event](chapters/03_musical_event/README.md)
-  joins pitch, onset, duration, and performance intensity in an immutable,
-  inspectable event; events can overlap on a shared rendered timeline.
-- [Chapter 4 — Scales, Keys, and Tonality](chapters/04_scales_keys_tonality/README.md)
-  organizes pitch choices through transparent major and natural-minor patterns,
-  tonics, scale degrees, and octave-independent membership.
-- [Chapter 5 — Intervals and Melodic Motion](chapters/05_intervals_melodic_motion/README.md)
-  measures signed motion, contour directions, range, and compact melodic profiles,
-  then makes controlled interval, repetition, range, and contour comparisons audible.
-- [Chapter 6 — Motifs and Transformation](chapters/06_motifs_transformation/README.md)
-  turns short `NoteEvent` ideas into repeatable, transposable, reversible,
-  invertible, time-scalable material and combines those changes in a development study.
-- [Chapter 7 — Phrases, Questions, and Closure](chapters/07_phrases_questions_closure/README.md)
-  arranges motifs into openings, fragmenting continuations, designed climaxes,
-  melodic closures, and related question-and-answer phrase pairs.
-- [Chapter 8 — Chords and Vertical Structure](chapters/08_chords_vertical_structure/README.md)
-  organizes simultaneous pitches as major, minor, and diminished triads, then
-  makes inversion, voicing, arpeggiation, and diatonic chord construction audible.
-- [Chapter 9 — Chord Progressions and Harmonic Motion](chapters/09_chord_progressions_harmonic_motion/README.md)
-  orders diatonic triads on a timeline, separating progression identity from
-  harmonic rhythm and transposing scale-degree patterns between keys.
-- [Chapter 10 — Harmonic Function and Tension](chapters/10_harmonic_function_tension/README.md)
-  gives major-key harmonic motion broad tonic, predominant, and dominant roles,
-  then compares expectation, resolution, deceptive motion, duration, and phrase shape.
-- [Chapter 11 — Voice Leading and Efficient Motion](chapters/11_voice_leading_efficient_motion/README.md)
-  separates harmonic identity from voicing, measures fixed voice positions, and makes
-  deterministic inversion choices, common tones, and interacting melodic lines audible.
-- [Chapter 12 — Melody Against Harmony](chapters/12_melody_against_harmony/README.md)
-  aligns melody onsets and sustained events with harmonic spans, distinguishes
-  chord tones from conservatively named non-chord tones, and makes context audible.
-- [Chapter 13 — Groove, Pulse, and Syncopation](chapters/13_groove_pulse_syncopation/README.md)
-  makes repeated timing, accent, displacement, expectation, and interacting
-  rhythmic roles audible on a transparent beat-relative grid.
-- [Chapter 14 — Bass as Harmony, Rhythm, and Melody](chapters/14_bass_harmony_rhythm_melody/README.md)
-  connects harmonic roots, chord roles, register, groove onsets, passing motion,
-  pedals, inversion, and measurable monophonic contour.
-- [Chapter 15 — Accompaniment and Texture](chapters/15_accompaniment_texture/README.md)
-  distributes independent melody, harmony, bass, and groove roles through register,
-  activity, voicing, velocity, entrances, and deterministic accompaniment patterns.
-- [Chapter 16 — Repetition, Contrast, and Variation](chapters/16_repetition_contrast_variation/README.md)
-  turns passages into developing material through literal repetition, controlled one-variable
-  variation, deliberate contrast, motivic continuity, literal return, and varied return.
-- [Chapter 17 — Musical Form](chapters/17_musical_form/README.md)
-  makes passages into locally normalized sections and assembles transparent plans
-  for binary, ternary, AABA, verse/chorus, blues, and through-composed studies.
-- [Chapter 18 — Constraint-Based Composition](chapters/18_constraint_based_composition/README.md)
-  uses inspectable objective rules to enumerate, reject, retain, describe, and
-  render multiple pitch and rhythm candidates without treating rules as taste.
-- [Chapter 19 — Controlled Randomness](chapters/19_controlled_randomness/README.md)
-  uses explicit seeds, bounded and weighted choice, rejection sampling, random
-  walks, independent RNG streams, decision logs, and reproducible listening studies.
-- [Chapter 20 — Musical Memory](chapters/20_musical_memory/README.md)
-  derives inspectable first-order transition counts from short symbolic musical
-  sequences, then uses seeded conditional choice for pitch and rhythm studies.
-- [Chapter 21 — Evaluation: Describing Generated Music](chapters/21_evaluation_describing_generated_music/README.md)
-  describes melody, rhythm, repetition, harmony alignment, training overlap,
-  constraints, and generator diversity while leaving aesthetic judgment to the listener.
-
-### Part VII — SuperCollider
-
-- [Chapter 22 — From Notes to Sound](chapters/22_from_notes_to_sound/README.md)
-  sends Python-authored musical events through an inspectable JSON bridge to a
-  simple real-time SuperCollider sine SynthDef while retaining Python reference audio.
-  Interactive playback uses `supercollider/chapter_22_first_sound.scd`.
-- [Chapter 23 — Synthesizers as Instruments](chapters/23_synthesizers_as_instruments/README.md)
-  keeps compositions fixed while waveforms, pulse width, harmonic mixtures,
-  detuning, register, and explicit layer instrument maps change their timbre.
-  Interactive playback uses `supercollider/chapter_23_synthesizers_as_instruments.scd`.
-- [Chapter 24 — Envelopes, Filters, and Articulation](chapters/24_envelopes_filters_articulation/README.md)
-  uses ADSR, low-pass filtering, velocity response, and explicit gate ratios to
-  shape a fixed composition. Interactive playback uses
-  `supercollider/chapter_24_envelopes_filters_articulation.scd`.
-- [Chapter 25 — Space, Delay, Reverb, and Signal Routing](chapters/25_space_delay_reverb_routing/README.md)
-  keeps events fixed while restrained stereo pan and wet-only shared delay and
-  reverb returns place layers in space. Interactive playback uses
-  `supercollider/chapter_25_space_and_effects.scd`.
-
-### Part VIII — Python Meets SuperCollider
-
-- [Chapter 26 — OSC: Sending Musical Events in Real Time](chapters/26_osc_real_time/README.md)
-  lets Python schedule unchanged `NoteEvent`s and transmit `/ping`, `/note`, and
-  `/panic` control messages to `supercollider/chapter_26_osc_receiver.scd`. Run
-  `python -m composition_lab chapter-26` for a CI-safe dry run or add `--live`.
-- [Chapter 27 — The Composition Engine](chapters/27_composition_engine/README.md)
-  combines the book's musical systems into one reproducible, inspectable
-  composition pipeline and sends one symbolic result to JSON, WAV, or OSC.
-- [Chapter 28 — Algorithmic Performance](chapters/28_algorithmic_performance/README.md)
-  generates bounded future musical regions phrase by phrase, using explicit
-  state, lookahead, deterministic recovery, and a persistent decision record.
-  Run `python -m composition_lab chapter-28` to simulate or add `--live` to use OSC.
-
-### Part IX — Style Labs
-
-Earlier chapters isolated musical concepts. The style labs recombine those concepts
-inside recognizable musical practices. They do not attempt to encode genres completely;
-they use the book's general computational tools to investigate selected structural
-features associated with particular musical practices.
-
-- [Chapter 29 — Blues](chapters/29_blues/README.md) — A style lab built around
-  12-bar form, harmonic/melodic friction, shuffle, call and response, and bass motion.
-- [Chapter 30 — Rock and Songwriting](chapters/30_rock_songwriting/README.md) — A
-  style lab built from riffs, chord loops, groove, sectional contrast, hooks,
-  arrangement, and song form.
-- [Chapter 31 — Classical-Style Development](chapters/31_classical_style_development/README.md) —
-  Motivic economy, sequence, fragmentation, harmonic recontextualization,
-  phrase expansion, development, and return.
-- [Chapter 32 — Minimalism and Generative Music](chapters/32_minimalism_generative_music/README.md) —
-  Repetition, process, gradual transformation, phase, pattern interaction, and
-  layer accumulation.
-
-### Part X — Capstone
-
-The final part stops asking what the computer can do and starts asking how those
-capabilities should be used inside an actual compositional process.
-
-- [Chapter 33 — Human + Algorithm](chapters/33_human_algorithm/README.md)
-  Compositional delegation, candidate generation, human selection, revision,
-  provenance, and authorship.
-- [Chapter 34 — Compose a Complete Piece](chapters/34_compose_complete_piece/README.md)
-  Use the full laboratory to create one original composition from brief through
-  finished playback.
-- [Chapter 35 — What Did the Computer Actually Compose?](chapters/35_what_did_the_computer_compose/README.md)
-  Audit generation, transformation, selection, revision, rendering, and authorship.
+## Experimental method
 
 ```text
-MUSIC THEORY (Chapters 1–17) → GENERATION (18–21) → SOUND (22–25)
-→ PERFORMANCE (26–28) → STYLE (29–32) → AUTHORSHIP / WORKFLOW (33–35)
+HYPOTHESIS
+    ↓
+CHANGE ONE MUSICAL VARIABLE
+    ↓
+GENERATE
+    ↓
+LISTEN
+    ↓
+COMPARE
+    ↓
+EXPLAIN
 ```
 
-The progression so far is direct: Chapter 0 shows that sound can be generated
-from numerical musical decisions; Chapter 1 makes pitch relationships
-computable; Chapter 2 makes musical time computable; Chapter 3 makes music into
-structured events; Chapter 4 organizes pitch choices through tonal systems;
-Chapter 5 makes melodic movement measurable without treating measurement as judgment;
-Chapter 6 makes small musical ideas transformable material; Chapter 7 makes
-motifs into directed musical phrases; Chapter 8 makes simultaneous pitches into
-harmonic structures; Chapter 9 makes chords into harmonic motion through time;
-Chapter 10 gives that motion functional direction and resolution; Chapter 11 makes
-harmonic progressions into interacting melodic voices; Chapter 12 gives melody
-meaning relative to the harmony beneath it; Chapter 13 makes repeated timing,
-accent, and displacement into groove; Chapter 14 makes bass connect harmony,
-groove, and melodic motion.
-Chapter 15 makes independent musical layers into texture and arrangement. Chapter 16 makes
-repetition, contrast, and variation turn passages into developing musical material. Chapter 17
-makes passages into sections, and sections into musical form. Chapter 18 makes explicit musical
-constraints define spaces of possible compositions that the computer can search. Chapter 19
-makes those spaces explorable with seeded randomness without sacrificing reproducibility.
-Chapter 20 makes future choices depend on learned local relationships from prior
-musical sequences. Chapter 21 describes generated music with structural metrics
-while leaving aesthetic judgment to the listener. Chapter 22 makes Python musical
-events cross into a dedicated synthesis engine and become real-time synthesized sound.
-Chapter 23 turns a bare tone into reusable instruments with waveforms,
-oscillator mixtures, and bounded synthesis parameters while event data stays fixed.
-Chapter 24 shapes those instruments over time and frequency with envelopes,
-filters, velocity response, and articulation while the composition stays fixed.
-Chapter 25 adds stereo placement, delay, reverb, buses, and shared send/return
-routing while composition, playback configuration, and audio engine stay separate.
-Chapter 26 adds the live Python → OSC → sclang bridge. Chapter 27 assembles a
-complete score before playback. Chapter 28 defers bounded melodic and rhythmic
-decisions until performance time while keeping synthesis in SuperCollider.
+Controlled comparisons matter: the same pitches with different rhythm answer a clearer question than two wholly different passages. Metrics describe measurable structure; constraints validate stated rules; neither provides beauty, creativity, authenticity, or authorship scores. See the concise [glossary](GLOSSARY.md) for the vocabulary used throughout the book.
 
-# What This Laboratory Was Really About
-
-**Executable textbook curriculum complete: Chapters 0–35.** The laboratory remains open for research and further experiments.
-
-Sound became numbers; numbers became notes; notes became events; events became melody and harmony; patterns became form; rules became generators; generators became candidates; candidates became performances; and performances became sound again.
-
-The important question was never merely, “Can the computer make music?” More useful questions are: What representation are we using? What decisions are delegated? What constrains the result? What remains human judgment? What can we observe?
-
-```text
-frequency → samples → WAV
-
-human intention → symbolic composition → algorithmic decisions
-→ finalized events → performance instructions → audio samples → human listening
-```
-
-```text
-COMPOSITION  what musical events happen and when
-     ↓
-PERFORMANCE  how those events are triggered and interpreted
-     ↓
-SOUND        the audio signal produced
-
-AUTHORSHIP / PROVENANCE  who or what made the decisions at each stage
-```
-
-The algorithm can materially contribute pitches, rhythms, transformations, arrangements, and performance decisions when those responsibilities are delegated. The human can define goals, design possibility spaces, select alternatives, revise results, organize material, and decide when a composition is finished. Structural metrics can describe a piece, and provenance can explain how it was constructed, but neither can replace listening.
-
-## Run the tests
+## Commands and verification
 
 ```bash
+python -m composition_lab                 # useful help
+python -m composition_lab chapters        # ordered 00–35 listing
+python -m composition_lab chapter-00      # any chapter-00 … chapter-35
+python -m composition_lab verify-book     # static structure; no rendering or OSC
 python -m unittest discover -s tests -v
 ```
+
+Chapter 26 and later commands default to file output or simulation where applicable. Add `--live` only after starting the documented Chapter 26 SuperCollider receiver; Python never launches SuperCollider for you. Run `python -m composition_lab chapter-XX --help` to inspect the intentionally shared, small option set.
+
+## Curriculum
+
+Each Part begins from an abstraction the reader has already used and introduces the next unresolved compositional question.
+
+### Part I — Music Becomes Data (0–3)
+
+Turn pitch, time, and intensity into inspectable events.
+
+- [Chapter 0 — The Composition Laboratory](chapters/00_composition_lab/README.md) — `python -m composition_lab chapter-00`
+- [Chapter 1 — Pitch Becomes Computable](chapters/01_pitch_becomes_computable/README.md) — `python -m composition_lab chapter-01`
+- [Chapter 2 — Time and Rhythm](chapters/02_time_and_rhythm/README.md) — `python -m composition_lab chapter-02`
+- [Chapter 3 — The Musical Event](chapters/03_musical_event/README.md) — `python -m composition_lab chapter-03`
+
+### Part II — Building Musical Ideas (4–7)
+
+Organize pitches, measure melody, transform motifs, and shape phrases.
+
+- [Chapter 4 — Scales, Keys, and Tonality](chapters/04_scales_keys_tonality/README.md) — `python -m composition_lab chapter-04`
+- [Chapter 5 — Intervals and Melodic Motion](chapters/05_intervals_melodic_motion/README.md) — `python -m composition_lab chapter-05`
+- [Chapter 6 — Motifs and Transformation](chapters/06_motifs_transformation/README.md) — `python -m composition_lab chapter-06`
+- [Chapter 7 — Phrases, Questions, and Closure](chapters/07_phrases_questions_closure/README.md) — `python -m composition_lab chapter-07`
+
+### Part III — Harmony (8–12)
+
+Build vertical structures, progressions, function, voice leading, and melody/harmony context.
+
+- [Chapter 8 — Chords and Vertical Structure](chapters/08_chords_vertical_structure/README.md) — `python -m composition_lab chapter-08`
+- [Chapter 9 — Chord Progressions and Harmonic Motion](chapters/09_chord_progressions_harmonic_motion/README.md) — `python -m composition_lab chapter-09`
+- [Chapter 10 — Harmonic Function and Tension](chapters/10_harmonic_function_tension/README.md) — `python -m composition_lab chapter-10`
+- [Chapter 11 — Voice Leading and Efficient Motion](chapters/11_voice_leading_efficient_motion/README.md) — `python -m composition_lab chapter-11`
+- [Chapter 12 — Melody Against Harmony](chapters/12_melody_against_harmony/README.md) — `python -m composition_lab chapter-12`
+
+### Part IV — Rhythm, Bass, Texture (13–15)
+
+Coordinate pulse, low-register motion, accompaniment, and layers.
+
+- [Chapter 13 — Groove, Pulse, and Syncopation](chapters/13_groove_pulse_syncopation/README.md) — `python -m composition_lab chapter-13`
+- [Chapter 14 — Bass as Harmony, Rhythm, and Melody](chapters/14_bass_harmony_rhythm_melody/README.md) — `python -m composition_lab chapter-14`
+- [Chapter 15 — Accompaniment and Texture](chapters/15_accompaniment_texture/README.md) — `python -m composition_lab chapter-15`
+
+### Part V — Form and Composition (16–18)
+
+Develop passages, arrange sections, and define bounded possibility spaces.
+
+- [Chapter 16 — Repetition, Contrast, and Variation](chapters/16_repetition_contrast_variation/README.md) — `python -m composition_lab chapter-16`
+- [Chapter 17 — Musical Form](chapters/17_musical_form/README.md) — `python -m composition_lab chapter-17`
+- [Chapter 18 — Constraint-Based Composition](chapters/18_constraint_based_composition/README.md) — `python -m composition_lab chapter-18`
+
+### Part VI — Generative Composition (19–21)
+
+Explore with seeded choice, history-dependent models, and descriptive evaluation.
+
+- [Chapter 19 — Controlled Randomness](chapters/19_controlled_randomness/README.md) — `python -m composition_lab chapter-19`
+- [Chapter 20 — Musical Memory](chapters/20_musical_memory/README.md) — `python -m composition_lab chapter-20`
+- [Chapter 21 — Evaluation: Describing Generated Music](chapters/21_evaluation_describing_generated_music/README.md) — `python -m composition_lab chapter-21`
+
+### Part VII — SuperCollider (22–25)
+
+Separate a fixed score from synthesis, articulation, and spatial playback.
+
+- [Chapter 22 — From Notes to Sound](chapters/22_from_notes_to_sound/README.md) — `python -m composition_lab chapter-22`
+- [Chapter 23 — Synthesizers as Instruments](chapters/23_synthesizers_as_instruments/README.md) — `python -m composition_lab chapter-23`
+- [Chapter 24 — Envelopes, Filters, and Articulation](chapters/24_envelopes_filters_articulation/README.md) — `python -m composition_lab chapter-24`
+- [Chapter 25 — Space, Delay, Reverb, and Signal Routing](chapters/25_space_delay_reverb_routing/README.md) — `python -m composition_lab chapter-25`
+
+### Part VIII — Python Meets SuperCollider (26–28)
+
+Move from OSC transport to complete-score and online-generation performance models.
+
+- [Chapter 26 — OSC: Sending Musical Events in Real Time](chapters/26_osc_real_time/README.md) — `python -m composition_lab chapter-26`
+- [Chapter 27 — The Composition Engine](chapters/27_composition_engine/README.md) — `python -m composition_lab chapter-27`
+- [Chapter 28 — Algorithmic Performance](chapters/28_algorithmic_performance/README.md) — `python -m composition_lab chapter-28`
+
+### Part IX — Style Labs (29–32)
+
+Test shared infrastructure in four limited, explicitly non-exhaustive compositional models.
+
+- [Chapter 29 — Blues](chapters/29_blues/README.md) — `python -m composition_lab chapter-29`
+- [Chapter 30 — Rock and Songwriting](chapters/30_rock_songwriting/README.md) — `python -m composition_lab chapter-30`
+- [Chapter 31 — Classical-Style Development](chapters/31_classical_style_development/README.md) — `python -m composition_lab chapter-31`
+- [Chapter 32 — Minimalism and Generative Music](chapters/32_minimalism_generative_music/README.md) — `python -m composition_lab chapter-32`
+
+### Part X — Capstone (33–35)
+
+Delegate decisions, compose one canonical piece, and audit its provenance.
+
+- [Chapter 33 — Human + Algorithm](chapters/33_human_algorithm/README.md) — `python -m composition_lab chapter-33`
+- [Chapter 34 — Compose a Complete Piece](chapters/34_compose_complete_piece/README.md) — `python -m composition_lab chapter-34`
+- [Chapter 35 — What Did the Computer Actually Compose?](chapters/35_what_did_the_computer_compose/README.md) — `python -m composition_lab chapter-35`
+
+## How audio works
+
+Chapters 0–21 retain a deliberately small Python reference renderer. It calculates buffered floating-point samples, mixes events on one timeline, applies headroom only if a mix would clip, clips safely at PCM conversion, and writes a complete WAV; Python does not make one speaker call per sample. A DAC in the playback device later converts the stored PCM stream into an analog signal.
+
+Part VII adds `sclang` (the SuperCollider language process) and `scsynth` (the audio server). The score remains inspectable Python data. Parts VIII–X can translate finalized or incrementally generated events into OSC messages, but non-live defaults remain useful when SuperCollider is absent.
+
+## Philosophy and limits
+
+This repository is an executable textbook, not a production audio engine, DAW, comprehensive theory, genre classifier, or autonomous composer. Major and natural-minor scales, mostly triadic tonal harmony, simple grids, abstract oscillator instruments, and integer pitches are teaching models. Pitched proxies stand in for percussion in some reference WAVs. Style labs investigate selected structures and do not model whole genres or traditions.
+
+Some repeated early code is **pedagogical repetition**: Chapter 0 should visibly store frequency even though later chapters derive it from pitch. Shared event placement, rendering, OSC conversion, stable seed derivation, and provenance logic are centralized where repetition would instead create conflicting definitions. Small transparent functions preserve the trace from musical decision to data to transformation to sound.
+
+For findings, resolved issues, verification scope, and deliberately deferred work, read [BOOK_AUDIT.md](BOOK_AUDIT.md).
+
+---
+
+**Executable textbook curriculum: complete**
+**Chapters: 0–35**

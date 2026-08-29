@@ -160,3 +160,7 @@ Nor does this chapter implement chords, Roman-numeral harmony, voice leading,
 MIDI, generation, or melodic-motion analysis. Chapter 5 will ask how one pitch
 moves to the next. For now our question remains: **which tonal relationship
 does this pitch occupy?**
+
+## Bridge forward
+
+A scale limits available pitches; it does not describe the shape made by moving among them. Chapter 5 measures interval, direction, contour, and range.

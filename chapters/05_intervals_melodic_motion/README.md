@@ -135,3 +135,7 @@ quality measure and no brittle contour classifier. It introduces no motifs,
 phrases, chords, harmony, voice leading, SuperCollider, OSC, or machine
 learning. Formal motif transformations belong to a later chapter; Chapter 5
 stops at measuring movement.
+
+## Bridge forward
+
+Measurement describes a melody after it exists. Chapter 6 treats a short melody as a motif that can be transformed while some identity remains audible.

@@ -126,3 +126,7 @@ This chapter introduces no phrase, cadence, chord progression, harmony, voice
 leading, probability, SuperCollider, or OSC machinery. It does not decide when
 a passage feels like a question or ending. Those require later concepts;
 Chapter 6 stays with transparent transformations of a small musical idea.
+
+## Bridge forward
+
+A transformed motif is material, not yet a directed span. Chapter 7 arranges motif occurrences into phrases with openings, continuations, and contrasting endings.

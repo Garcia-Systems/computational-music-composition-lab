@@ -150,3 +150,7 @@ Pitch is now expressive, but every note still uses a fixed, primitive duration.
 We can describe *what pitches* happen far better than *when they happen*. That
 intentional imbalance motivates Chapter 2; rhythm, tempo, rests, meter, and
 accent are not implemented here.
+
+## Bridge forward
+
+Pitch relationships are now computable, but their timing is still primitive. Chapter 2 separates musical beats from rendered seconds so rhythm can become an independent variable.

@@ -88,4 +88,8 @@ are used in simulation and live operation. No concurrency, MIDI, GUI, tempo
 ramps, live reharmonization, neural memory, unbounded generation, or style rules
 are introduced. Those boundaries keep this chapter focused on state continuity,
 deadlines, failure recovery, traceability, and the intentional deferral of some
-compositional decisions. Chapter 29 is deliberately not implemented here.
+compositional decisions. Chapter 29 begins a different phase: testing the infrastructure inside limited style models.
+
+## Bridge forward
+
+The infrastructure is now sufficient. Rather than pretend another mechanism follows mechanically, Chapter 29 begins the style labs: the same general tools are tested inside deliberately limited compositional models.

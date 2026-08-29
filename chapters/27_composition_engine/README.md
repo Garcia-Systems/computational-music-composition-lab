@@ -84,4 +84,8 @@ Chapters 1–3 supply pitch, time, and `NoteEvent`; 4–5 supply key and melodic
 
 ## Boundary with Chapter 28
 
-Chapter 27 is strictly **specification → complete composition → perform**. It never creates new musical events during playback. Online decisions, lookahead, incremental generation, live variation, and performance state belong to Chapter 28 and are deliberately not implemented here.
+Chapter 27 is strictly **specification → complete composition → perform**. It never creates new musical events during playback. Online decisions, lookahead, incremental generation, live variation, and performance state belong to Chapter 28 rather than this complete-score pipeline.
+
+## Bridge forward
+
+Chapter 27 completes every decision before playback. Chapter 28 makes the contrasting experiment: bounded regions are generated while performance is underway, with lookahead and a decision trace.

@@ -46,3 +46,7 @@ with form organizing variation; rock begins with riff and section; the
 classical-style lab directs motif transformation through development; this lab
 uses repetition and gradual rule changes to generate large-scale form. Chapter
 33's human/algorithm decisions are deliberately not implemented here.
+
+## Bridge forward
+
+The four style labs reveal that infrastructure does not decide compositional responsibility. Chapter 33 therefore asks who specifies, proposes, selects, transforms, derives, and revises each decision.

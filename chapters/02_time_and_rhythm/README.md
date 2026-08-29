@@ -117,3 +117,7 @@ Chapter 3 rather than solving it prematurely.
 
 Keep composition first: change one musical variable, render, and listen before
 adding complexity.
+
+## Bridge forward
+
+Parallel pitch, onset, and duration lists expose the next problem: facts about one note can drift apart. Chapter 3 joins them in an immutable `NoteEvent`.

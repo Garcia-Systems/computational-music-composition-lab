@@ -135,3 +135,7 @@ The command creates the basic progression; open/closed endings; three harmonic
 rhythms; C, F, and G transpositions; `I–V–vi–IV`; two orderings; a repeated loop;
 a one-chord variation; and the melody-over-progression preview. Their descriptive
 `chapter_09_*.wav` names make every comparison discoverable in `outputs/`.
+
+## Bridge forward
+
+A progression records chord identity and duration but not the broad directional roles listeners may hear in this limited major-key model. Chapter 10 adds tonic, predominant, and dominant function.

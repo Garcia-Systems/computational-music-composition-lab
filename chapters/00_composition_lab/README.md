@@ -134,3 +134,7 @@ Changing one variable makes cause and effect easier to hear. Explaining the
 result turns an impression into compositional knowledge. Chapter 0 has proved
 the essential premise: musical choices can become data, data can become sound,
 and listening can guide the next choice.
+
+## Bridge forward
+
+The first experiment stores frequency directly. Chapter 1 asks how pitch can become a reusable symbolic relationship instead of a list of unrelated Hz values.

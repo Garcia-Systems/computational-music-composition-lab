@@ -58,5 +58,9 @@ flat texture.
 These are prompts for listening, not assertions in automated tests. A complete
 composition is not one clever algorithm: it coordinates form, pitch, rhythm,
 harmony, motif, generation, selection, revision, bass, texture, sound, and
-performance. Chapter 35—not implemented here—will audit what authorship claims
+performance. Chapter 35 audits what authorship claims
 this record supports.
+
+## Bridge forward
+
+The canonical piece exists and must not be recomposed to explain itself. Chapter 35 reads its stored provenance and decision records to audit what can—and cannot—be claimed.

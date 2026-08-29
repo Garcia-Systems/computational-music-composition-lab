@@ -89,5 +89,8 @@ ornament or aesthetic analyzer. Real music also uses appoggiaturas,
 anticipations, escape tones, pedal points, chromatic tones, seventh chords and
 extensions, modal harmony, blues vocabulary, jazz tensions, polytonality, and
 nonfunctional harmony. Those are acknowledged, not implemented. The chapter
-stops at melody/harmony interaction; it does not implement Chapter 13, groove,
-drums, bass design, accompaniment patterns, counterpoint, SuperCollider, or OSC.
+stops at melody/harmony interaction; it deliberately stops before Chapter 13’s groove, drums, bass design, accompaniment patterns, counterpoint, SuperCollider, or OSC.
+
+## Bridge forward
+
+Melody and harmony now share a timeline, but repeated accent and displacement have not been modeled. Chapter 13 makes pulse, subdivision, and groove explicit.

@@ -55,4 +55,8 @@ Experiments progress from `/ping`, A4, C4–E4–G4–C5, a same-onset C triad, 
 
 Real-time systems have latency from Python scheduling, the OS, UDP, sclang processing, audio-server buffers, and the interface. `time.sleep()` is not hard real-time. This chapter demonstrates live integration—not zero latency, sample accuracy, a DAW transport, distributed clocks, or a production sequencer. Packet receipt time is not audio onset time. Do not expose this unauthenticated synthesis-control port to untrusted networks.
 
-The boundary remains: Python owns score, tempo, onset scheduling, and playback conversion; SuperCollider owns safe instrument lookup, synthesis, routing, and release. File exports remain valuable for reproducibility and debugging. Chapter 27's full composition engine and advanced performance integration are deliberately not implemented.
+The boundary remains: Python owns score, tempo, onset scheduling, and playback conversion; SuperCollider owns safe instrument lookup, synthesis, routing, and release. File exports remain valuable for reproducibility and debugging. Chapter 27 builds the complete-score engine on that boundary; Chapter 28 then contrasts it with online generation.
+
+## Bridge forward
+
+Live transport can trigger events but does not itself compose a whole piece. Chapter 27 assembles one complete symbolic score before sending it to any playback path.

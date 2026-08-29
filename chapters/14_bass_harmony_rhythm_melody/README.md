@@ -92,5 +92,8 @@ The model is triadic, regular-grid, deterministic, and monophonic. Bass practice
 also includes walking bass, ostinatos, riffs, drones, slap patterns, chromatic and
 contrapuntal lines, figured bass, independent melodies, extended harmony, and
 style-specific articulation. Those are acknowledged, not implemented. This
-chapter stops at bass: it does not implement Chapter 15 or a texture/accompaniment
-engine.
+chapter stops at bass: it leaves the combined texture/accompaniment engine to Chapter 15.
+
+## Bridge forward
+
+Bass connects harmony and groove, yet a piece also depends on how all layers share register and activity. Chapter 15 turns separate roles into texture and accompaniment.

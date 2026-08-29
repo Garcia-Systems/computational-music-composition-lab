@@ -109,3 +109,7 @@ either repetition or training-defined novelty is questionable. This chapter
 does not measure beauty, emotion, expressiveness, originality, importance,
 authenticity, or enjoyment. It adds no aesthetic model, optimizer, automatic
 selection, SuperCollider, OSC, or Chapter 22 functionality.
+
+## Bridge forward
+
+The symbolic and reference-rendering curriculum can now describe generated results. Chapter 22 changes rendering architecture—without changing the score—by introducing SuperCollider synthesis.

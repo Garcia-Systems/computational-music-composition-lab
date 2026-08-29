@@ -142,3 +142,7 @@ filters, noise, LFO/PWM animation, FM, AM, ring modulation, reverb, delay,
 chorus, distortion, OSC, automatic orchestration, or drum synthesis**. Chapter
 24 will address envelopes, filters, velocity, duration, and articulation; it is
 not implemented here.
+
+## Bridge forward
+
+Oscillators establish spectrum, but musical behavior also depends on change through time. Chapter 24 adds envelope, filtering, velocity mapping, and articulation.

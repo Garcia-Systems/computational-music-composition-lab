@@ -56,3 +56,7 @@ exciting, authentic, or “rocks.” Punk, metal, progressive, indie, hard,
 psychedelic, and alternative rock, jam bands, and other traditions may organize
 shared devices very differently. Chapter 31's classical-style development is
 deliberately not implemented here.
+
+## Bridge forward
+
+Riff-centered repetition is one way to create identity. Chapter 31 changes the question to how a compact motif can be transformed, harmonically redirected, and returned in a limited classical-style development study.

@@ -99,4 +99,8 @@ can also involve swing, shuffle, microtiming, polymeter, polyrhythm, clave,
 tuplets, asymmetric meters, rubato, and culturally specific rhythmic systems.
 Those require their own contexts and are acknowledged rather than simulated.
 No randomness, drum engine, universal syncopation index, or groove-quality score
-is introduced. Chapter 14 and bass-line generation remain unimplemented.
+is introduced. Chapter 14 takes up bass as the connection among groove, harmony, and melodic motion.
+
+## Bridge forward
+
+A groove supplies rhythmic roles without deciding which low notes connect rhythm to harmony. Chapter 14 gives bass that connecting role.

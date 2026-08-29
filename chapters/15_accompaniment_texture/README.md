@@ -85,4 +85,8 @@ entrances. Texture can also involve polyphony, heterophony, contrapuntal
 independence, orchestration, doubling, call and response, countermelodies, timbral
 layering, unison, and spatial arrangement. They are acknowledged, not implemented.
 There is no random orchestration, synthesis framework, best-arrangement function,
-or formal repetition/contrast system. Chapter 16 remains unimplemented.
+or formal repetition/contrast system. Chapter 16 takes up repetition, contrast, and variation explicitly.
+
+## Bridge forward
+
+A layered passage is a local arrangement. Chapter 16 asks how repetition, contrast, and controlled variation make material develop through time.
