@@ -206,6 +206,10 @@ output directory.
 - [Chapter 27 — The Composition Engine](chapters/27_composition_engine/README.md)
   combines the book's musical systems into one reproducible, inspectable
   composition pipeline and sends one symbolic result to JSON, WAV, or OSC.
+- [Chapter 28 — Algorithmic Performance](chapters/28_algorithmic_performance/README.md)
+  generates bounded future musical regions phrase by phrase, using explicit
+  state, lookahead, deterministic recovery, and a persistent decision record.
+  Run `python -m composition_lab chapter-28` to simulate or add `--live` to use OSC.
 
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
@@ -235,12 +239,13 @@ Chapter 24 shapes those instruments over time and frequency with envelopes,
 filters, velocity response, and articulation while the composition stays fixed.
 Chapter 25 adds stereo placement, delay, reverb, buses, and shared send/return
 routing while composition, playback configuration, and audio engine stay separate.
-Chapter 26 adds the first live Python → OSC → sclang bridge while preserving the
-Chapter 22–25 file workflow and keeping synthesis in SuperCollider.
+Chapter 26 adds the live Python → OSC → sclang bridge. Chapter 27 assembles a
+complete score before playback. Chapter 28 defers bounded melodic and rhythmic
+decisions until performance time while keeping synthesis in SuperCollider.
 
 ## Planned journey
 
-Only Chapters 0 through 26 exist today. The broad route—not a claim of implemented
+Chapters 0 through 28 exist today. The broad route—not a claim of implemented
 features beyond those chapters—is:
 
 ```text
