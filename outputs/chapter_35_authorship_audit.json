@@ -1,0 +1,935 @@
+{
+  "audited_artifact_ids": [
+    "chapter_34_brief",
+    "chapter_34_manifest",
+    "chapter_34_candidates",
+    "chapter_34_decision_ledger",
+    "chapter_34_provenance",
+    "chapter_34_complete_piece",
+    "chapter_34_osc_schedule"
+  ],
+  "candidate_generation": {
+    "attempts": 134,
+    "candidate_seeds": {
+      "b-candidate-01": 14009875175188765042,
+      "b-candidate-02": 8759882918957334726,
+      "b-candidate-03": 10538312175416067815,
+      "b-candidate-04": 11431838480417802805,
+      "b-candidate-05": 17558080411891940608,
+      "b-candidate-06": 6272031640235547126
+    },
+    "constraints": {
+      "duration_beats": 24,
+      "ending": "C-major triad; canonical candidates end C4",
+      "maximum_leap": 7,
+      "pitch_range": [
+        60,
+        72
+      ],
+      "rhythm_vocabulary": [
+        0.5,
+        1,
+        1.5
+      ],
+      "scale": "C major"
+    },
+    "failure_reasons": {},
+    "generator": "seeded constrained random walk",
+    "master_seed": 2026,
+    "preserved": 6,
+    "selected": "b-candidate-04",
+    "valid": 6
+  },
+  "canonical_identity": {
+    "chapter": 34,
+    "form": [
+      "intro",
+      "a",
+      "a_prime",
+      "b",
+      "development",
+      "a_return",
+      "coda"
+    ],
+    "master_seed": 2026,
+    "selected_a_prime": "a-prime-candidate-02",
+    "selected_b": "b-candidate-04"
+  },
+  "composition_title": "Converging Paths",
+  "composition_vs_sound": {
+    "composition": [
+      "pitch",
+      "rhythm",
+      "harmony",
+      "form",
+      "motif",
+      "bass",
+      "texture"
+    ],
+    "playback_sound": [
+      "instrument",
+      "oscillator",
+      "envelope",
+      "filter",
+      "pan",
+      "reverb",
+      "OSC transport"
+    ]
+  },
+  "contribution_records": [
+    {
+      "action": "human-authored",
+      "component": "Form",
+      "final_authority": "human",
+      "source": "brief / ledger"
+    },
+    {
+      "action": "human-authored",
+      "component": "A motif",
+      "final_authority": "human",
+      "source": "motif-a"
+    },
+    {
+      "action": "algorithm-transformed",
+      "component": "A' variation",
+      "final_authority": "algorithm proposed; human selected",
+      "source": "motif-a"
+    },
+    {
+      "action": "algorithm-generated exact pitches and rhythms",
+      "component": "B candidates",
+      "final_authority": "algorithm proposed",
+      "source": "seeded constrained random walk"
+    },
+    {
+      "action": "human-selected",
+      "component": "B selection",
+      "final_authority": "human",
+      "source": "b-candidate-04"
+    },
+    {
+      "action": "human-revised",
+      "component": "B revision",
+      "final_authority": "human",
+      "source": "revision-b-01"
+    },
+    {
+      "action": "algorithm-transformed",
+      "component": "Development",
+      "final_authority": "human-designed process",
+      "source": "motif-a"
+    },
+    {
+      "action": "human-authored plan; mechanically-derived pitches",
+      "component": "Harmony / voicing",
+      "final_authority": "human",
+      "source": "harmonic plan + chord table"
+    },
+    {
+      "action": "human strategy; mechanically-derived placement",
+      "component": "Bass",
+      "final_authority": "human",
+      "source": "roots_and_fifths"
+    },
+    {
+      "action": "human recipe; mechanically-derived placement",
+      "component": "Groove",
+      "final_authority": "human",
+      "source": "quarter pulse/backbeat"
+    },
+    {
+      "action": "human-arranged",
+      "component": "Arrangement",
+      "final_authority": "human",
+      "source": "texture plan"
+    },
+    {
+      "action": "human-selected / performed",
+      "component": "Playback",
+      "final_authority": "human configuration",
+      "source": "playback map"
+    },
+    {
+      "action": "synthesized / machine-rendered",
+      "component": "Audio rendering",
+      "final_authority": "finalized score",
+      "source": "final NoteEvents"
+    }
+  ],
+  "counterfactuals": {
+    "alternate_b_selection": {
+      "candidate_id": "b-candidate-01",
+      "candidate_pool_unchanged": true,
+      "changed_sections": [
+        "b"
+      ],
+      "unchanged_sections": [
+        "intro",
+        "a",
+        "a_prime",
+        "development",
+        "a_return",
+        "coda"
+      ]
+    },
+    "alternate_playback": {
+      "canonical": {
+        "bass": {
+          "effect": "dry",
+          "instrument": "sine",
+          "pan": 0
+        },
+        "groove": {
+          "effect": "dry",
+          "instrument": "pulse",
+          "pan": 0.35
+        },
+        "harmony": {
+          "effect": "light_reverb",
+          "instrument": "pulse",
+          "pan": -0.2
+        },
+        "melody": {
+          "effect": "moderate_reverb",
+          "instrument": "articulated_saw",
+          "pan": 0.15
+        }
+      },
+      "change": "reverse melody pan analytically; do not rebuild events",
+      "symbolic_score_unchanged": true
+    },
+    "without_revision": {
+      "changed_section": "b",
+      "differences": [
+        {
+          "after": {
+            "duration": 2,
+            "pitch": 60,
+            "start": 22,
+            "velocity": 88
+          },
+          "before": {
+            "duration": 1.5,
+            "pitch": 60,
+            "start": 22.5,
+            "velocity": 88
+          },
+          "changed_properties": [
+            "start",
+            "duration"
+          ],
+          "event_index": 26,
+          "requested_by": "human",
+          "revision_id": "revision-b-01"
+        }
+      ],
+      "restores_selected_candidate_exactly": true
+    }
+  },
+  "decision_count_warning": "Counts do not indicate creative importance.",
+  "decision_counts": {
+    "algorithm": 2,
+    "derived": 4,
+    "human": 10,
+    "human_selected_algorithm_candidate": 2
+  },
+  "decisions": [
+    {
+      "alternatives": [],
+      "category": "human",
+      "depends_on": [],
+      "description": "Author composition brief",
+      "id": "brief",
+      "reference": null,
+      "seed": null,
+      "selection": null,
+      "source": "authored brief",
+      "stage": "intention"
+    },
+    {
+      "alternatives": [],
+      "category": "human",
+      "depends_on": [],
+      "description": "Choose explicit seven-section form",
+      "id": "form",
+      "reference": null,
+      "seed": null,
+      "selection": "intro a a_prime b development a_return coda",
+      "source": "authored plan",
+      "stage": "structure"
+    },
+    {
+      "alternatives": [],
+      "category": "human",
+      "depends_on": [],
+      "description": "Author five-note source motif",
+      "id": "motif-a",
+      "reference": null,
+      "seed": null,
+      "selection": null,
+      "source": "authored score",
+      "stage": "material"
+    },
+    {
+      "alternatives": [
+        "a-prime-candidate-01",
+        "a-prime-candidate-02",
+        "a-prime-candidate-03"
+      ],
+      "category": "algorithm",
+      "depends_on": [],
+      "description": "Transform motif",
+      "id": "a-prime-generation",
+      "reference": null,
+      "seed": null,
+      "selection": null,
+      "source": "Chapter 16 transformations",
+      "stage": "generation"
+    },
+    {
+      "alternatives": [
+        "a-prime-candidate-01",
+        "a-prime-candidate-02",
+        "a-prime-candidate-03"
+      ],
+      "category": "human_selected_algorithm_candidate",
+      "depends_on": [],
+      "description": "Apply recorded human selection",
+      "id": "a-prime-selection",
+      "reference": "a-prime-candidate-02",
+      "seed": null,
+      "selection": "a-prime-candidate-02",
+      "source": "recorded human selection",
+      "stage": "selection"
+    },
+    {
+      "alternatives": [
+        "b-candidate-01",
+        "b-candidate-02",
+        "b-candidate-03",
+        "b-candidate-04",
+        "b-candidate-05",
+        "b-candidate-06"
+      ],
+      "category": "algorithm",
+      "depends_on": [],
+      "description": "Generate constrained random walks",
+      "id": "b-generation",
+      "reference": null,
+      "seed": 2026,
+      "selection": null,
+      "source": "Chapter 19 seeded constrained random walk",
+      "stage": "generation"
+    },
+    {
+      "alternatives": [
+        "b-candidate-01",
+        "b-candidate-02",
+        "b-candidate-03",
+        "b-candidate-04",
+        "b-candidate-05",
+        "b-candidate-06"
+      ],
+      "category": "human_selected_algorithm_candidate",
+      "depends_on": [],
+      "description": "Apply recorded human selection",
+      "id": "b-selection",
+      "reference": "b-candidate-04",
+      "seed": null,
+      "selection": "b-candidate-04",
+      "source": "recorded human selection",
+      "stage": "selection"
+    },
+    {
+      "alternatives": [],
+      "category": "human",
+      "depends_on": [],
+      "description": "Lengthen final tonic to two beats",
+      "id": "revision-b-01",
+      "reference": "b-candidate-04",
+      "seed": null,
+      "selection": "final C4 at beat 22 for 2 beats",
+      "source": "authored edit",
+      "stage": "revision"
+    },
+    {
+      "alternatives": [],
+      "category": "derived",
+      "depends_on": [],
+      "description": "Fragment, sequence, diminish, and invert motif",
+      "id": "development",
+      "reference": "motif-a",
+      "seed": null,
+      "selection": null,
+      "source": "human-designed / algorithm-executed",
+      "stage": "development"
+    },
+    {
+      "alternatives": [],
+      "category": "human",
+      "depends_on": [],
+      "description": "Choose diatonic harmonic plans",
+      "id": "harmony",
+      "reference": null,
+      "seed": null,
+      "selection": null,
+      "source": "authored plan",
+      "stage": "harmony"
+    },
+    {
+      "alternatives": [],
+      "category": "human",
+      "depends_on": [],
+      "description": "Choose roots_and_fifths",
+      "id": "bass-strategy",
+      "reference": null,
+      "seed": null,
+      "selection": "roots_and_fifths",
+      "source": "authored strategy",
+      "stage": "arrangement"
+    },
+    {
+      "alternatives": [],
+      "category": "derived",
+      "depends_on": [],
+      "description": "Derive bass from harmony",
+      "id": "bass-events",
+      "reference": null,
+      "seed": null,
+      "selection": null,
+      "source": "Chapter 14",
+      "stage": "arrangement"
+    },
+    {
+      "alternatives": [],
+      "category": "human",
+      "depends_on": [],
+      "description": "Choose light quarter pulse/backbeat",
+      "id": "groove-strategy",
+      "reference": null,
+      "seed": null,
+      "selection": null,
+      "source": "authored strategy",
+      "stage": "arrangement"
+    },
+    {
+      "alternatives": [],
+      "category": "derived",
+      "depends_on": [],
+      "description": "Derive groove events",
+      "id": "groove-events",
+      "reference": null,
+      "seed": null,
+      "selection": null,
+      "source": "Chapter 13",
+      "stage": "arrangement"
+    },
+    {
+      "alternatives": [],
+      "category": "human",
+      "depends_on": [],
+      "description": "Choose layer-entry plan",
+      "id": "texture",
+      "reference": null,
+      "seed": null,
+      "selection": null,
+      "source": "authored plan",
+      "stage": "arrangement"
+    },
+    {
+      "alternatives": [],
+      "category": "human",
+      "depends_on": [],
+      "description": "Choose instruments, pan, effects",
+      "id": "playback",
+      "reference": null,
+      "seed": null,
+      "selection": null,
+      "source": "authored playback map",
+      "stage": "playback"
+    },
+    {
+      "alternatives": [],
+      "category": "derived",
+      "depends_on": [],
+      "description": "Convert finalized events",
+      "id": "osc",
+      "reference": null,
+      "seed": null,
+      "selection": null,
+      "source": "Chapter 26",
+      "stage": "playback"
+    },
+    {
+      "alternatives": [],
+      "category": "human",
+      "depends_on": [],
+      "description": "Declare composition finished",
+      "id": "finished",
+      "reference": null,
+      "seed": null,
+      "selection": null,
+      "source": "recorded human decision",
+      "stage": "stopping"
+    }
+  ],
+  "definitions": {
+    "arranged": "existing material is distributed across layers, registers, entrances, and textures",
+    "derived": "a result follows mechanically from a chosen representation or rule",
+    "generated": "algorithm chooses among multiple musically possible symbolic outcomes",
+    "performed": "events are executed through time",
+    "revised": "an actor deliberately edits a selected result",
+    "selected": "an actor chooses among existing alternatives",
+    "synthesized": "an audio signal is created to realize symbolic events",
+    "transformed": "an existing source is changed by an explicit operation"
+  },
+  "final_claims": [
+    "The human authored the brief, form, tonal framework, source motif, constraints, harmonic and arrangement plans, selections, revision, and stopping decision.",
+    "The algorithm generated the exact pitch and rhythm sequences in the B candidate pool; the selected candidate became B's basis.",
+    "The algorithm executed deterministic motif transformations, distinct from authoring their source motif.",
+    "The human selected one A' transformation and one B candidate, then revised the selected B ending.",
+    "Bass, groove, chord pitches, placement, frequency conversion, and OSC payloads largely follow chosen rules mechanically.",
+    "Rendering and SuperCollider synthesis create audio signals; OSC transports instructions; none chose the form.",
+    "The evidence supports neither an entirely human-written score nor an autonomously computer-composed piece."
+  ],
+  "layer_authorship_map": {
+    "bass": [
+      "human-authored strategy",
+      "mechanically-derived events"
+    ],
+    "groove": [
+      "human-authored recipe",
+      "mechanically-derived events"
+    ],
+    "harmony": [
+      "human-authored progression",
+      "mechanically-derived fixed voicing"
+    ],
+    "melody": [
+      "human-authored",
+      "algorithm-generated",
+      "algorithm-transformed",
+      "human-revised"
+    ],
+    "playback": [
+      "human-selected configuration",
+      "machine-rendered"
+    ],
+    "texture": [
+      "human-arranged",
+      "mechanically executed"
+    ]
+  },
+  "limitations": [
+    "Provenance only captures recorded decisions; informal reasons and preferences can be absent.",
+    "The model covers pitch, time, duration, velocity, layers, harmony, and playback metadata\u2014not embodied gesture, microtiming, cultural meaning, or listener experience.",
+    "No structural metric establishes beauty, originality, emotional power, meaning, or artistic success; neither metrics nor provenance replaces listening."
+  ],
+  "lineages": {
+    "generation": [
+      "B constrained-random-walk generator",
+      "\u251c\u2500\u2500 b-candidate-01 [rejected]",
+      "\u251c\u2500\u2500 b-candidate-02 [rejected]",
+      "\u251c\u2500\u2500 b-candidate-03 [rejected]",
+      "\u251c\u2500\u2500 b-candidate-04 [human selected \u2192 revision-b-01]",
+      "\u251c\u2500\u2500 b-candidate-05 [rejected]",
+      "\u2514\u2500\u2500 b-candidate-06 [rejected]"
+    ],
+    "sound": [
+      "final NoteEvents",
+      "\u2193 playback configuration",
+      "\u2193 OSC messages / Python renderer",
+      "\u2193 SuperCollider SynthDefs",
+      "\u2193 audio samples"
+    ],
+    "transformation": [
+      "motif-a [human]",
+      "\u251c\u2500\u2500 a-prime-candidate-02 [rhythmic transformation; human selected]",
+      "\u251c\u2500\u2500 motif-a-development [fragmentation, sequence, diminution + inversion]",
+      "\u251c\u2500\u2500 motif-a-return [octave transposition]",
+      "\u2514\u2500\u2500 motif-a-augmented-fragment [fragmentation + augmentation]"
+    ]
+  },
+  "randomness": {
+    "deterministic": [
+      "A' transformations",
+      "fragmentation",
+      "sequence",
+      "diminution",
+      "inversion",
+      "octave transposition",
+      "augmentation",
+      "section positioning",
+      "harmony, bass, groove, and OSC placement"
+    ],
+    "master_seed": 2026,
+    "note": "A seed reproduces a path through an algorithm. It does not explain the musical rules that made the path possible.",
+    "stochastic": [
+      "B initial pitch, next pitches, and durations"
+    ]
+  },
+  "rejected_material": {
+    "a_prime": {
+      "generated": 3,
+      "rejected": [
+        "a-prime-candidate-01",
+        "a-prime-candidate-03"
+      ],
+      "selected": "a-prime-candidate-02"
+    },
+    "b": {
+      "generated": 6,
+      "rejected": [
+        "b-candidate-01",
+        "b-candidate-02",
+        "b-candidate-03",
+        "b-candidate-05",
+        "b-candidate-06"
+      ],
+      "selected": "b-candidate-04"
+    },
+    "revision_alternatives": []
+  },
+  "revision_records": [
+    {
+      "after": {
+        "duration": 2,
+        "pitch": 60,
+        "start": 22,
+        "velocity": 88
+      },
+      "before": {
+        "duration": 1.5,
+        "pitch": 60,
+        "start": 22.5,
+        "velocity": 88
+      },
+      "changed_properties": [
+        "start",
+        "duration"
+      ],
+      "event_index": 26,
+      "requested_by": "human",
+      "revision_id": "revision-b-01"
+    }
+  ],
+  "section_audits": [
+    {
+      "classification": "human-authored motif fragment + mechanically-derived bass",
+      "duration": 8,
+      "id": "intro",
+      "layers": [
+        "melody",
+        "bass"
+      ],
+      "source_material": "motif-a-fragment",
+      "start": 0
+    },
+    {
+      "classification": "human-authored theme + mechanically-derived accompaniment",
+      "duration": 24,
+      "id": "a",
+      "layers": [
+        "melody",
+        "harmony",
+        "bass"
+      ],
+      "source_material": "motif-a",
+      "start": 8
+    },
+    {
+      "classification": "algorithm-transformed motif + human selection + derived accompaniment",
+      "duration": 24,
+      "id": "a_prime",
+      "layers": [
+        "melody",
+        "harmony",
+        "bass",
+        "groove"
+      ],
+      "source_material": "a-prime-candidate-02",
+      "start": 32
+    },
+    {
+      "classification": "algorithm-generated melody + human selection + human revision",
+      "duration": 24,
+      "id": "b",
+      "layers": [
+        "melody",
+        "harmony"
+      ],
+      "source_material": "b-candidate-04",
+      "start": 56
+    },
+    {
+      "classification": "algorithm-transformed units from the human-authored motif",
+      "duration": 32,
+      "id": "development",
+      "layers": [
+        "melody",
+        "harmony",
+        "bass",
+        "groove"
+      ],
+      "source_material": "motif-a-development",
+      "start": 80
+    },
+    {
+      "classification": "human-directed return + algorithm-transformed register + derived arrangement",
+      "duration": 24,
+      "id": "a_return",
+      "layers": [
+        "melody",
+        "harmony",
+        "bass",
+        "groove"
+      ],
+      "source_material": "motif-a-return",
+      "start": 112
+    },
+    {
+      "classification": "human-directed closure + algorithm-transformed augmented fragment",
+      "duration": 16,
+      "id": "coda",
+      "layers": [
+        "melody",
+        "harmony",
+        "bass"
+      ],
+      "source_material": "motif-a-augmented-fragment",
+      "start": 136
+    }
+  ],
+  "section_authorship_map": {
+    "a": "human-authored theme + mechanically-derived accompaniment",
+    "a_prime": "algorithm-transformed motif + human selection + derived accompaniment",
+    "a_return": "human-directed return + algorithm-transformed register + derived arrangement",
+    "b": "algorithm-generated melody + human selection + human revision",
+    "coda": "human-directed closure + algorithm-transformed augmented fragment",
+    "development": "algorithm-transformed units from the human-authored motif",
+    "intro": "human-authored motif fragment + mechanically-derived bass"
+  },
+  "selected_b_raw_events": [
+    {
+      "duration": 0.5,
+      "pitch": 65,
+      "start": 0.0,
+      "velocity": 92
+    },
+    {
+      "duration": 1.0,
+      "pitch": 65,
+      "start": 0.5,
+      "velocity": 92
+    },
+    {
+      "duration": 1.5,
+      "pitch": 69,
+      "start": 1.5,
+      "velocity": 92
+    },
+    {
+      "duration": 1.0,
+      "pitch": 62,
+      "start": 3.0,
+      "velocity": 92
+    },
+    {
+      "duration": 0.5,
+      "pitch": 69,
+      "start": 4.0,
+      "velocity": 92
+    },
+    {
+      "duration": 1.5,
+      "pitch": 72,
+      "start": 4.5,
+      "velocity": 92
+    },
+    {
+      "duration": 1.0,
+      "pitch": 65,
+      "start": 6.0,
+      "velocity": 92
+    },
+    {
+      "duration": 0.5,
+      "pitch": 72,
+      "start": 7.0,
+      "velocity": 92
+    },
+    {
+      "duration": 1.0,
+      "pitch": 72,
+      "start": 7.5,
+      "velocity": 92
+    },
+    {
+      "duration": 1.5,
+      "pitch": 67,
+      "start": 8.5,
+      "velocity": 92
+    },
+    {
+      "duration": 1.0,
+      "pitch": 67,
+      "start": 10.0,
+      "velocity": 92
+    },
+    {
+      "duration": 0.5,
+      "pitch": 65,
+      "start": 11.0,
+      "velocity": 92
+    },
+    {
+      "duration": 0.5,
+      "pitch": 62,
+      "start": 11.5,
+      "velocity": 92
+    },
+    {
+      "duration": 1.5,
+      "pitch": 62,
+      "start": 12.0,
+      "velocity": 92
+    },
+    {
+      "duration": 0.5,
+      "pitch": 62,
+      "start": 13.5,
+      "velocity": 92
+    },
+    {
+      "duration": 1.0,
+      "pitch": 60,
+      "start": 14.0,
+      "velocity": 92
+    },
+    {
+      "duration": 0.5,
+      "pitch": 62,
+      "start": 15.0,
+      "velocity": 92
+    },
+    {
+      "duration": 1.0,
+      "pitch": 64,
+      "start": 15.5,
+      "velocity": 92
+    },
+    {
+      "duration": 1.0,
+      "pitch": 62,
+      "start": 16.5,
+      "velocity": 92
+    },
+    {
+      "duration": 1.0,
+      "pitch": 67,
+      "start": 17.5,
+      "velocity": 92
+    },
+    {
+      "duration": 0.5,
+      "pitch": 69,
+      "start": 18.5,
+      "velocity": 92
+    },
+    {
+      "duration": 0.5,
+      "pitch": 65,
+      "start": 19.0,
+      "velocity": 92
+    },
+    {
+      "duration": 0.5,
+      "pitch": 60,
+      "start": 19.5,
+      "velocity": 92
+    },
+    {
+      "duration": 0.5,
+      "pitch": 65,
+      "start": 20.0,
+      "velocity": 92
+    },
+    {
+      "duration": 1.0,
+      "pitch": 67,
+      "start": 20.5,
+      "velocity": 92
+    },
+    {
+      "duration": 1.0,
+      "pitch": 64,
+      "start": 21.5,
+      "velocity": 92
+    },
+    {
+      "duration": 1.5,
+      "pitch": 60,
+      "start": 22.5,
+      "velocity": 88
+    }
+  ],
+  "source_motif": {
+    "events": [
+      {
+        "duration": 1,
+        "pitch": 60,
+        "start": 0,
+        "velocity": 94
+      },
+      {
+        "duration": 0.5,
+        "pitch": 64,
+        "start": 1,
+        "velocity": 90
+      },
+      {
+        "duration": 1.5,
+        "pitch": 67,
+        "start": 1.5,
+        "velocity": 98
+      },
+      {
+        "duration": 1,
+        "pitch": 65,
+        "start": 3,
+        "velocity": 91
+      },
+      {
+        "duration": 2,
+        "pitch": 62,
+        "start": 4,
+        "velocity": 88
+      }
+    ],
+    "id": "motif-a",
+    "provenance": "human-authored",
+    "transformations": [
+      "fragmentation",
+      "rhythmic variation",
+      "sequence",
+      "diminution",
+      "inversion",
+      "transposition",
+      "augmentation"
+    ]
+  },
+  "valid_decision_categories": [
+    "algorithm",
+    "derived",
+    "human",
+    "human_selected_algorithm_candidate"
+  ],
+  "valid_material_classifications": [
+    "algorithm-generated",
+    "algorithm-transformed",
+    "human-authored",
+    "human-revised",
+    "mechanically-derived"
+  ],
+  "voice_leading_classification": "No inversion search occurs in Chapter 34; human-authored degrees index a fixed chord table, so exact voicing pitches are mechanically derived."
+}
