@@ -75,6 +75,8 @@ python -m composition_lab chapter-29
 python -m composition_lab chapter-29 --live
 python -m composition_lab chapter-30
 python -m composition_lab chapter-30 --live
+python -m composition_lab chapter-31
+python -m composition_lab chapter-31 --live
 ```
 
 or install an editable copy and use its console command:
@@ -228,7 +230,9 @@ features associated with particular musical practices.
 - [Chapter 30 — Rock and Songwriting](chapters/30_rock_songwriting/README.md) — A
   style lab built from riffs, chord loops, groove, sectional contrast, hooks,
   arrangement, and song form.
-- Chapter 31 — Classical-Style Development
+- [Chapter 31 — Classical-Style Development](chapters/31_classical_style_development/README.md) —
+  Motivic economy, sequence, fragmentation, harmonic recontextualization,
+  phrase expansion, development, and return.
 - Chapter 32 — Minimalism and Generative Music
 
 The progression so far is direct: Chapter 0 shows that sound can be generated
