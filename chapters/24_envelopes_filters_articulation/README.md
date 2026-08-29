@@ -160,3 +160,7 @@ SAME OSCILLATOR + DIFFERENT ENVELOPE + DIFFERENT FILTER
 ```
 
 The composition itself may remain unchanged.
+
+## Bridge forward
+
+Articulation shapes an individual voice; it does not explain stereo placement or shared effects. Chapter 25 adds bounded pan, delay, reverb, and bus routing.

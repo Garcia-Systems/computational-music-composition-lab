@@ -158,3 +158,7 @@ professional sound. This chapter adds no MIDI, OSC, live Python streaming,
 patterns, custom classes, filters, effects, modulation, extra oscillators, or
 advanced waveforms. Chapter 23—not this chapter—will ask how a synthesizer gains
 a recognizable sonic identity and useful musical controls.
+
+## Bridge forward
+
+A sine SynthDef proves the notes-to-sound path but offers little instrument identity. Chapter 23 keeps the events fixed while oscillator structure becomes a playback variable.

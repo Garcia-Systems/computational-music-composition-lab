@@ -134,7 +134,7 @@ ambiguous.
 
 No seventh-chord survey, secondary dominants, modulation, chromatic harmony,
 jazz-functional system, probability, voice-leading optimization, SuperCollider,
-or OSC is introduced. Chapter 11 is not implemented.
+or OSC is introduced. Chapter 11 takes up the unresolved voicing question.
 
 ## Listening artifacts
 
@@ -142,3 +142,7 @@ The command renders the functional arc; IV/ii and V/vii° alternatives; V–I;
 resolved, deceptive, and stopped branches; A minor in two contexts; compact and
 expanded arcs; short and long dominants; and the melody-plus-harmony functional
 phrase. All use deterministic sine rendering and simple root-position triads.
+
+## Bridge forward
+
+Functional labels describe harmonic direction while root-position blocks can still move awkwardly. Chapter 11 holds chord identity fixed and investigates voicing and measured voice motion.

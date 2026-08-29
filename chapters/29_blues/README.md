@@ -69,3 +69,7 @@ context. It defines no authenticity/style score and performs no genre classifica
 - What changes when straight attacks move to the shuffle grid?
 - Where do rests separate call and response, and which material repeats?
 - What changes over IV7, when the bass moves, and at the turnaround?
+
+## Bridge forward
+
+The blues lab begins with cyclical form, shuffle, and pitch/harmony friction. Chapter 30 changes model rather than claiming a linear genre progression: riff, backbeat, and sectional songwriting become the organizing devices.

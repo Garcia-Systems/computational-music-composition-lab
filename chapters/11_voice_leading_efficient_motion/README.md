@@ -80,4 +80,8 @@ H. Render only the middle voice; does it sound like a plausible melody?
 
 This is a small deterministic search under a simplified model: diatonic major-key triads, three fixed sorted voices, inversions, whole-voicing octave shifts, a finite range, and greedy choice. Real practice may use four or more voices, crossings, doublings, omissions, independent lines, tendency tones, spacing and instrumental ranges, stylistic counterpoint, registral design, and global planning.
 
-No seventh chords, SATB rules, species counterpoint, forbidden-parallel system, modulation, SuperCollider, or OSC is introduced. Most importantly, the unchanged phrase melody is **not** classified against its chords: chord tones, non-chord tones, dissonance types, and melody/harmony alignment belong to Chapter 12 and are not implemented here.
+No seventh chords, SATB rules, species counterpoint, forbidden-parallel system, modulation, SuperCollider, or OSC is introduced. Most importantly, the unchanged phrase melody is **not** classified against its chords: chord tones, non-chord tones, dissonance types, and melody/harmony alignment belong to Chapter 12 rather than this voice-leading model.
+
+## Bridge forward
+
+Smoother chord voices still leave the melody unanalyzed. Chapter 12 aligns each melodic event with half-open harmonic spans to describe chord-tone and non-chord-tone relationships.

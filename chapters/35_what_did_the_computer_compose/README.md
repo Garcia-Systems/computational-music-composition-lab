@@ -137,3 +137,7 @@ Provenance is only as complete as its records; informal reasons may be absent. T
 ```
 
 The computer did not simply compose everything, nor did the human merely operate a tool. The finished work arose through inspectable intentions, constraints, proposals, transformations, selections, revisions, and performances—the laboratory lets those relationships remain visible.
+
+## Bridge forward
+
+The curriculum ends here. Its final result is not an authorship percentage but a repeatable practice: preserve intentions and decisions, inspect the data, listen to the sound, and revise with honest limits.

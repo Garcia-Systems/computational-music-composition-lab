@@ -113,4 +113,8 @@ complete than binary. Rounded binary, compound ternary, strophic, rondo, sonata,
 variation, developmental, hybrid forms, and ambiguous boundaries are acknowledged
 but not implemented. There is no symbolic-form parser, audio section detector,
 random form generation, probabilistic ordering, constraint solving, or candidate
-search. Chapter 18 remains unimplemented.
+search. Chapter 18 takes up that bounded candidate-search question.
+
+## Bridge forward
+
+A form plan arranges authored material; it does not explore alternatives under rules. Chapter 18 defines bounded possibility spaces with inspectable constraints.

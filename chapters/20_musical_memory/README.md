@@ -100,3 +100,7 @@ models, n-grams, hidden or hierarchical states, recurrent networks,
 transformers, embeddings, machine-learning dependencies, corpora, MIDI
 ingestion, combined pitch/rhythm/harmony states, generalized evaluation,
 aesthetic scoring, SuperCollider, OSC, or Chapter 21.
+
+## Bridge forward
+
+A memory model proposes material; it cannot tell us what the result is like or what a listener should prefer. Chapter 21 adds descriptive metrics while reserving judgment for people.

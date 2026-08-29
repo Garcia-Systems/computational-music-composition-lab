@@ -122,3 +122,7 @@ Chapter 8 will ask what happens when different pitches sound together. Chapter
 7 deliberately adds no triads, chord roots or qualities, inversions, Roman
 numerals, progressions, harmonic function, or voice leading. It also adds no
 probability, SuperCollider, or OSC.
+
+## Bridge forward
+
+Phrase direction has so far been melodic. Chapter 8 changes perspective honestly—from pitches through time to pitches sounding together—and introduces vertical structure.

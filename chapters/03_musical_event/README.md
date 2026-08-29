@@ -139,3 +139,7 @@ across a score. Each returns new events; the originals remain unchanged.
 
 This chapter stops at arbitrary pitch-number events. Scales, keys, modes,
 chord construction, and tonal choice are intentionally outside its scope.
+
+## Bridge forward
+
+Events give us a stable representation, but they do not explain which pitches belong together. Chapter 4 introduces scales and scale degrees as a deliberately narrow tonal organization.

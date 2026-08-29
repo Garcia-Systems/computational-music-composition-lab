@@ -126,3 +126,7 @@ cannot quantify creative importance, artistic intent, meaning, or emotion.
 
 Chapter 33 introduces no autonomous-composer abstraction and does not implement
 Chapter 34's complete-piece capstone.
+
+## Bridge forward
+
+A delegation plan and provenance vocabulary are useful only if exercised. Chapter 34 applies them to one canonical complete piece, from brief through fixed final score and playback mappings.

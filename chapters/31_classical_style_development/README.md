@@ -38,3 +38,7 @@ shaping, advanced harmonic syntax, sonata procedures, orchestration, or human
 interpretation. `NoteEvent` also lacks slurs, dynamic curves, phrasing, rubato,
 and technique metadata. Chapter 32's gradual/process-specific systems are not
 implemented here.
+
+## Bridge forward
+
+Directed motivic development makes contrast through transformation. Chapter 32 tests a different logic: repetition itself becomes a process through discrete phase-like offsets, substitution, and layer accumulation.

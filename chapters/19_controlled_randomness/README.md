@@ -124,3 +124,7 @@ noise, cellular automata, chaos, grammars, evolutionary systems, or learned
 models, but none is implemented here. There are no learned probabilities,
 transition tables, Markov chains, machine learning, “AI composer,” SuperCollider,
 OSC, or Chapter 20 musical memory.
+
+## Bridge forward
+
+Seeded choices can vary, but each choice still need not depend on musical history. Chapter 20 derives first-order transition memory from supplied sequences.

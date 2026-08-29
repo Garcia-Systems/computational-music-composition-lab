@@ -215,3 +215,7 @@ may productively violate every one. There is no randomness, probability,
 weighted selection, Markov model, machine learning, evolutionary search,
 simulated annealing, neural network, SuperCollider, or OSC here. Controlled
 randomness belongs to Chapter 19 and has not been implemented.
+
+## Bridge forward
+
+Enumeration shows what is allowed but scales poorly and always visits possibilities in the same order. Chapter 19 uses local, explicitly seeded randomness to explore valid alternatives reproducibly.

@@ -59,3 +59,13 @@ command neither installs nor launches SuperCollider.
 5. Send `/panic` through `OscNoteClient.panic()`, or evaluate the documented cleanup block / `s.freeAll` if needed. Cleanup frees all three OSCdefs to prevent duplicate handlers.
 
 This is unauthenticated localhost teaching infrastructure. UDP send success is not receiver readiness, and ordinary language scheduling is not sample-accurate.
+
+## Chapter map and safe workflow
+
+- Chapter 22: `chapter_22_first_sound.scd` introduces the language/server split and a sine voice.
+- Chapter 23: `chapter_23_synthesizers_as_instruments.scd` changes oscillator structure while score events stay fixed.
+- Chapter 24: `chapter_24_envelopes_filters_articulation.scd` adds ADSR **levels and times**, filtering, and gate-based articulation. ADSR sustain is a level, not a duration; smaller `RLPF.rq` values produce a narrower, more resonant response.
+- Chapter 25: `chapter_25_space_and_effects.scd` adds pan (`-1` left, `0` center, `+1` right), bounded delay feedback, reverb, buses, and send/return routing.
+- Chapter 26: `chapter_26_osc_receiver.scd` receives localhost control messages. OSC carries event controls, never audio samples.
+
+For every file: boot `s`, wait for the server, evaluate SynthDefs before examples, keep gains conservative, and use `s.freeAll;` or the IDE emergency stop to silence the server. The Python chapter command always remains the non-live starting point.

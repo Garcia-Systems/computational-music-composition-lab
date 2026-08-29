@@ -127,6 +127,52 @@ from .markov import (
 import random
 from collections import Counter
 
+CHAPTER_TITLES = (
+    "The Composition Laboratory", "Pitch Becomes Computable", "Time and Rhythm",
+    "The Musical Event", "Scales, Keys, and Tonality", "Intervals and Melodic Motion",
+    "Motifs and Transformation", "Phrases, Questions, and Closure",
+    "Chords and Vertical Structure", "Chord Progressions and Harmonic Motion",
+    "Harmonic Function and Tension", "Voice Leading and Efficient Motion",
+    "Melody Against Harmony", "Groove, Pulse, and Syncopation",
+    "Bass as Harmony, Rhythm, and Melody", "Accompaniment and Texture",
+    "Repetition, Contrast, and Variation", "Musical Form",
+    "Constraint-Based Composition", "Controlled Randomness", "Musical Memory",
+    "Evaluation: Describing Generated Music", "From Notes to Sound",
+    "Synthesizers as Instruments", "Envelopes, Filters, and Articulation",
+    "Space, Delay, Reverb, and Signal Routing", "OSC: Sending Musical Events in Real Time",
+    "The Composition Engine", "Algorithmic Performance", "Blues",
+    "Rock and Songwriting", "Classical-Style Development",
+    "Minimalism and Generative Music", "Human + Algorithm",
+    "Compose a Complete Piece", "What Did the Computer Actually Compose?",
+)
+CHAPTER_COMMANDS = tuple(f"chapter-{number:02d}" for number in range(len(CHAPTER_TITLES)))
+
+
+def list_chapters() -> str:
+    """Return the complete, ordered curriculum and its inspectable commands."""
+    return "\n".join(
+        f"{number:02d}  {title}  (chapter-{number:02d})"
+        for number, title in enumerate(CHAPTER_TITLES)
+    )
+
+
+def verify_book(root: Path | None = None) -> tuple[str, ...]:
+    """Return structural problems without rendering audio or contacting SuperCollider."""
+    root = root or Path(__file__).resolve().parent.parent
+    problems: list[str] = []
+    chapter_readmes = sorted((root / "chapters").glob("*/README.md"))
+    expected_prefixes = tuple(f"{number:02d}_" for number in range(36))
+    actual_prefixes = tuple(path.parent.name[:3] for path in chapter_readmes)
+    if actual_prefixes != expected_prefixes:
+        problems.append("chapters must contain exactly one ordered README for each chapter 00–35")
+    for relative in ("README.md", "pyproject.toml", "supercollider/README.md"):
+        if not (root / relative).is_file():
+            problems.append(f"missing required file: {relative}")
+    for number in range(22, 27):
+        if not tuple((root / "supercollider").glob(f"chapter_{number}_*.scd")):
+            problems.append(f"missing SuperCollider chapter {number} script")
+    return tuple(problems)
+
 CHAPTER_00_NOTES = (
     ("C4", 261.63, 0.40),
     ("E4", 329.63, 0.40),
@@ -992,9 +1038,9 @@ def _intervals(melody: Sequence[int]) -> str:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Computational Music Composition Lab experiments.")
     parser.add_argument(
-        "chapter",
-        choices=("chapter-00", "chapter-01", "chapter-02", "chapter-03", "chapter-04", "chapter-05", "chapter-06", "chapter-07", "chapter-08", "chapter-09", "chapter-10", "chapter-11", "chapter-12", "chapter-13", "chapter-14", "chapter-15", "chapter-16", "chapter-17", "chapter-18", "chapter-19", "chapter-20", "chapter-21", "chapter-22", "chapter-23", "chapter-24", "chapter-25", "chapter-26", "chapter-27", "chapter-28", "chapter-29", "chapter-30", "chapter-31", "chapter-32", "chapter-33", "chapter-34", "chapter-35"),
-        help="experiment to run",
+        "chapter", nargs="?",
+        choices=CHAPTER_COMMANDS + ("chapters", "verify-book"),
+        help="chapter experiment, 'chapters', or 'verify-book'",
     )
     parser.add_argument("--live", action="store_true", help="transmit Chapter 26–28 OSC (default is a safe dry run)")
     parser.add_argument("--replay", action="store_true", help="Chapter 28: load recorded event history without regeneration")
@@ -1015,7 +1061,21 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    if args.chapter is None:
+        parser.print_help()
+        return 0
+    if args.chapter == "chapters":
+        print(list_chapters())
+        return 0
+    if args.chapter == "verify-book":
+        problems = verify_book()
+        if problems:
+            print("Book verification failed:\n- " + "\n- ".join(problems))
+            return 1
+        print("Book structure verified: 36 chapters (00–35), required files present, no live audio used.")
+        return 0
     if args.chapter == "chapter-00":
         output_path = run_chapter_00(args.output_directory)
         note_names = " → ".join(name for name, _, _ in CHAPTER_00_NOTES)

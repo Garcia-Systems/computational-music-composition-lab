@@ -75,3 +75,7 @@ orchestration, and developmental harmony. This chapter acknowledges rather than
 systematizes those traditions. It implements no randomness, universal similarity
 score, named form, section model, or generalized form engine. Chapter 17 remains
 unimplemented and will ask how these relationships become larger named structures.
+
+## Bridge forward
+
+Relationships among passages suggest larger boundaries but do not name or schedule them. Chapter 17 makes section plans and form explicit.

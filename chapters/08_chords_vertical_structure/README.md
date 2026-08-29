@@ -125,3 +125,7 @@ patterns, and voice-leading optimization remain deliberately outside Chapter 8.
 - `chapter_08_block_chord.wav`, `chapter_08_broken_chord.wav`
 - `chapter_08_c_major_diatonic_triads.wav`
 - `chapter_08_harmony_preview.wav`
+
+## Bridge forward
+
+One chord is a vertical object; harmony also unfolds through time. Chapter 9 orders chords into progressions and separates chord order from harmonic rhythm.

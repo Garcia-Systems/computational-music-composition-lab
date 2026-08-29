@@ -181,3 +181,7 @@ flanging, phasing, distortion, compression, normalization, live scheduling,
 socket, UDP, or OSC implementation. Python and SuperCollider still meet through
 files and a manually evaluated script. Real-time communication remains Chapter
 26 work.
+
+## Bridge forward
+
+Python and SuperCollider still exchange prepared files. Chapter 26 replaces that offline handoff with OSC control messages—never audio samples—and converts beat positions to scheduling seconds.
