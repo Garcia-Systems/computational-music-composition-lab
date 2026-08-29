@@ -233,7 +233,9 @@ features associated with particular musical practices.
 - [Chapter 31 — Classical-Style Development](chapters/31_classical_style_development/README.md) —
   Motivic economy, sequence, fragmentation, harmonic recontextualization,
   phrase expansion, development, and return.
-- Chapter 32 — Minimalism and Generative Music
+- [Chapter 32 — Minimalism and Generative Music](chapters/32_minimalism_generative_music/README.md) —
+  Repetition, process, gradual transformation, phase, pattern interaction, and
+  layer accumulation.
 
 The progression so far is direct: Chapter 0 shows that sound can be generated
 from numerical musical decisions; Chapter 1 makes pitch relationships
