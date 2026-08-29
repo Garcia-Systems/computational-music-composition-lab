@@ -88,6 +88,9 @@ a nonzero waveform instantaneously makes a discontinuity, often heard as a
 click. The tiny fade brings note boundaries toward zero without pretending to
 be an expressive instrument.
 
+![Frequency to Samples](../../images/chapters/0-1.png)
+![Samples to Sound](../../images/chapters/0-2.png)
+
 ## Experiment 1: change one pitch
 
 **Hypothesis:** If only E4's frequency changes, the contour and character of the
