@@ -73,6 +73,8 @@ python -m composition_lab chapter-27 --live
 python -m composition_lab chapter-28
 python -m composition_lab chapter-29
 python -m composition_lab chapter-29 --live
+python -m composition_lab chapter-30
+python -m composition_lab chapter-30 --live
 ```
 
 or install an editable copy and use its console command:
@@ -221,10 +223,11 @@ inside recognizable musical practices. They do not attempt to encode genres comp
 they use the book's general computational tools to investigate selected structural
 features associated with particular musical practices.
 
-- [Chapter 29 — Blues](chapters/29_blues/README.md) models selected twelve-bar,
-  dominant-seventh, pitch-vocabulary, shuffle, call-and-response, variation, and
-  moving-bass features while foregrounding history, interpretation, and blind spots.
-- Chapter 30 — Rock and Songwriting
+- [Chapter 29 — Blues](chapters/29_blues/README.md) — A style lab built around
+  12-bar form, harmonic/melodic friction, shuffle, call and response, and bass motion.
+- [Chapter 30 — Rock and Songwriting](chapters/30_rock_songwriting/README.md) — A
+  style lab built from riffs, chord loops, groove, sectional contrast, hooks,
+  arrangement, and song form.
 - Chapter 31 — Classical-Style Development
 - Chapter 32 — Minimalism and Generative Music
 
