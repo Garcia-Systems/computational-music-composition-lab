@@ -245,8 +245,9 @@ capabilities should be used inside an actual compositional process.
 - [Chapter 33 — Human + Algorithm](chapters/33_human_algorithm/README.md)
   Compositional delegation, candidate generation, human selection, revision,
   provenance, and authorship.
-- **Chapter 34 — Compose a Complete Piece**
-  A full end-to-end composition from brief through finished performance.
+- [Chapter 34 — Compose a Complete Piece](chapters/34_compose_complete_piece/README.md)
+  Use the full laboratory to create one original composition from brief through
+  finished playback.
 - **Chapter 35 — What Did the Computer Actually Compose?**
   A final audit of authorship, generation, transformation, and human judgment.
 
