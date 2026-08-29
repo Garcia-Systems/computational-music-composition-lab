@@ -10,6 +10,7 @@ from .pitch import _validate_pitch
 MAJOR_TRIAD = (0, 4, 7)
 MINOR_TRIAD = (0, 3, 7)
 DIMINISHED_TRIAD = (0, 3, 6)
+DOMINANT_SEVENTH = (0, 4, 7, 10)
 
 
 def build_chord(root: int, intervals: tuple[int, ...]) -> tuple[int, ...]:
@@ -37,6 +38,11 @@ def minor_triad(root: int) -> tuple[int, ...]:
 
 def diminished_triad(root: int) -> tuple[int, ...]:
     return build_chord(root, DIMINISHED_TRIAD)
+
+
+def dominant_seventh(root: int) -> tuple[int, ...]:
+    """Build the narrowly defined root-position dominant seventh used in Chapter 29."""
+    return build_chord(root, DOMINANT_SEVENTH)
 
 
 def invert_chord(pitches: tuple[int, ...], inversion: int) -> tuple[int, ...]:
