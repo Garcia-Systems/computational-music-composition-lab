@@ -77,6 +77,8 @@ C4's. Likewise A3, A4, and A5 are 220, 440, and 880 Hz. Integer octave distance
 and physical frequency doubling describe the same relationship from musical
 and acoustic viewpoints.
 
+![A4 Anchor](../../images/chapters/1.png)
+
 ## Rebuilding the first composition
 
 Chapter 0 remains unchanged: its hard-coded frequencies create the problem this
